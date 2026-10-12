@@ -15,6 +15,10 @@ This is a hackathon repo for the **Healthcare Innovation Challenge 2026** (team:
 - `GeminiParser.kt` holds the prompt + JSON schema (raw REST call to Gemini `generateContent` with `responseJsonSchema`; model defaults to `gemini-3.8-flash`, changeable in the Profile tab); `MockData.kt` is the in-memory roster/patients/bookings; `SpeechController.kt` restarts Android's SpeechRecognizer so long, rambling dictation is captured in one transcript.
 - API key is entered in the app's Profile tab (or baked in with `-PgeminiApiKey=...` for a private demo build — never commit/share that APK).
 
+## Promo video and presentation (`Marketing/`)
+
+`Marketing/video-src/` is a Three.js page that renders the promo video (`render.mjs`, which loads `index.html?video`). Without `?video`, the same page is a clickable presentation (`deck.js`) that holds at `story.stops`. `node build-deck.mjs` builds the static site in `dist/` for Cloudflare Pages. See `Marketing/README.md`.
+
 ## Key files
 
 - `Challenge-2.pdf` — the original challenge submission from the hospital's Occupational Therapy (OT) department. This is the source of truth for requirements; its numbered problems (1–9) and goals (1–9) are referenced elsewhere by number.

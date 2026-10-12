@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "render": "node render.mjs promo_silent.mp4 30"
+    "render": "node render.mjs promo_silent.mp4 30",
+    "build:deck": "node build-deck.mjs",
+    "deck": "node build-deck.mjs && npx --yes serve dist"
   },
   "dependencies": {
     "@fontsource/dm-sans": "^5.0.20",
@@ -12,5 +14,8 @@
     "@fontsource/plus-jakarta-sans": "5.0.20",
     "playwright": "1.56.1",
     "three": "0.160.0"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

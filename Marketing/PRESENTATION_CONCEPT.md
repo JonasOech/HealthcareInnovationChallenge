@@ -1,5 +1,7 @@
 # Concept: turning the promo video into a presentation
 
+> **Status:** built as the live HTML deck (`video-src/deck.js`). See "Presentation (web app)" in `README.md` for how to run and host it. The `.pptx` export and the pitch-only slides are not built yet.
+
 Goal: a clickable slide deck that looks and moves exactly like `QuickEquipmentLog_promo.mp4`: the 3D phone, the teal wipes, the line-by-line headline reveals, the highlighter marks, the screen spotlights, the Ollama sticker and the oechsner.dev end card. The difference is that the presenter decides when it moves on.
 
 ## Core idea: "the video, with pause points"

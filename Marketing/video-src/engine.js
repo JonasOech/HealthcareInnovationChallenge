@@ -119,8 +119,8 @@ const img = src => images.get(src).img;
 
 function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
 
-function drawScreen(t) {
-  const layers = story.screenLayers(t);
+function drawScreen(t, local) {
+  const layers = story.screenLayers(t, local);
   sctx.globalAlpha = 1; sctx.fillStyle = '#FAF8FF'; sctx.fillRect(0, 0, 1080, 2400);
   for (const L of layers) {
     sctx.globalAlpha = L.alpha ?? 1;
@@ -233,12 +233,12 @@ const blobDefs = [
 ];
 const blobs = blobDefs.map(d => { const e = document.createElement('div'); e.className = 'blob'; e.style.width = e.style.height = d.s + 'px'; e.style.background = d.c; $('blobs').appendChild(e); return e; });
 
-function drawBackground(t, phoneScreenPos) {
+function drawBackground(t, amb, phoneScreenPos) {
   const dark = story.darkness(t);
   $('bg-dark').style.opacity = dark;
   $('grid').style.opacity = 1 - dark;
   blobs.forEach((e, i) => { const d = blobDefs[i];
-    e.style.transform = `translate(${d.x * 1920 - d.s / 2 + d.ax * Math.sin(t * d.w + i)}px, ${d.y * 1080 - d.s / 2 + d.ay * Math.cos(t * d.w * 1.3 + i)}px)`;
+    e.style.transform = `translate(${d.x * 1920 - d.s / 2 + d.ax * Math.sin(amb * d.w + i)}px, ${d.y * 1080 - d.s / 2 + d.ay * Math.cos(amb * d.w * 1.3 + i)}px)`;
     e.style.opacity = 1 - 0.55 * dark; });
   const g = $('glow');
   g.style.background = `radial-gradient(circle, rgba(109,245,225,${0.55 - 0.15 * dark}) 0%, rgba(109,245,225,0) 62%)`;
@@ -250,20 +250,22 @@ function drawBackground(t, phoneScreenPos) {
 
 // ---------- frame ----------
 const v = new THREE.Vector3();
-function drawMascot(t) {
+function drawMascot(t, amb, local) {
   const m = story.mascot, el = $('mascot');
   const vis = t >= m.t0 && t <= m.t1;
   el.style.display = vis ? 'block' : 'none';
   if (!vis) return;
   const up = easeOutBack(prog(t, m.t0, 0.7)), down = easeInOut(prog(t, m.t1 - 0.45, 0.45));
   const y = m.y + (1 - up) * 620 + down * 700;
-  const rot = -6 * (1 - up) + 3 * Math.sin((t - m.t0) * 2.2);
+  const rot = -6 * (1 - up) + 3 * Math.sin((amb - m.t0) * 2.2);
   el.style.transform = `translate(${m.x}px, ${y}px) rotate(${rot}deg)`;
-  const i = Math.min(m.frames.length - 1, Math.max(0, Math.floor((t - m.t0) * 30)));
+  // ping-pong through the clip, so a long hold in the deck keeps the mascot waving without a jump
+  const n = m.frames.length - 1, f = Math.max(0, Math.floor((local - m.t0) * 30)) % (2 * n);
+  const i = n - Math.abs(f - n);
   el.firstElementChild.getContext('2d').drawImage(img(m.frames[i]), 0, 0, 420, 420);
 }
 
-function drawBlog(t) {
+function drawBlog(t, amb) {
   const b = story.blog, el = $('blog');
   const vis = t >= b.t0;
   el.style.display = vis ? 'block' : 'none';
@@ -271,7 +273,7 @@ function drawBlog(t) {
   if (!vis) return;
   const q = el.querySelector.bind(el);
   // glows slide in from the corners first, then everything else fades to dark
-  const g = easeOut(prog(t, b.t0, 1.4)), drift = t - b.t0;
+  const g = easeOut(prog(t, b.t0, 1.4)), drift = amb - b.t0;
   const cool = q('.cool'), warm = q('.warm');
   cool.style.opacity = warm.style.opacity = g;
   cool.style.transform = `translate(${-1000 + 300 * g + 30 * Math.sin(drift * 0.6)}px, ${-760 + 280 * g + 20 * Math.cos(drift * 0.5)}px)`;
@@ -285,19 +287,25 @@ function drawBlog(t) {
   [q('.by'), q('.cta')].forEach((n, i) => { const k = easeOut(prog(t, T + 1.25 + i * 0.25, 0.6)); n.style.opacity = k; n.style.transform = `translateY(${16 * (1 - k)}px)`; });
 }
 
-window.renderFrame = t => {
+// t drives the story (scene state). The presentation deck can hold t still at a slide while two other clocks
+// keep running: amb (continuous; float, blobs, glows) and local (t plus time spent in the current hold; looping
+// screen effects and the mascot clip). The video passes t only, so all three clocks are equal there.
+window.renderFrame = (t, amb = t, local = t) => {
   const { p, r, s, f } = phonePose(t);
-  phone.position.set(p[0], p[1] + f * 0.05 * Math.sin(t * 1.4), p[2]);
-  phone.rotation.set(THREE.MathUtils.degToRad(r[0] + f * 1.5 * Math.sin(t * 0.9)), THREE.MathUtils.degToRad(r[1] + f * 3 * Math.sin(t * 0.7)), THREE.MathUtils.degToRad(r[2]));
+  phone.position.set(p[0], p[1] + f * 0.05 * Math.sin(amb * 1.4), p[2]);
+  phone.rotation.set(THREE.MathUtils.degToRad(r[0] + f * 1.5 * Math.sin(amb * 0.9)), THREE.MathUtils.degToRad(r[1] + f * 3 * Math.sin(amb * 0.7)), THREE.MathUtils.degToRad(r[2]));
   phone.scale.setScalar(s);
-  drawScreen(t);
+  drawScreen(t, local);
   v.set(phone.position.x, phone.position.y, phone.position.z).project(camera);
-  drawBackground(t, { x: (v.x + 1) / 2 * 1920, y: (1 - v.y) / 2 * 1080 });
+  drawBackground(t, amb, { x: (v.x + 1) / 2 * 1920, y: (1 - v.y) / 2 * 1080 });
   drawTexts(t);
-  drawMascot(t);
-  drawBlog(t);
+  drawMascot(t, amb, local);
+  drawBlog(t, amb);
   renderer.render(scene, camera);
 };
+
+// the deck renders sharper on HiDPI screens and projectors; the video keeps 1
+window.setPixelRatio = r => renderer.setPixelRatio(r);
 
 window.setupDone = (async () => {
   await document.fonts.load('800 40px Jakarta'); await document.fonts.load('400 20px Inter'); await document.fonts.load('400 40px Playfair'); await document.fonts.load('400 20px DMSans'); await document.fonts.load('500 20px DMSans'); await document.fonts.load('600 20px Inter');

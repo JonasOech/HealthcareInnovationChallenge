@@ -2,7 +2,7 @@
 import { chromium } from 'playwright';
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { spawn } from 'node:child_process';
 const root = path.dirname(new URL(import.meta.url).pathname);
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.json': 'application/json' };
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.json': 'application/json', '.css': 'text/css' };
 const srv = http.createServer((q, r) => { const f = path.join(root, decodeURIComponent(q.url.split('?')[0]));
   fs.readFile(f, (e, d) => { if (e) { r.writeHead(404); r.end(); return; } r.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); r.end(d); }); });
 await new Promise(r => srv.listen(0, r));
@@ -10,7 +10,7 @@ const port = srv.address().port;
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
 page.on('console', m => console.log('[page]', m.text())); page.on('pageerror', e => console.log('[err]', e.message));
-await page.goto(`http://localhost:${port}/index.html`);
+await page.goto(`http://localhost:${port}/index.html?video`);
 const duration = await page.evaluate(() => window.setupDone);
 const args = process.argv.slice(2);
 if (args[0] === '--still') {

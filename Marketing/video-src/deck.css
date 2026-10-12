@@ -1,0 +1,49 @@
+/* Presentation mode (deck.js adds .deck to <html>). Without it, index.html is the fixed 1920x1080 video page. */
+html.deck, html.deck body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+html.deck #stage { inset: auto; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; cursor: pointer; }
+html.deck canvas#gl { width: 1920px; height: 1080px; }
+html.deck #deck-panel { display: none; }
+html.deck kbd { font: 600 0.9em/1 Inter, system-ui, sans-serif; padding: 3px 7px; border-radius: 6px; border: 1px solid currentColor; opacity: .9; }
+
+#deck-loading { position: fixed; inset: 0; z-index: 30; display: grid; place-content: center; justify-items: center; gap: 22px;
+                background: radial-gradient(1400px 1000px at 30% 20%, #00897D 0%, #00685F 38%, #003D38 100%);
+                font: 500 18px/1 Inter, system-ui, sans-serif; color: rgba(255,255,255,.8); }
+#deck-loading .ring { width: 44px; height: 44px; border-radius: 50%; border: 4px solid rgba(109,245,225,.25); border-top-color: #6DF5E1;
+                      animation: deck-spin .9s linear infinite; }
+@keyframes deck-spin { to { transform: rotate(360deg); } }
+
+#deck-black { position: fixed; inset: 0; z-index: 20; background: #000; opacity: 0; pointer-events: none; transition: opacity .3s; }
+html.black #deck-black { opacity: 1; pointer-events: auto; }
+
+#deck-hint { position: fixed; left: 0; right: 0; bottom: 6vh; z-index: 10; text-align: center; pointer-events: none;
+             font: 500 clamp(12px, 1.3vw, 20px)/1.6 Inter, system-ui, sans-serif; color: rgba(255,255,255,.65);
+             opacity: 0; transition: opacity .4s; padding: 0 16px; }
+html.at-start #deck-hint { opacity: 1; }
+
+#deck-hud { position: fixed; right: 16px; bottom: 16px; z-index: 10; display: flex; align-items: center; gap: 4px; padding: 4px;
+            border-radius: 999px; background: rgba(19,27,46,.72); backdrop-filter: blur(8px); color: #fff;
+            font: 600 14px/1 Inter, system-ui, sans-serif; opacity: 0; transition: opacity .3s; }
+html.hud #deck-hud, html.presenter #deck-hud { opacity: 1; }
+#deck-hud span { min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; }
+#deck-hud button, #deck-panel button { font: inherit; color: inherit; background: transparent; border: 0; cursor: pointer; border-radius: 999px; }
+#deck-hud button { width: 34px; height: 34px; font-size: 18px; }
+#deck-hud button:hover { background: rgba(255,255,255,.14); }
+@media (hover: none) { #deck-hud { opacity: 1; } }
+
+/* presenter view: live slide on the left, notes on the right */
+html.presenter, html.presenter body { background: #0B1220; }
+html.presenter #stage { cursor: default; border-radius: 10px; box-shadow: 0 0 0 1px rgba(255,255,255,.12); }
+html.presenter #deck-hint, html.presenter #deck-hud { display: none; }
+html.presenter #deck-panel { display: flex; flex-direction: column; gap: 18px; position: fixed; top: 24px; right: 24px; bottom: 24px; width: 400px;
+                             color: #E6EAF5; font: 400 16px/1.5 Inter, system-ui, sans-serif; overflow: auto; }
+#deck-panel .row { display: flex; justify-content: space-between; align-items: center; color: #6DF5E1; font-weight: 600; letter-spacing: .04em; }
+#p-timer { font: 700 28px/1 Inter, system-ui, sans-serif; color: #fff; cursor: pointer; font-variant-numeric: tabular-nums; }
+#p-title { font: 800 28px/1.15 Jakarta, Inter, system-ui, sans-serif; letter-spacing: -0.02em; color: #fff; }
+#p-notes { font-size: 21px; line-height: 1.5; color: #D5DBEA; }
+#deck-panel .next { margin-top: auto; padding: 14px 16px; border-radius: 12px; background: rgba(255,255,255,.06); }
+#deck-panel .next span { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #8A93AB; }
+#p-next { margin-top: 4px; font-weight: 600; color: #fff; }
+#deck-panel .btns { display: flex; gap: 10px; }
+#deck-panel .btns button { flex: 1; padding: 14px; border-radius: 12px; background: #00685F; color: #fff; font-weight: 700; }
+#deck-panel .btns button:first-child { background: rgba(255,255,255,.1); }
+#deck-panel .keys { font-size: 13px; color: #8A93AB; line-height: 2; }
