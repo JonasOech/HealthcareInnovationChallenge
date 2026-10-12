@@ -166,7 +166,7 @@ const texts = [
     `<div class="sub">We calculate remaining booking time, so you know where to reach out</div>` +
     `<div class="chips">${chip('alert', 'Overdues are highlighted', 'red')}</div>` },
 
-  { t0: 31.55, t1: 40.45, side: 'right', chipStart: 2.2, chipGap: 2.3, html:
+  { t0: 31.55, t1: 40.75, side: 'right', chipStart: 2.2, chipGap: 2.3, html:
     kicker('05', 'Smart waitlist') + lines('A waitlist that', '<mark>can’t be skipped.</mark>') +
     `<div class="sub">Book something that’s out and the patient is queued automatically.</div>` +
     `<div class="chips">${chip('queue', 'Patient added to the waitlist', 'warn')}${chip('undo', 'Item returned …')}${chip('bell', '… next patient notified')}</div>` },
@@ -189,7 +189,7 @@ const texts = [
 ];
 
 const highlights = [
-  { t0: 7.3, t1: 10.3, x: 84, y: 1000, w: 912, h: 320, color: '#4648D4' },                       // transcript
+  { t0: 7.3, t1: 10.65, x: 84, y: 1000, w: 912, h: 320, color: '#4648D4' },                       // transcript
   { t0: 14.2, t1: 16.55, x: 44, y: C0 + 1310 - 1000, w: 992, h: 705, color: '#4648D4' },          // AI parsed card
   { t0: 17.7, t1: 20.9, x: 86, y: C0 + 2380 - 2230, w: 910, h: 1465, color: '#4648D4' },          // AI-filled form
   { t0: 22.9, t1: 25.5, x: 44, y: 295, w: 991, h: 199, color: '#00685F' },                         // logged toast
@@ -210,6 +210,28 @@ const taps = [
   { t: 42.8, x: 395, y: 640 },
 ];
 
+// ---------- presentation deck ----------
+// Each stop is a story time where everything on screen has finished animating in. The deck holds there, and a
+// click plays the timeline on to the next stop. Notes show in the presenter view (?presenter).
+const stops = [
+  { t: 0, title: 'Start', notes: 'Blank dark screen. Click to start the intro.' },
+  { t: 4.4, title: 'Equipment tracking just got trivial', notes: 'OT tracks ~155 specialist items in an Excel sheet that is updated after the fact. About €4,600 of equipment goes missing every year. Our app makes logging take seconds, by voice.' },
+  { t: 10.15, title: '01 · Voice logging', notes: 'The nurse holds the mic and just talks, including the self-correction and the side remark about the broken cushion. Long, messy dictation is fine.' },
+  { t: 16.25, title: '02 · Gemini: AI parsed', notes: 'Gemini returns a structured result: it resolves "no wait, ending 35" and ignores the cushion remark.' },
+  { t: 20.5, title: '02 · Gemini: form filled', notes: 'The booking form is filled in for them: item, patient MRN, bed, duration. They only check it.' },
+  { t: 25.0, title: '03 · One tap. Loaned.', notes: 'One tap confirms. The record updates in real time, at the handover, not hours later.' },
+  { t: 30.3, title: '04 · Overdue alerts', notes: 'Due dates come from the booking duration. Late loans jump to the top in red.' },
+  { t: 33.2, title: '05 · Waitlist: item is out', notes: 'Someone books the tilt-in-space wheelchair, but it is already on loan. The app warns them.' },
+  { t: 35.3, title: '05 · Waitlist: queued', notes: 'Confirming puts the patient on the waitlist automatically. Nobody can skip the queue.' },
+  { t: 37.95, title: '05 · Waitlist: the queue', notes: 'The waitlist sits under bookings, so everyone can see who is next.' },
+  { t: 40.1, title: '05 · Waitlist: return → notify', notes: 'When the chair is returned, the next patient on the waitlist is notified straight away.' },
+  { t: 44.35, title: '06 · Roster: filter', notes: 'The roster shows every item and where it is. Filter by category…' },
+  { t: 46.45, title: '06 · Roster: search', notes: '…or search by ID, type or location, and filter by status: available, on loan, repair, missing, late.' },
+  { t: 50.6, title: '07 · Private by design', notes: 'Patient data stays minimal: MRN only, no names. The parsing step can be swapped for a locally hosted model (e.g. Ollama), so no data has to leave the hospital.' },
+  { t: 56.8, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
+  { t: 61.5, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
+];
+
 const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
 
 export const story = {
@@ -224,7 +246,7 @@ export const story = {
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
     ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png'])],
-  screenLayers, highlights, taps, texts,
+  screenLayers, highlights, taps, texts, stops,
   // phone keyframes live in output time and are evaluated against real time, so the phone keeps
   // drifting through a hold instead of freezing with the rest of the frame
   phoneKeys: phoneKeys.map(K => ({ ...K, t: warp(K.t) })),

@@ -266,7 +266,7 @@ function drawMascot(t, T) {
   el.firstElementChild.getContext('2d').drawImage(img(m.frames[i]), 0, 0, 420, 420);
 }
 
-function drawBlog(t) {
+function drawBlog(t, A) {
   const b = story.blog, el = $('blog');
   const vis = t >= b.t0;
   el.style.display = vis ? 'block' : 'none';
@@ -274,7 +274,7 @@ function drawBlog(t) {
   if (!vis) return;
   const q = el.querySelector.bind(el);
   // glows slide in from the corners first, then everything else fades to dark
-  const g = easeOut(prog(t, b.t0, 1.4)), drift = t - b.t0;
+  const g = easeOut(prog(t, b.t0, 1.4)), drift = A - b.t0;
   const cool = q('.cool'), warm = q('.warm');
   cool.style.opacity = warm.style.opacity = g;
   cool.style.transform = `translate(${-1000 + 300 * g + 30 * Math.sin(drift * 0.6)}px, ${-760 + 280 * g + 20 * Math.cos(drift * 0.5)}px)`;
@@ -293,21 +293,28 @@ function drawBlog(t) {
 const AMBIENT = !location.hash.includes('noamb');
 
 // T is the real time of the finished video; t is storyboard time, which stands still during a hold.
-window.renderFrame = T => {
-  const t = story.unwarp(T);
-  const A = AMBIENT ? T : t;
-  const { p, r, s, f } = phonePose(AMBIENT ? T : story.warp(t));
+// The presentation deck (deck.js) runs its own holds and passes the clocks itself:
+// deck.t is storyboard time, deck.amb a continuous clock for float, blobs and glows, and deck.loop a clock
+// in output time that restarts with each slide, for the mic rings, spinner and mascot frames.
+window.renderFrame = (T, deck) => {
+  const t = deck ? deck.t : story.unwarp(T);
+  const A = deck ? deck.amb : AMBIENT ? T : t;
+  const L = deck ? deck.loop : A;
+  const { p, r, s, f } = phonePose(deck || !AMBIENT ? story.warp(t) : T);
   phone.position.set(p[0], p[1] + f * 0.05 * Math.sin(A * 1.4), p[2]);
   phone.rotation.set(THREE.MathUtils.degToRad(r[0] + f * 1.5 * Math.sin(A * 0.9)), THREE.MathUtils.degToRad(r[1] + f * 3 * Math.sin(A * 0.7)), THREE.MathUtils.degToRad(r[2]));
   phone.scale.setScalar(s);
-  drawScreen(t, A);
+  drawScreen(t, L);
   v.set(phone.position.x, phone.position.y, phone.position.z).project(camera);
   drawBackground(t, { x: (v.x + 1) / 2 * 1920, y: (1 - v.y) / 2 * 1080 }, A);
   drawTexts(t);
-  drawMascot(t, A);
-  drawBlog(t);
+  drawMascot(t, L);
+  drawBlog(t, deck ? A : t);
   renderer.render(scene, camera);
 };
+
+// the deck renders sharper on HiDPI screens and projectors; the video keeps 1
+window.setPixelRatio = r => renderer.setPixelRatio(r);
 
 window.setupDone = (async () => {
   await document.fonts.load('800 40px Jakarta'); await document.fonts.load('400 20px Inter'); await document.fonts.load('400 40px Playfair'); await document.fonts.load('400 20px DMSans'); await document.fonts.load('500 20px DMSans'); await document.fonts.load('600 20px Inter');

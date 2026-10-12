@@ -25,6 +25,31 @@ The end card uses the oechsner.dev design: Playfair Display, DM Sans, `#0e0f12` 
 
 `SCRIPT.md` is the editable scene-by-scene script.
 
+## Presentation (web app)
+
+The video also works as a clickable slide deck in the browser, with the same design and animations. `video-src/index.html` runs as the deck by default (`deck.js`, `deck.css`), and `render.mjs` loads it with `?video` to render the MP4. The deck holds at the 15 stops in `story.js` (`stops`). Each click plays the video on to the next stop, and the phone, background and mascot keep moving while a slide holds. The concept is in `PRESENTATION_CONCEPT.md`.
+
+```bash
+cd Marketing/video-src
+npm ci
+npm run deck          # builds dist/ and serves it on http://localhost:3000
+```
+
+| Key | Action |
+|---|---|
+| → / Space / PageDown / click / swipe left | next (skips to the end if a transition is still playing) |
+| ← / PageUp / swipe right | back |
+| number + Enter, Home, End | go to slide |
+| F | fullscreen |
+| B | black screen |
+| P | presenter view in a new window (notes, next slide, timer; stays in sync with the main window) |
+
+`#7` at the end of the URL opens slide 7.
+
+**Hosting on Cloudflare Pages.** `node build-deck.mjs` writes a static site to `video-src/dist/` (about 190 files, 18 MB). It copies only the files the page loads and moves `node_modules` files to `vendor/`. Two ways to deploy:
+- **Git integration:** set the root directory to `Marketing/video-src`, the build command to `node build-deck.mjs` and the output directory to `dist`. Cloudflare installs the npm dependencies itself, and `.node-version` selects Node 22.
+- **Manual:** `npx wrangler pages deploy dist --project-name quick-equipment-log`.
+
 ## How it was made
 
 1. **Real app screens from an Android emulator.** The app ran on an Android 9 (API 28) x86_64 emulator, captured at the full 1080×2400 resolution with the emulator's host-side screenshot command. These captures were taken with a capture-only build of the app (`video-src/capture/capture-build.patch`, never committed to the app):
