@@ -1,0 +1,12 @@
+{
+  "name": "quick-equipment-log-promo",
+  "private": true,
+  "type": "module",
+  "scripts": { "render": "node render.mjs promo_silent.mp4 30" },
+  "dependencies": {
+    "@fontsource/inter": "5.0.20",
+    "@fontsource/plus-jakarta-sans": "5.0.20",
+    "playwright": "1.56.1",
+    "three": "0.160.0"
+  }
+}
