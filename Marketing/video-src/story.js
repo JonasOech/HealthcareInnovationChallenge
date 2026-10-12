@@ -41,7 +41,7 @@ const clips = [
   { t0: 43.0, fade: 0.2, layers: () => [{ src: P + 'roster_wheel.png' }] },
   { t0: 44.75, fade: 0.2, layers: () => [{ src: P + 'roster_search.png' }] },
   // 07 privacy
-  { t0: 47.25, fade: 0.25, layers: () => [{ src: P + 'prof_1.png' }] },
+  { t0: 47.25, fade: 0.25, layers: () => [{ src: P + 'log_idle.png' }] },
   // outro
   { t0: 51.6, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
 ];
@@ -84,7 +84,7 @@ const phoneKeys = [
   k(51.0, spin(LEFT, 360), { p: [-1.2, 0.0, 3.45] }),
   { t: 52.4, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },
   { t: 57.0, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
-  { t: 58.5, p: [1.25, -0.02, 2.95], r: [-3, 360, 1] },
+  { t: 58.5, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
 ];
 
 // ---------- copy ----------
@@ -96,6 +96,7 @@ const ic = {
   clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
   bell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9M10 20a2 2 0 0 0 4 0"/></svg>',
   search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+  brain: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3A2.5 2.5 0 0 0 7 5.5v.2A3 3 0 0 0 4.5 9a3 3 0 0 0 .6 1.8A3 3 0 0 0 4 13.5a3 3 0 0 0 2.5 3A3 3 0 0 0 9.5 20h.5V3z"/><path d="M14.5 3A2.5 2.5 0 0 1 17 5.5v.2A3 3 0 0 1 19.5 9a3 3 0 0 1-.6 1.8 3 3 0 0 1 1.1 2.7 3 3 0 0 1-2.5 3A3 3 0 0 1 14.5 20H14V3z"/><path d="M10 8H8.5M10 13H7.5M14 8h1.5M14 13h2.5"/></svg>',
   lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
   queue: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
   alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3l10 18H2z" stroke-linejoin="round"/><path d="M12 10v5M12 18v.5"/></svg>',
@@ -111,12 +112,12 @@ const kicker = (n, s) => `<div class="kicker"><span class="num">${n}</span>${s}<
 const texts = [
   { t0: 0.6, t1: 4.9, side: 'left', dark: true, markDelay: 1.3, html:
     `<div class="brand"><img src="hospital_logo.png"><div><div style="font:800 34px/1.1 Jakarta;color:#fff">Quick Equipment Log</div><div style="font:500 22px/1.4 Inter;color:var(--mint)">Tallaght University Hospital · OT</div></div></div>` +
-    `<div style="height:44px"></div>` + lines('Equipment tracking', 'at the speed of', '<mark>a sentence.</mark>') +
-    `<div class="sub">Book, return and track specialist equipment by voice — right at the bedside.</div>` },
+    `<div style="height:44px"></div>` + lines('Equipment Tracking', 'just got <mark>trivial</mark>') +
+    `<div class="sub">Book, return and track specialist equipment by voice, in seconds</div>` },
 
   { t0: 5.5, t1: 12.45, side: 'right', chipStart: 1.6, chipGap: 0.6, html:
     kicker('01', 'Voice logging') + lines('Just <mark>say it.</mark>') +
-    `<div class="sub">Hold the mic and describe the booking — the way you'd say it on a busy ward.</div>` +
+    `<div class="sub">Hold the mic and describe the booking, we understand and formalise it for you</div>` +
     `<div class="chips">${chip('mic', 'Hands-free, one-press dictation')}${chip('clock', 'Long, rambling requests welcome')}</div>` },
 
   { t0: 12.95, t1: 21.15, side: 'left', chipStart: 1.6, chipGap: 1.2, html:
@@ -125,14 +126,14 @@ const texts = [
     `<div class="chips">${chip('spark', 'Self-corrections resolved: “no wait, ending 35”', 'ai')}${chip('check', 'Side remarks ignored', 'ai')}${chip('check', 'Form filled in for you', 'ai')}</div>` },
 
   { t0: 21.55, t1: 25.65, side: 'right', chipStart: 1.3, html:
-    kicker('03', 'Confirm') + lines('One tap.', '<mark>Logged.</mark>') +
-    `<div class="sub">The record updates as the equipment changes hands — no retrospective admin.</div>` +
-    `<div class="chips">${chip('check', 'Instant confirmation')}</div>` },
+    kicker('03', 'Confirm') + lines('One tap.', '<mark>Loaned.</mark>') +
+    `<div class="sub">The record updates in real-time, no more retrospective logging</div>` +
+    `<div class="chips">${chip('brain', 'Reduced mental load')}</div>` },
 
   { t0: 26.15, t1: 31.0, side: 'left', chipStart: 1.4, chipGap: 0.6, html:
-    kicker('04', 'Overdue alerts') + lines('Overdue?', '<mark class="red">You’ll know.</mark>') +
+    kicker('04', 'Overdue alerts') + lines('Patient didn’t', 'bring it back?', '<mark class="red">We know.</mark>') +
     `<div class="sub">Due dates come from the booking duration, and late loans jump to the top in red.</div>` +
-    `<div class="chips">${chip('alert', 'Late items flagged everywhere', 'red')}</div>` },
+    `<div class="chips">${chip('alert', 'Late items flagged', 'red')}</div>` },
 
   { t0: 31.55, t1: 40.45, side: 'right', chipStart: 2.2, chipGap: 2.3, html:
     kicker('05', 'Smart waitlist') + lines('A waitlist that', '<mark>can’t be skipped.</mark>') +
@@ -140,16 +141,16 @@ const texts = [
     `<div class="chips">${chip('queue', 'Patient added to the waitlist', 'warn')}${chip('undo', 'Item returned …')}${chip('bell', '… next patient notified')}</div>` },
 
   { t0: 41.05, t1: 47.0, side: 'left', chipStart: 1.6, chipGap: 0.7, html:
-    kicker('06', 'Live roster') + lines('Every item.', '<mark>Every status.</mark>') +
-    `<div class="sub">Search and filter the whole pool — available, on loan, in repair, missing or late.</div>` +
+    kicker('06', 'Live roster') + lines('Every item.', '<mark>Every Location.</mark>') +
+    `<div class="sub">Search and filter: available, on loan, in repair, missing or late.</div>` +
     `<div class="chips">${chip('search', 'Search by ID, type or location')}${chip('check', 'Filter by status & category')}</div>` },
 
   { t0: 47.6, t1: 51.35, side: 'right', chipStart: 1.3, html:
     kicker('07', 'Privacy') + lines('Private', '<mark>by design.</mark>') +
-    `<div class="sub">Patients are identified by ID and bed only — never by name.</div>` +
+    `<div class="sub">Our app is fully compatible with ollama - Privacy by design</div>` +
     `<div class="chips">${chip('lock', 'GDPR-minded from day one')}</div>` },
 
-  { t0: 52.3, t1: 59.5, side: 'left', dark: true, markDelay: 1.1, html:
+  { t0: 52.3, t1: 57.4, side: 'left', dark: true, markDelay: 1.1, html:
     `<div class="brand"><img src="hospital_logo.png"><div><div style="font:800 34px/1.1 Jakarta;color:#fff">Quick Equipment Log</div><div style="font:500 22px/1.4 Inter;color:var(--mint)">Speak it. Log it. Find it.</div></div></div>` +
     `<div style="height:44px"></div>` + lines('Smarter equipment', 'tracking for better', '<mark>patient care.</mark>') +
     `<div class="foot">Healthcare Innovation Challenge 2026 · Tallaght University Hospital<br>Grace, Martin &amp; Jonas</div>` +
@@ -168,7 +169,6 @@ const highlights = [
   { t0: 39.6, t1: 40.6, x: 43, y: 295, w: 993, h: 262, color: '#00685F' },                         // next notified
   { t0: 43.3, t1: 44.7, x: 245, y: 598, w: 300, h: 84, color: '#00685F' },                         // category chip
   { t0: 45.2, t1: 47.0, x: 40, y: 255, w: 1000, h: 815, color: '#EF4444' },                        // search + late
-  { t0: 48.1, t1: 51.2, x: 40, y: 1548, w: 1000, h: 490, color: '#00685F' },                       // privacy note
 ];
 
 const taps = [
@@ -179,11 +179,17 @@ const taps = [
   { t: 42.8, x: 395, y: 640 },
 ];
 
+const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
+
 export const story = {
-  duration: 59.5,
+  // scene 7: Ollama mascot sticker pops up from the bottom next to the phone and waves
+  mascot: { t0: 47.9, t1: 51.5, x: 560, y: 560, frames: MASCOT },
+  // scene 9: oechsner.dev end card
+  blog: { t0: 57.25 },
+  duration: 64,
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
-    P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png'])],
+    ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png'])],
   screenLayers, highlights, taps, phoneKeys, texts,
   darkness: t => Math.max(1 - clamp((t - 4.95) / 0.3), clamp((t - 51.7) / 0.4)),
   // wipe passes at scene changes into/out of the dark intro/outro

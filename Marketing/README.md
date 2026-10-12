@@ -1,22 +1,29 @@
 # Marketing video
 
-`QuickEquipmentLog_promo.mp4` is a 60-second promo for the Android demo app (1920×1080, 30 fps, H.264 + AAC). A 3D phone flies between scenes, and each scene has animated captions that highlight one feature:
+`QuickEquipmentLog_promo.mp4` is a 64-second promo for the Android demo app (1920×1080, 30 fps, H.264 + AAC). A 3D phone flies between scenes, and each scene has animated captions that highlight one feature:
 
 | Time | Feature |
 |---|---|
-| 0:00 | Intro: "Equipment tracking at the speed of a sentence." |
+| 0:00 | Intro: "Equipment Tracking just got trivial" |
 | 0:05 | 01 Voice logging: hold to speak, live transcript |
 | 0:12 | 02 Gemini AI: self-corrections resolved, side remarks ignored, form filled in |
-| 0:21 | 03 One-tap confirm + toast |
-| 0:26 | 04 Overdue loans flagged in red |
+| 0:21 | 03 One tap. Loaned. (confirm + toast) |
+| 0:26 | 04 Patient didn't bring it back? We know. (overdue loans) |
 | 0:31 | 05 Smart waitlist: queued, returned, next patient notified |
-| 0:41 | 06 Live roster: search and status/category filters |
-| 0:47 | 07 Privacy: patient ID and bed only |
+| 0:41 | 06 Every item. Every Location. (roster search and filters) |
+| 0:47 | 07 Privacy by design: Ollama mascot pops up and waves |
 | 0:52 | Outro and credits |
+| 0:58 | Blog plug in the oechsner.dev style: "Read about this on oechsner.dev" |
 
 Colours and fonts come from the app's design system (`App/stitch_nurse_equipment_voice_logger/DESIGN.md`): teal primary `#00685F`, mint `#6DF5E1`, AI indigo `#4648D4`, Plus Jakarta Sans and Inter.
 
 Music: "Wallpaper" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0. The credit appears in the outro and must stay if the video is shared.
+
+Ollama mascot: the first ~4 s of Novra's animation "Ollama, mascot development in Rive" (LinkedIn), shown on a sticker card in scene 7 (`video-src/screens/ollama/`). This is third-party footage, so get permission from Novra (and check Ollama's brand guidelines) before publishing the video publicly.
+
+The end card uses the oechsner.dev design: Playfair Display, DM Sans, `#0e0f12` background and blue/amber glows.
+
+`SCRIPT.md` is the editable scene-by-scene script.
 
 ## How it was made
 
@@ -36,7 +43,7 @@ npm install
 node render.mjs promo_silent.mp4 30            # optional: node render.mjs out.mp4 30 <tStart> <tEnd>
 node render.mjs --still 15 frame.png           # preview a single frame
 curl -o Wallpaper.mp3 https://incompetech.com/music/royalty-free/mp3-royaltyfree/Wallpaper.mp3
-ffmpeg -i Wallpaper.mp3 -t 59.5 -af "afade=t=in:d=0.2,afade=t=out:st=55.5:d=4,loudnorm=I=-15:TP=-1.5:LRA=11" -ar 48000 -c:a aac -b:a 256k music.m4a
+ffmpeg -i Wallpaper.mp3 -t 64 -af "afade=t=in:d=0.2,afade=t=out:st=60:d=4,loudnorm=I=-15:TP=-1.5:LRA=11" -ar 48000 -c:a aac -b:a 256k music.m4a
 ffmpeg -i promo_silent.mp4 -i music.m4a -map 0:v -map 1:a -c:v libx264 -preset slow -crf 19 -tune animation -c:a copy -movflags +faststart -shortest ../QuickEquipmentLog_promo.mp4
 ```
 

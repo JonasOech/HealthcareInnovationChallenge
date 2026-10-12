@@ -250,6 +250,41 @@ function drawBackground(t, phoneScreenPos) {
 
 // ---------- frame ----------
 const v = new THREE.Vector3();
+function drawMascot(t) {
+  const m = story.mascot, el = $('mascot');
+  const vis = t >= m.t0 && t <= m.t1;
+  el.style.display = vis ? 'block' : 'none';
+  if (!vis) return;
+  const up = easeOutBack(prog(t, m.t0, 0.7)), down = easeInOut(prog(t, m.t1 - 0.45, 0.45));
+  const y = m.y + (1 - up) * 620 + down * 700;
+  const rot = -6 * (1 - up) + 3 * Math.sin((t - m.t0) * 2.2);
+  el.style.transform = `translate(${m.x}px, ${y}px) rotate(${rot}deg)`;
+  const i = Math.min(m.frames.length - 1, Math.max(0, Math.floor((t - m.t0) * 30)));
+  el.firstElementChild.getContext('2d').drawImage(img(m.frames[i]), 0, 0, 420, 420);
+}
+
+function drawBlog(t) {
+  const b = story.blog, el = $('blog');
+  const vis = t >= b.t0;
+  el.style.display = vis ? 'block' : 'none';
+  $('progress').style.opacity = vis ? 0 : 1;
+  if (!vis) return;
+  const q = el.querySelector.bind(el);
+  // glows slide in from the corners first, then everything else fades to dark
+  const g = easeOut(prog(t, b.t0, 1.4)), drift = t - b.t0;
+  const cool = q('.cool'), warm = q('.warm');
+  cool.style.opacity = warm.style.opacity = g;
+  cool.style.transform = `translate(${-1000 + 300 * g + 30 * Math.sin(drift * 0.6)}px, ${-760 + 280 * g + 20 * Math.cos(drift * 0.5)}px)`;
+  warm.style.transform = `translate(${1420 - 300 * g + 30 * Math.cos(drift * 0.55)}px, ${-760 + 280 * g + 20 * Math.sin(drift * 0.45)}px)`;
+  q('.shade').style.opacity = easeInOut(prog(t, b.t0 + 0.3, 0.9));
+  q('.dots').style.opacity = 0.9 * easeInOut(prog(t, b.t0 + 0.6, 0.9));
+  const T = b.t0 + 1.25;
+  const ey = q('.eyebrow'), k0 = easeOut(prog(t, T, 0.6)); ey.style.opacity = k0; ey.style.transform = `translateY(${16 * (1 - k0)}px)`;
+  el.querySelectorAll('.t .ln > span').forEach((l, i) => { const k = easeOut(prog(t, T + 0.2 + i * 0.16, 0.8)); l.style.transform = `translateY(${110 * (1 - k)}%)`; });
+  q('.rule').style.width = `${260 * easeInOut(prog(t, T + 1.0, 0.7))}px`;
+  [q('.by'), q('.cta')].forEach((n, i) => { const k = easeOut(prog(t, T + 1.25 + i * 0.25, 0.6)); n.style.opacity = k; n.style.transform = `translateY(${16 * (1 - k)}px)`; });
+}
+
 window.renderFrame = t => {
   const { p, r, s, f } = phonePose(t);
   phone.position.set(p[0], p[1] + f * 0.05 * Math.sin(t * 1.4), p[2]);
@@ -259,11 +294,13 @@ window.renderFrame = t => {
   v.set(phone.position.x, phone.position.y, phone.position.z).project(camera);
   drawBackground(t, { x: (v.x + 1) / 2 * 1920, y: (1 - v.y) / 2 * 1080 });
   drawTexts(t);
+  drawMascot(t);
+  drawBlog(t);
   renderer.render(scene, camera);
 };
 
 window.setupDone = (async () => {
-  await document.fonts.load('800 40px Jakarta'); await document.fonts.load('400 20px Inter'); await document.fonts.load('600 20px Inter');
+  await document.fonts.load('800 40px Jakarta'); await document.fonts.load('400 20px Inter'); await document.fonts.load('400 40px Playfair'); await document.fonts.load('400 20px DMSans'); await document.fonts.load('500 20px DMSans'); await document.fonts.load('600 20px Inter');
   await document.fonts.ready;
   await Promise.all(story.allImages().map(loadImage));
   buildTexts();
