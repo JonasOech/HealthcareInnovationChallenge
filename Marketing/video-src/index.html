@@ -39,6 +39,9 @@
   .text.center .kicker { align-self: center; }
   .kicker .num { background: var(--primary); color: #fff; border-radius: 999px; padding: 5px 10px; letter-spacing: .04em; }
   .title { font: 800 92px/1.02 Jakarta; letter-spacing: -0.035em; color: var(--on-surface); }
+  .text.tight { width: 900px; }             /* long one-liners (scene 4) that must not wrap */
+  .text.tight .title { font-size: 62px; }
+  .text.tight .sub { max-width: 840px; }
   .title .ln { display: block; overflow: hidden; padding-bottom: 8px; }
   .title .ln > span { display: inline-block; will-change: transform; }
   .sub { font: 400 34px/1.42 Inter; color: var(--on-var); margin-top: 26px; max-width: 760px; }

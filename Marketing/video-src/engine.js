@@ -119,8 +119,8 @@ const img = src => images.get(src).img;
 
 function rr(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); }
 
-function drawScreen(t) {
-  const layers = story.screenLayers(t);
+function drawScreen(t, T) {
+  const layers = story.screenLayers(t, T);
   sctx.globalAlpha = 1; sctx.fillStyle = '#FAF8FF'; sctx.fillRect(0, 0, 1080, 2400);
   for (const L of layers) {
     sctx.globalAlpha = L.alpha ?? 1;
@@ -201,7 +201,7 @@ function buildTexts() {
   const host = $('texts');
   for (const tx of story.texts) {
     const el = document.createElement('div');
-    el.className = `text ${tx.side} ${tx.dark ? 'dark' : ''}`;
+    el.className = `text ${tx.side} ${tx.dark ? 'dark' : ''} ${tx.cls || ''}`;
     el.innerHTML = tx.html;
     host.appendChild(el);
     textEls.push({ tx, el, lines: [...el.querySelectorAll('.ln > span')], marks: [...el.querySelectorAll('mark')],
@@ -233,33 +233,36 @@ const blobDefs = [
 ];
 const blobs = blobDefs.map(d => { const e = document.createElement('div'); e.className = 'blob'; e.style.width = e.style.height = d.s + 'px'; e.style.background = d.c; $('blobs').appendChild(e); return e; });
 
-function drawBackground(t, phoneScreenPos) {
+function drawBackground(t, phoneScreenPos, T) {
   const dark = story.darkness(t);
   $('bg-dark').style.opacity = dark;
   $('grid').style.opacity = 1 - dark;
   blobs.forEach((e, i) => { const d = blobDefs[i];
-    e.style.transform = `translate(${d.x * 1920 - d.s / 2 + d.ax * Math.sin(t * d.w + i)}px, ${d.y * 1080 - d.s / 2 + d.ay * Math.cos(t * d.w * 1.3 + i)}px)`;
+    e.style.transform = `translate(${d.x * 1920 - d.s / 2 + d.ax * Math.sin(T * d.w + i)}px, ${d.y * 1080 - d.s / 2 + d.ay * Math.cos(T * d.w * 1.3 + i)}px)`;
     e.style.opacity = 1 - 0.55 * dark; });
   const g = $('glow');
   g.style.background = `radial-gradient(circle, rgba(109,245,225,${0.55 - 0.15 * dark}) 0%, rgba(109,245,225,0) 62%)`;
   g.style.transform = `translate(${phoneScreenPos.x - 450}px, ${phoneScreenPos.y - 450}px)`;
   const w = story.wipeAt(t); // -1..1 across, null when idle
   $('wipe').style.transform = `translateX(${w === null ? -200 : w * 140}%) skewX(-12deg)`;
-  $('progress').style.width = `${100 * t / story.duration}%`;
+  $('progress').style.width = `${100 * T / story.duration}%`;
 }
 
 // ---------- frame ----------
 const v = new THREE.Vector3();
-function drawMascot(t) {
+function drawMascot(t, T) {
   const m = story.mascot, el = $('mascot');
   const vis = t >= m.t0 && t <= m.t1;
   el.style.display = vis ? 'block' : 'none';
   if (!vis) return;
   const up = easeOutBack(prog(t, m.t0, 0.7)), down = easeInOut(prog(t, m.t1 - 0.45, 0.45));
   const y = m.y + (1 - up) * 620 + down * 700;
-  const rot = -6 * (1 - up) + 3 * Math.sin((t - m.t0) * 2.2);
+  const rot = -6 * (1 - up) + 3 * Math.sin((T - m.T0) * 2.2);
   el.style.transform = `translate(${m.x}px, ${y}px) rotate(${rot}deg)`;
-  const i = Math.min(m.frames.length - 1, Math.max(0, Math.floor((t - m.t0) * 30)));
+  // frames run on real time and ping-pong inside the usable range, so a hold keeps it waving
+  const period = 2 * (m.usable - 1);
+  const ph = ((Math.floor((T - m.T0) * 30) % period) + period) % period;
+  const i = ph < m.usable ? ph : period - ph;
   el.firstElementChild.getContext('2d').drawImage(img(m.frames[i]), 0, 0, 420, 420);
 }
 
@@ -285,16 +288,23 @@ function drawBlog(t) {
   [q('.by'), q('.cta')].forEach((n, i) => { const k = easeOut(prog(t, T + 1.25 + i * 0.25, 0.6)); n.style.opacity = k; n.style.transform = `translateY(${16 * (1 - k)}px)`; });
 }
 
-window.renderFrame = t => {
-  const { p, r, s, f } = phonePose(t);
-  phone.position.set(p[0], p[1] + f * 0.05 * Math.sin(t * 1.4), p[2]);
-  phone.rotation.set(THREE.MathUtils.degToRad(r[0] + f * 1.5 * Math.sin(t * 0.9)), THREE.MathUtils.degToRad(r[1] + f * 3 * Math.sin(t * 0.7)), THREE.MathUtils.degToRad(r[2]));
+// #noamb freezes the ambient motion too, so two stills across a hold must come out identical —
+// that is the check that a hold is not stretching some animation (see Marketing/README.md).
+const AMBIENT = !location.hash.includes('noamb');
+
+// T is the real time of the finished video; t is storyboard time, which stands still during a hold.
+window.renderFrame = T => {
+  const t = story.unwarp(T);
+  const A = AMBIENT ? T : t;
+  const { p, r, s, f } = phonePose(AMBIENT ? T : story.warp(t));
+  phone.position.set(p[0], p[1] + f * 0.05 * Math.sin(A * 1.4), p[2]);
+  phone.rotation.set(THREE.MathUtils.degToRad(r[0] + f * 1.5 * Math.sin(A * 0.9)), THREE.MathUtils.degToRad(r[1] + f * 3 * Math.sin(A * 0.7)), THREE.MathUtils.degToRad(r[2]));
   phone.scale.setScalar(s);
-  drawScreen(t);
+  drawScreen(t, A);
   v.set(phone.position.x, phone.position.y, phone.position.z).project(camera);
-  drawBackground(t, { x: (v.x + 1) / 2 * 1920, y: (1 - v.y) / 2 * 1080 });
+  drawBackground(t, { x: (v.x + 1) / 2 * 1920, y: (1 - v.y) / 2 * 1080 }, A);
   drawTexts(t);
-  drawMascot(t);
+  drawMascot(t, A);
   drawBlog(t);
   renderer.render(scene, camera);
 };

@@ -89,6 +89,20 @@ object Prefs {
         prefs(ctx).getString("gemini_model", null)?.ifBlank { null } ?: GeminiParser.DEFAULT_MODEL
 
     fun setModel(ctx: Context, model: String) = prefs(ctx).edit().putString("gemini_model", model.trim()).apply()
+
+    fun scriptEnabled(ctx: Context): Boolean = prefs(ctx).getBoolean("script_enabled", false)
+
+    fun setScriptEnabled(ctx: Context, on: Boolean) = prefs(ctx).edit().putBoolean("script_enabled", on).apply()
+
+    fun scriptText(ctx: Context): String =
+        prefs(ctx).getString("script_text", null) ?: SpeechController.DEFAULT_SCRIPT
+
+    fun setScriptText(ctx: Context, text: String) = prefs(ctx).edit().putString("script_text", text).apply()
+
+    /** Dictation tempo of the scripted transcript, in words per minute. */
+    fun scriptWpm(ctx: Context): Int = prefs(ctx).getInt("script_wpm", SpeechController.DEFAULT_WPM)
+
+    fun setScriptWpm(ctx: Context, wpm: Int) = prefs(ctx).edit().putInt("script_wpm", wpm).apply()
 }
 
 class MainActivity : ComponentActivity() {

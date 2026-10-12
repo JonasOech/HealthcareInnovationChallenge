@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -29,7 +31,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Key
+import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material.icons.outlined.Undo
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
@@ -41,9 +45,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -58,6 +67,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 
 private fun ago(t: Long) = DateUtils.getRelativeTimeSpanString(t, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString()
 
@@ -271,6 +281,7 @@ fun ProfileScreen() {
             ) { Text(if (saved) "Saved" else "Save") }
             Text("Stored only on this device. Get a free key at aistudio.google.com/apikey.", fontSize = 12.sp, color = C.onSurfaceVariant)
         }
+        ScriptCard(ctx)
         Card {
             Label("Demo data", Icons.Outlined.Info)
             Text(
@@ -282,5 +293,71 @@ fun ProfileScreen() {
                 Text("Reset demo data")
             }
         }
+    }
+}
+
+/**
+ * Loud-room demo mode: instead of listening, holding the mic types out this script at the chosen
+ * tempo. Everything downstream (Gemini parsing, the form, the confirm) is unchanged.
+ */
+@Composable
+private fun ScriptCard(ctx: android.content.Context) {
+    var on by remember { mutableStateOf(Prefs.scriptEnabled(ctx)) }
+    var text by remember { mutableStateOf(Prefs.scriptText(ctx)) }
+    var wpm by remember { mutableIntStateOf(Prefs.scriptWpm(ctx)) }
+
+    val words = text.trim().split(Regex("\\s+")).count { it.isNotBlank() }
+    val seconds = if (wpm > 0) words * 60.0 / wpm else 0.0
+
+    Card(border = if (on) BorderStroke(2.dp, C.ai.copy(alpha = 0.35f)) else null) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Outlined.RecordVoiceOver, null, tint = C.ai, modifier = Modifier.size(22.dp))
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f)) {
+                Text("Scripted transcript", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = C.onSurface)
+                Text("For demos in a room too loud to dictate in", fontSize = 12.sp, color = C.onSurfaceVariant)
+            }
+            Switch(
+                checked = on,
+                onCheckedChange = { on = it; Prefs.setScriptEnabled(ctx, it) },
+                colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = C.ai),
+            )
+        }
+        Text(
+            "While this is on, holding the mic types the text below out word by word instead of opening " +
+                "the microphone. Releasing early still sends the full script, so the parse always lands.",
+            fontSize = 12.sp, color = C.onSurfaceVariant,
+        )
+
+        Label("Detected text", null)
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it; Prefs.setScriptText(ctx, it) },
+            placeholder = { Text("What the mic should \"hear\"") },
+            modifier = Modifier.fillMaxWidth().heightIn(min = 150.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = fieldColors(),
+        )
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.weight(1f)) { Label("Tempo", Icons.Outlined.Speed) }
+            Text("$wpm words/min", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = C.ai)
+        }
+        Slider(
+            value = wpm.toFloat(),
+            onValueChange = { wpm = (it / 10).roundToInt() * 10 },
+            onValueChangeFinished = { Prefs.setScriptWpm(ctx, wpm) },
+            valueRange = SpeechController.MIN_WPM.toFloat()..SpeechController.MAX_WPM.toFloat(),
+            colors = SliderDefaults.colors(thumbColor = C.ai, activeTrackColor = C.ai, inactiveTrackColor = C.containerHigh),
+        )
+        Text(
+            "$words words • about ${"%.1f".format(seconds)}s to type out. " +
+                "Hold the mic for at least that long to keep it in step with what you say out loud.",
+            fontSize = 12.sp, color = C.onSurfaceVariant,
+        )
+        OutlinedButton(
+            { text = SpeechController.DEFAULT_SCRIPT; Prefs.setScriptText(ctx, text) },
+            shape = RoundedCornerShape(8.dp), modifier = Modifier.fillMaxWidth(),
+        ) { Text("Restore example script") }
     }
 }

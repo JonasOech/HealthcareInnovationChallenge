@@ -157,7 +157,10 @@ fun LogScreen(onLogged: (Pair<String, String>) -> Unit) {
     /** Press-and-hold: returns false if recording could not start (e.g. permission prompt shown). */
     fun startHold(append: Boolean): Boolean {
         if (parsing) return false
-        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        // A scripted transcript never opens the microphone, so don't prompt for it mid-demo.
+        if (!speech.willScript &&
+            ContextCompat.checkSelfPermission(ctx, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+        ) {
             permission.launch(Manifest.permission.RECORD_AUDIO)
             return false
         }
@@ -169,9 +172,10 @@ fun LogScreen(onLogged: (Pair<String, String>) -> Unit) {
 
     fun endHold() {
         if (!speech.listening) return
+        val scripted = speech.usingScript
         speech.stop()
         scope.launch {
-            delay(700) // let the recognizer deliver its final segment
+            if (!scripted) delay(700) // let the recognizer deliver its final segment
             runParse(speech.transcript)
         }
     }
