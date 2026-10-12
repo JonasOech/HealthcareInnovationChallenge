@@ -9,6 +9,36 @@ const ramp = (t, t0, t1, a, b, f = ease) => a + (b - a) * f(clamp((t - t0) / (t1
 const P = 'screens/';
 const SPIN = Array.from({ length: 29 }, (_, i) => `${P}spin/${String(i).padStart(2, '0')}.png`);
 
+// ---------- scene stretch ----------
+// Every scene runs 50% longer than it is authored below, without slowing anything down: the extra
+// seconds are inserted as holds at instants where no animation is in flight, so each scroll, toast,
+// highlight and caption still plays at its original speed. [authored time, seconds of hold].
+// The phone, the background blobs, the mic rings, the Gemini spinner and the mascot keep moving on
+// real time through a hold, so a held frame never looks dead.
+const PADS = [
+  [4.30, 2.50],                                                  // 0 intro   5.00 -> 7.50
+  [10.30, 2.20], [11.90, 1.55],                                  // 1 voice   7.50 -> 11.25
+  [19.00, 4.25],                                                 // 2 gemini  8.50 -> 12.75
+  [25.10, 2.25],                                                 // 3 confirm 4.50 -> 6.75
+  [30.40, 2.75],                                                 // 4 overdue 5.50 -> 8.25
+  [33.15, 1.60], [35.25, 1.60], [37.90, 1.55],                   // 5 waitlist 9.50 -> 14.25
+  [44.30, 1.60], [46.40, 1.65],                                  // 6 roster  6.50 -> 9.75
+  [49.30, 2.25],                                                 // 7 privacy 4.50 -> 6.75
+  [56.80, 2.875],                                                // 8 outro   5.75 -> 8.625
+  [62.00, 3.375],                                                // 9 blog    6.75 -> 10.125
+];
+const warp = a => a + PADS.reduce((s, [p, d]) => s + (a > p ? d : 0), 0);   // authored -> output
+function unwarp(T) {                                                        // output -> authored
+  let acc = 0;
+  for (const [a, d] of PADS) {
+    const start = a + acc;             // output time at which this hold begins
+    if (T <= start) break;
+    if (T < start + d) return a;       // inside a hold: authored time stands still
+    acc += d;
+  }
+  return T - acc;
+}
+
 // toast overlay sliding in from above, like the app's slideInVertically
 const toast = (src, t, t0) => ({ src: P + src, dy: -70 * (1 - easeOut(clamp((t - t0) / 0.35))), alpha: clamp((t - t0) / 0.25) });
 // stitched page: screen y = 255 + tallY - offset
@@ -18,8 +48,8 @@ const C0 = 255;
 const clips = [
   { t0: 0, layers: () => [{ src: P + 'log_idle.png' }] },
   // 01 voice
-  { t0: 6.55, fade: 0.12, layers: (t, l) => [{ src: P + 'listening.png' }, { reveal: { words: words.words, bg: words.bg, k: clamp((t - 6.75) / 3.4) } }, { pulse: { x: 540, y: 454, t: l } }] },
-  { t0: 10.35, fade: 0.15, layers: t => [{ src: SPIN[Math.min(28, Math.floor((t - 10.35) * 13))] }] },
+  { t0: 6.55, fade: 0.12, layers: (t, T) => [{ src: P + 'listening.png' }, { reveal: { words: words.words, bg: words.bg, k: clamp((t - 6.75) / 3.4) } }, { pulse: { x: 540, y: 454, t: T } }] },
+  { t0: 10.35, fade: 0.15, layers: (t, T) => [{ src: SPIN[Math.floor(T * 13) % SPIN.length] }] },   // keeps spinning through a hold
   // 02 AI parsed — scroll the stitched page
   { t0: 12.55, fade: 0.25, layers: t => {
       let off = ramp(t, 13.1, 14.1, 0, 1000);
@@ -46,12 +76,12 @@ const clips = [
   { t0: 51.6, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
 ];
 
-function screenLayers(t, local = t) {
+function screenLayers(t, T) {
   let i = 0; while (i < clips.length - 1 && t >= clips[i + 1].t0) i++;
   const c = clips[i], k = c.fade ? clamp((t - c.t0) / c.fade) : 1;
-  const cur = c.layers(t, local);
+  const cur = c.layers(t, T);
   if (k >= 1 || i === 0) return cur;
-  return [...clips[i - 1].layers(t, local), ...cur.map(L => ({ ...L, alpha: (L.alpha ?? 1) * k }))];
+  return [...clips[i - 1].layers(t, T), ...cur.map(L => ({ ...L, alpha: (L.alpha ?? 1) * k }))];
 }
 
 // ---------- phone path ----------
@@ -100,6 +130,7 @@ const ic = {
   lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
   queue: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
   alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3l10 18H2z" stroke-linejoin="round"/><path d="M12 10v5M12 18v.5"/></svg>',
+  human: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10.2" r="2.7"/><path d="M7.4 17.6a4.8 4.8 0 0 1 9.2 0"/><path d="M3.6 15.4A9 9 0 1 1 17.2 19.8"/><path d="M13.4 19.4l3.8.4-.3 3.8"/></svg>',
 };
 const chip = (icon, text, tone = 'teal') => {
   const tones = { teal: ['#D5FBF5', '#00685F'], ai: ['#E4E5FF', '#4648D4'], red: ['#FEE2E2', '#DC2626'], warn: ['#FEF3C7', '#B45309'] };
@@ -123,17 +154,17 @@ const texts = [
   { t0: 12.95, t1: 21.15, side: 'left', chipStart: 1.6, chipGap: 1.2, html:
     kicker('02', 'Gemini AI') + lines('AI <mark class="ai">untangles</mark>', 'the mess.') +
     `<div class="sub">Messy speech becomes a clean, structured record.</div>` +
-    `<div class="chips">${chip('spark', 'Self-corrections resolved: “no wait, ending 35”', 'ai')}${chip('check', 'Side remarks ignored', 'ai')}${chip('check', 'Form filled in for you', 'ai')}</div>` },
+    `<div class="chips">${chip('spark', 'Self-corrections resolved', 'ai')}${chip('check', 'Side remarks ignored', 'ai')}${chip('check', 'Form filled in for you', 'ai')}</div>` },
 
   { t0: 21.55, t1: 25.65, side: 'right', chipStart: 1.3, html:
     kicker('03', 'Confirm') + lines('One tap.', '<mark>Loaned.</mark>') +
     `<div class="sub">The record updates in real-time, no more retrospective logging</div>` +
-    `<div class="chips">${chip('brain', 'Reduced mental load')}</div>` },
+    `<div class="chips">${chip('brain', 'Reduced mental load')}${chip('human', 'Human in the loop')}</div>` },
 
-  { t0: 26.15, t1: 31.0, side: 'left', chipStart: 1.4, chipGap: 0.6, html:
-    kicker('04', 'Overdue alerts') + lines('Patient didn’t', 'bring it back?', '<mark class="red">We know.</mark>') +
-    `<div class="sub">Due dates come from the booking duration, and late loans jump to the top in red.</div>` +
-    `<div class="chips">${chip('alert', 'Late items flagged', 'red')}</div>` },
+  { t0: 26.15, t1: 31.0, side: 'left', cls: 'tight', chipStart: 1.4, chipGap: 0.6, html:
+    kicker('04', 'Overdue alerts') + lines('Patient didn’t bring it back?', '<mark class="red">We know.</mark>') +
+    `<div class="sub">We calculate remaining booking time, so you know where to reach out</div>` +
+    `<div class="chips">${chip('alert', 'Overdues are highlighted', 'red')}</div>` },
 
   { t0: 31.55, t1: 40.75, side: 'right', chipStart: 2.2, chipGap: 2.3, html:
     kicker('05', 'Smart waitlist') + lines('A waitlist that', '<mark>can’t be skipped.</mark>') +
@@ -142,7 +173,7 @@ const texts = [
 
   { t0: 41.05, t1: 47.0, side: 'left', chipStart: 1.6, chipGap: 0.7, html:
     kicker('06', 'Live roster') + lines('Every item.', '<mark>Every Location.</mark>') +
-    `<div class="sub">Search and filter: available, on loan, in repair, missing or late.</div>` +
+    `<div class="sub">Search and filter: available, on loan, in service, missing or late.</div>` +
     `<div class="chips">${chip('search', 'Search by ID, type or location')}${chip('check', 'Filter by status & category')}</div>` },
 
   { t0: 47.6, t1: 51.35, side: 'right', chipStart: 1.3, html:
@@ -153,12 +184,12 @@ const texts = [
   { t0: 52.3, t1: 57.4, side: 'left', dark: true, markDelay: 1.1, html:
     `<div class="brand"><img src="hospital_logo.png"><div><div style="font:800 34px/1.1 Jakarta;color:#fff">Quick Equipment Log</div><div style="font:500 22px/1.4 Inter;color:var(--mint)">Speak it. Log it. Find it.</div></div></div>` +
     `<div style="height:44px"></div>` + lines('Smarter equipment', 'tracking for better', '<mark>patient care.</mark>') +
-    `<div class="foot">Healthcare Innovation Challenge 2026 · Tallaght University Hospital<br>Grace, Martin &amp; Jonas</div>` +
+    `<div class="foot">Healthcare Innovation Challenge 2026 · Tallaght University Hospital<br>Grace, Marvin &amp; Jonas</div>` +
     `<div class="credit" style="text-align:left">Music: “Wallpaper” by Kevin MacLeod (incompetech.com) · CC BY 4.0</div>` },
 ];
 
 const highlights = [
-  { t0: 7.3, t1: 10.5, x: 84, y: 1000, w: 912, h: 320, color: '#4648D4' },                       // transcript
+  { t0: 7.3, t1: 10.65, x: 84, y: 1000, w: 912, h: 320, color: '#4648D4' },                       // transcript
   { t0: 14.2, t1: 16.55, x: 44, y: C0 + 1310 - 1000, w: 992, h: 705, color: '#4648D4' },          // AI parsed card
   { t0: 17.7, t1: 20.9, x: 86, y: C0 + 2380 - 2230, w: 910, h: 1465, color: '#4648D4' },          // AI-filled form
   { t0: 22.9, t1: 25.5, x: 44, y: 295, w: 991, h: 199, color: '#00685F' },                         // logged toast
@@ -197,22 +228,28 @@ const stops = [
   { t: 44.35, title: '06 · Roster: filter', notes: 'The roster shows every item and where it is. Filter by category…' },
   { t: 46.45, title: '06 · Roster: search', notes: '…or search by ID, type or location, and filter by status: available, on loan, repair, missing, late.' },
   { t: 50.6, title: '07 · Private by design', notes: 'Patient data stays minimal: MRN only, no names. The parsing step can be swapped for a locally hosted model (e.g. Ollama), so no data has to leave the hospital.' },
-  { t: 56.8, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Martin & Jonas. Thank you!' },
+  { t: 56.8, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
   { t: 61.5, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
 ];
 
 const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
 
 export const story = {
-  // scene 7: Ollama mascot sticker pops up from the bottom next to the phone and waves
-  mascot: { t0: 47.9, t1: 51.5, x: 560, y: 560, frames: MASCOT },
+  unwarp, warp,
+  // scene 7: Ollama mascot sticker pops up from the bottom next to the phone and waves.
+  // Only frames 0-110 are the mascot itself (the clip then cuts to a sheet of sketch variants),
+  // and the frames run on real time, ping-ponging, so the sticker keeps waving through a hold.
+  mascot: { t0: 47.9, t1: 51.5, T0: warp(47.9), x: 560, y: 560, frames: MASCOT, usable: 111 },
   // scene 9: oechsner.dev end card
   blog: { t0: 57.25 },
-  duration: 64,
+  duration: warp(64),
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
     ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png'])],
-  screenLayers, highlights, taps, phoneKeys, texts, stops,
+  screenLayers, highlights, taps, texts, stops,
+  // phone keyframes live in output time and are evaluated against real time, so the phone keeps
+  // drifting through a hold instead of freezing with the rest of the frame
+  phoneKeys: phoneKeys.map(K => ({ ...K, t: warp(K.t) })),
   darkness: t => Math.max(1 - clamp((t - 4.95) / 0.3), clamp((t - 51.7) / 0.4)),
   // wipe passes at scene changes into/out of the dark intro/outro
   wipeAt: t => { for (const c of [5.0, 51.75]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },

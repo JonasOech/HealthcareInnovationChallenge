@@ -1,4 +1,4 @@
-# Promo script: Quick Equipment Log (64 s)
+# Promo script: Quick Equipment Log (59.5 s)
 
 How to edit:
 - Change any text, timing, order or screen action, or add and remove scenes.
@@ -7,6 +7,7 @@ How to edit:
 - Screen actions can only use the app states listed at the bottom. If you want something new, describe it and I'll capture it from the emulator.
 
 ---
+
 
 ## Scene 0 · Intro (0:00 – 0:05) · dark teal background
 **Phone:** flies in from the bottom right, spinning, and lands on the right.
@@ -39,7 +40,7 @@ How to edit:
 - Kicker: 02 · GEMINI AI
 - Headline: AI ==untangles== *(indigo)* / the mess.
 - Sub: Messy speech becomes a clean, structured record.
-- Chips: ✦ Self-corrections resolved: "no wait, ending 35" · ✓ Side remarks ignored · ✓ Form filled in for you
+- Chips: ✦ Self-corrections resolved · ✓ Side remarks ignored · ✓ Form filled in for you
 
 ---
 
@@ -49,19 +50,21 @@ How to edit:
 - Kicker: 03 · CONFIRM
 - Headline: One tap. / ==Loaned.==
 - Sub: The record updates in real-time, no more retrospective logging
-- Chips: 🧠 Reduced mental load
+- Chips: [Brain Icon] reduced mental load, [Human Loop Icon] Human in the loop
 
 ---
+
 
 ## Scene 4 · Overdue alerts (0:25.5 – 0:31) · text on the left
 **Screen:** the Bookings tab. The late "Pressure cushion (air)" card ("Overdue — was due 2 days ago") gets a red highlight.
 
 - Kicker: 04 · OVERDUE ALERTS
-- Headline: Patient didn't / bring it back? / ==We know.== *(red)*  ← split over 3 lines so it fits next to the phone
-- Sub: Due dates come from the booking duration, and late loans jump to the top in red.
-- Chips: ⚠ Late items flagged
+- Headline: Patient didn't bring it back? / ==We know.== *(red)*
+- Sub: We calculate remaining booking time, so you know where to reach out
+- Chips: ⚠ Overdues are highlighted
 
 ---
+
 
 ## Scene 5 · Smart waitlist (0:31 – 0:40.5) · text on the right
 **Screen:**
@@ -82,13 +85,13 @@ How to edit:
 
 - Kicker: 06 · LIVE ROSTER
 - Headline: Every item. / ==Every Location.==
-- Sub: Search and filter: available, on loan, in repair, missing or late.
+- Sub: Search and filter: available, on loan, in service, missing or late.
 - Chips: 🔍 Search by ID, type or location · ✓ Filter by status & category
 
 ---
 
 ## Scene 7 · Privacy (0:47 – 0:51.5) · text on the right
-**Screen:** the Log Equip tab. At 0:47.9 the Ollama mascot pops up from the bottom on a white sticker card next to the phone, waves, and drops back down at 0:51.5. The clip is the first ~4 s of Novra's LinkedIn post "Ollama, mascot development in Rive".
+**Screen:** The phone in Log Equip view. Then the ollama mascot pops up from the bottom and waves (first few seconds from https://lnkd.in/p/e4SMcyzx)
 
 - Kicker: 07 · PRIVACY
 - Headline: Private / ==by design.==
@@ -99,30 +102,30 @@ How to edit:
 
 ---
 
-## Scene 8 · Outro (0:51.5 – 0:57.5) · dark teal background
+## Scene 8 · Outro (0:51.5 – 0:59.5) · dark teal background
 **Phone:** spins to the right and slowly turns.
 **Screen:** the transcript with the AI parsed result.
 
 - Brand: hospital logo · **Quick Equipment Log** · *Speak it. Log it. Find it.*
 - Headline: Smarter equipment / tracking for better / ==patient care.==
-- Footer: Healthcare Innovation Challenge 2026 · Tallaght University Hospital / Grace, Martin & Jonas
+- Footer: Healthcare Innovation Challenge 2026 · Tallaght University Hospital / Grace, Marvin & Jonas
 - Credit line: Music: "Wallpaper" by Kevin MacLeod (incompetech.com) · CC BY 4.0
 
-*Transition (0:57.25 – 0:58.5): blue and orange glows slide in from the top corners; everything else fades to dark.*
+Transition: Blue and orange highlights come in from the corners, Rest fades dark
 
 ---
 
-## Scene 9 · Blog plug (0:58.5 – 1:04) · oechsner.dev style
-Complete style change to the design of oechsner.dev: background `#0e0f12`, a faint dot grid, a cool blue glow top left and a warm amber glow top right. This follows the site's og:image.
-
-- Eyebrow: FROM THE BLOG (DM Sans, letter-spaced, grey)
-- Title (Playfair Display, the site's title font, centred): Read about this / on *oechsner.dev* (amber `#e0a85c`)
-- Thin divider · Jonas Öchsner · "oechsner.dev →" with an amber underline
-
----
+## Scene 9 - Self advertisement, Black design with blue & Orange highlights
+Complete style change, we are now in the design of the website https://www.oechsner.dev
+Big title text appears in the middle, advertising my blogpost about this
+"Read about this on oechsner.dev"
+Example for the background: Oechsnerdevcover.png
+Use the title font from the title page.
 
 ## Audio
-"Wallpaper" by Kevin MacLeod (upbeat). It starts at 0:00 and fades out from 1:00 to the end at 1:04. There's no voice-over. A voice-over can be added if you write the lines; it would need a TTS voice or your own recording.
+"Wallpaper" by Kevin MacLeod (upbeat). It starts at 0:00 and fades out from 0:55.5. There's no voice-over. A voice-over can be added if you write the lines; it would need a TTS voice or your own recording.
 
 ## App states already captured (usable without re-recording)
 Log screen idle · listening plus transcript · Gemini spinner · AI parsed card · auto-filled form · Confirm Book · "Logged Successfully" toast · Bookings list (with late item) · on-loan warning · "Added to waitlist" toast · Waitlist section · "Returned / next notified" toast · Roster full list · Wheelchairs filter · "cushion" search + Late filter · Profile (API key, model, privacy note)
+
+

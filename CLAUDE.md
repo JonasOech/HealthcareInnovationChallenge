@@ -12,7 +12,7 @@ This is a hackathon repo for the **Healthcare Innovation Challenge 2026** (team:
 - Toolchain lives outside the repo in `~/.cache/hic-android` (JDK 21, Android SDK 35, Gradle cache). Build:
   `cd App/android && T=~/.cache/hic-android JAVA_HOME=$T/jdk GRADLE_USER_HOME=$T/gradle-home ./gradlew assembleRelease`
   (`local.properties` must point `sdk.dir` at `~/.cache/hic-android/sdk`). The release APK is debug-signed; copy it to `App/android/dist/`.
-- `GeminiParser.kt` holds the prompt + JSON schema (raw REST call to Gemini `generateContent` with `responseJsonSchema`; model defaults to `gemini-3.8-flash`, changeable in the Profile tab); `MockData.kt` is the in-memory roster/patients/bookings; `SpeechController.kt` restarts Android's SpeechRecognizer so long, rambling dictation is captured in one transcript.
+- `GeminiParser.kt` holds the prompt + JSON schema (raw REST call to Gemini `generateContent` with `responseJsonSchema`; model defaults to `gemini-3.8-flash`, changeable in the Profile tab); `MockData.kt` is the in-memory roster/patients/bookings; `SpeechController.kt` restarts Android's SpeechRecognizer so long, rambling dictation is captured in one transcript, and also holds the "scripted transcript" demo mode (Profile tab: toggle, script text, tempo in words/min) that types a fixed script out instead of listening, for pitching in rooms too loud to dictate in — Gemini parsing is unchanged either way.
 - API key is entered in the app's Profile tab (or baked in with `-PgeminiApiKey=...` for a private demo build — never commit/share that APK).
 
 ## Promo video and presentation (`Marketing/`)

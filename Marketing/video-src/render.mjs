@@ -7,10 +7,12 @@ const srv = http.createServer((q, r) => { const f = path.join(root, decodeURICom
   fs.readFile(f, (e, d) => { if (e) { r.writeHead(404); r.end(); return; } r.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); r.end(d); }); });
 await new Promise(r => srv.listen(0, r));
 const port = srv.address().port;
-const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+// CHROME=/path/to/chrome uses an existing build instead of the one pinned to this playwright version
+const browser = await chromium.launch({ executablePath: process.env.CHROME || undefined,
+  args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
 page.on('console', m => console.log('[page]', m.text())); page.on('pageerror', e => console.log('[err]', e.message));
-await page.goto(`http://localhost:${port}/index.html?video`);
+await page.goto(`http://localhost:${port}/index.html?video${process.env.NOAMB ? '#noamb' : ''}`);
 const duration = await page.evaluate(() => window.setupDone);
 const args = process.argv.slice(2);
 if (args[0] === '--still') {

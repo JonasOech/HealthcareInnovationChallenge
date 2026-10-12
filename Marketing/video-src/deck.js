@@ -48,7 +48,7 @@ async function startDeck() {
   const stops = story.stops, last = stops.length - 1;
   let idx = clampIdx(parseInt(location.hash.slice(1), 10) || 0);
   let t = stops[idx].t, target = -1;
-  let hold = 0, held = 0;   // seconds in the current hold, and in all holds (see renderFrame's amb/local clocks)
+  let hold = 0, held = 0;   // seconds in the current hold, and in all holds (see renderFrame's deck clocks)
 
   function clampIdx(i) { return Math.min(last, Math.max(0, i | 0)); }
   function jump(i) { idx = clampIdx(i); t = stops[idx].t; target = -1; hold = 0; changed(); }
@@ -80,7 +80,7 @@ async function startDeck() {
       t = Math.min(t + dt, stops[target].t);
       if (t >= stops[target].t) { idx = target; target = -1; changed(); }
     } else { hold += dt; held += dt; }
-    window.renderFrame(t, t + held, t + hold);
+    window.renderFrame(0, { t, amb: t + held, loop: story.warp(t) + hold });
     const span = target >= 0 ? (t - stops[idx].t) / (stops[target].t - stops[idx].t) : 0;
     $('progress').style.width = `${100 * (idx + span) / last}%`;
     requestAnimationFrame(frame);
