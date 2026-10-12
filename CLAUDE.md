@@ -15,14 +15,13 @@ This is a hackathon repo for the **Healthcare Innovation Challenge 2026** (team:
 - `GeminiParser.kt` holds the prompt + JSON schema (raw REST call to Gemini `generateContent` with `responseJsonSchema`; model defaults to `gemini-3.8-flash`, changeable in the Profile tab); `MockData.kt` is the in-memory roster/patients/bookings; `SpeechController.kt` restarts Android's SpeechRecognizer so long, rambling dictation is captured in one transcript, and also holds the "scripted transcript" demo mode (Profile tab: toggle, script text, tempo in words/min) that types a fixed script out instead of listening, for pitching in rooms too loud to dictate in — Gemini parsing is unchanged either way.
 - API key is entered in the app's Profile tab (or baked in with `-PgeminiApiKey=...` for a private demo build — never commit/share that APK).
 
-## Promo video and presentation (`Marketing/`)
+## Presentation website (`Marketing/`)
 
-`Marketing/video-src/` is a Three.js page that renders the promo video (`render.mjs`, which loads `index.html?video`). Without `?video`, the same page is a clickable presentation (`deck.js`) that holds at `story.stops`. `node build-deck.mjs` builds the static site in `dist/` for Cloudflare Pages. See `Marketing/README.md`.
+`Marketing/video-src/` is a Three.js page that is the pitch presentation: `engine.js` draws any storyboard moment (`renderFrame`), `story.js` holds the timeline, and `deck.js` makes it a clickable deck that holds at `story.stops`. `node build-deck.mjs` builds the static site in `dist/` for Cloudflare Pages. See `Marketing/README.md`. `QuickEquipmentLog_promo.mp4` is the finished promo rendered from the same storyboard; the MP4 renderer itself was removed from the repo (recover `video-src/render.mjs` from git history if it is ever needed again).
 
 ## Key files
 
-- `Challenge-2.pdf` — the original challenge submission from the hospital's Occupational Therapy (OT) department. This is the source of truth for requirements; its numbered problems (1–9) and goals (1–9) are referenced elsewhere by number.
-- `ideas.md` — the team's working solution ideas, MVP scope, and pitch notes.
+- `Context/Challenge-2.pdf` — the original challenge submission from the hospital's Occupational Therapy (OT) department. This is the source of truth for requirements; its numbered problems (1–9) and goals (1–9) are referenced elsewhere by number. `Context/IMG_*.jpeg` are photos of a printout of the real "Acute Equipment Tracker" spreadsheet (asset no., type, size, serial/HC21/DML numbers, max weight, therapist, patient name, MRN, ward, status, comments, last service, purchased in — with the repair/missing colour coding).
 
 ## Problem context (from the challenge brief)
 
@@ -31,7 +30,7 @@ This is a hackathon repo for the **Healthcare Innovation Challenge 2026** (team:
 - Core pain points: manual, retrospective updates; slow monthly stock checks by therapy assistants; the waitlist gets bypassed; status is hard to see; about €4,600/year of equipment is lost.
 - Scope: the OT department and all inpatient wards, with potential reuse by other departments that share equipment.
 
-## Planned direction (from ideas.md)
+## Planned direction (team's working notes)
 
 - Core insight: most items already have barcodes, so the solution should make the record update part of the physical handover (scan to update), not a separate admin task.
 - **MVP:** mobile-friendly barcode/QR web app for issue/return/repair/loan plus a status dashboard; a smart waitlist that notifies the next clinician (by clinical priority, then waiting time) when an item becomes available; a public "found it" scan page for non-OT staff; and an import of the existing Excel tracker for realistic demo data.

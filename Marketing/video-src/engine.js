@@ -288,11 +288,11 @@ function drawBlog(t, A) {
   [q('.by'), q('.cta')].forEach((n, i) => { const k = easeOut(prog(t, T + 1.25 + i * 0.25, 0.6)); n.style.opacity = k; n.style.transform = `translateY(${16 * (1 - k)}px)`; });
 }
 
-// #noamb freezes the ambient motion too, so two stills across a hold must come out identical —
-// that is the check that a hold is not stretching some animation (see Marketing/README.md).
+// #noamb freezes the ambient motion, so two frames across a hold must come out identical —
+// that is the check that a hold is not stretching some animation.
 const AMBIENT = !location.hash.includes('noamb');
 
-// T is the real time of the finished video; t is storyboard time, which stands still during a hold.
+// T is storyboard time run straight through, with no holds; t is storyboard time, which stands still during a hold.
 // The presentation deck (deck.js) runs its own holds and passes the clocks itself:
 // deck.t is storyboard time, deck.amb a continuous clock for float, blobs and glows, and deck.loop a clock
 // in output time that restarts with each slide, for the mic rings, spinner and mascot frames.

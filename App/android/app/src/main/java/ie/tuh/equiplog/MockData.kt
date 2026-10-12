@@ -23,7 +23,7 @@ data class Equipment(
     val location: String,
 )
 
-/** Only the MRN-style patient ID and bed are kept (no names), per the GDPR note in ideas.md. */
+/** Only the MRN-style patient ID and bed are kept (no names), per the GDPR note in CLAUDE.md. */
 data class Patient(val id: String, val bed: String, val ward: String)
 
 data class Booking(

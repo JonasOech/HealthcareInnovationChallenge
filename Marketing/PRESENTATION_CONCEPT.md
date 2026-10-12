@@ -31,7 +31,7 @@ If `t` stops during a hold, the slide becomes a still image, and the floating ph
 | `storyT` | scene state: phone keyframes, screen clips, captions, highlights, wipes | frozen at the stop |
 | `ambientT` | phone float/bob, background blobs, mic pulse rings, Gemini spinner frames, Ollama mascot frames (looped), blog glow drift | keeps running (wall clock) |
 
-`renderFrame(t, amb = t)` stays backwards compatible: `render.mjs` passes only `t`, so the MP4 renders exactly as before.
+`renderFrame(t, amb = t)` defaults `amb` to `t`, so a caller that passes only `t` gets the plain storyboard, with no holds.
 
 ## Slide list (15 stops)
 
@@ -74,7 +74,6 @@ The longest beat (slide 2, the live dictation) runs for about 6 s. All the other
 | `video-src/story.js` | The few nudges from the table. Export `stops` (`{ t, title, notes }`), so the timeline and the slide breaks live in one file. |
 | `video-src/deck.html` | The same markup as `index.html`, plus a scaler wrapper and `deck.js`. |
 | `video-src/deck.js` | A two-state machine (`HOLD` ↔ `PLAYING`) driven by `requestAnimationFrame`: while playing, `storyT += dt` until it reaches the next stop; `ambientT += dt` always. Also key handling, the hash, `BroadcastChannel` sync. |
-| `render.mjs` | No change. |
 
 Running it: ES modules, the import map and the JSON import need HTTP rather than `file://`, so the command is `npx serve video-src` (or `python3 -m http.server`) and then open `/deck.html`. For the pitch laptop, a `deck/` folder with only the needed files (three.js, four fonts, `screens/` ≈ 17 MB) works fully offline. The same folder can go on GitHub Pages as a backup link.
 
@@ -82,13 +81,14 @@ Estimated effort: about half a day for the deck and controller, plus 1–2 h for
 
 ## Fallback: real `.pptx` for whoever insists on PowerPoint
 
-This uses the same stops and reuses `render.mjs <out> 30 <tStart> <tEnd>`:
+This uses the same stops, but it needs a frame renderer (headless Chromium calling `renderFrame(t)` into ffmpeg).
+That script is no longer in the repo — recover `video-src/render.mjs` from the git history if this is ever needed:
 
 1. Render one MP4 per beat (stop *n−1* → stop *n*).
 2. Generate the deck with `python-pptx`. Each slide is one full-bleed video set to *Start: Automatically* with *Rewind after playing* off, so it ends on and holds the stop frame. The speaker notes come from `stops`.
 3. Optional: thanks to the two clocks, also render a 4 s **idle loop** per stop (story time frozen, ambient time running) and play it looped after the beat. Then the PowerPoint version doesn't freeze during holds either.
 
-Trade-offs: the design and animations are pixel-identical (they are the same frames), but the text is baked into the video and can't be edited in PowerPoint, and the file is roughly 100–200 MB. For text edits, change `story.js` and re-render. A **PDF handout** comes for free: `render.mjs --still <t>` at each stop, then join the images into a PDF.
+Trade-offs: the design and animations are pixel-identical (they are the same frames), but the text is baked into the video and can't be edited in PowerPoint, and the file is roughly 100–200 MB. For text edits, change `story.js` and re-render. A **PDF handout** comes for free from the same renderer: one still per stop, then join the images into a PDF.
 
 ## Optional: pitch-only slides in the same style
 

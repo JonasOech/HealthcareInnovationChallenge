@@ -1,7 +1,4 @@
 node_modules/
-*.mp3
-*.m4a
-promo_silent.mp4
 tmpcap/
 shots/
 dist/

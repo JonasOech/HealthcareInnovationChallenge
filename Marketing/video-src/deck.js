@@ -1,9 +1,9 @@
-// Presentation mode: the promo video as a clickable deck. It uses the same engine and storyboard, and holds at
-// story.stops. A click plays the timeline on to the next stop. index.html?video turns this off for render.mjs.
+// The presentation: the promo storyboard as a clickable deck. It drives the same engine and holds at
+// story.stops. A click plays the timeline on to the next stop.
 import { story } from './story.js';
 
 const params = new URLSearchParams(location.search);
-if (!params.has('video')) startDeck();
+startDeck();
 
 async function startDeck() {
   const presenter = params.has('presenter');
