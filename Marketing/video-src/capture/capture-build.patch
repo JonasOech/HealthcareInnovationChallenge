@@ -1,0 +1,53 @@
+--- a/App/android/app/src/main/AndroidManifest.xml
++++ b/App/android/app/src/main/AndroidManifest.xml
+@@ -12,6 +12,7 @@
+ 
+     <application
+         android:allowBackup="false"
++        android:usesCleartextTraffic="true"
+         android:icon="@drawable/ic_launcher"
+         android:label="@string/app_name"
+         android:supportsRtl="true"
+--- a/App/android/app/src/main/java/ie/tuh/equiplog/GeminiParser.kt
++++ b/App/android/app/src/main/java/ie/tuh/equiplog/GeminiParser.kt
+@@ -29,7 +29,7 @@
+ /** Calls the Gemini REST API (generateContent) with a JSON schema so the reply is machine-readable. */
+ object GeminiParser {
+     const val DEFAULT_MODEL = "gemini-3.8-flash"
+-    private const val BASE = "https://generativelanguage.googleapis.com/v1beta/models"
++    private const val BASE = "http://10.0.2.2:8765/v1beta/models"
+ 
+     private val SYSTEM_PROMPT = """
+         You turn a nurse's or therapist's spoken equipment log into a structured record for the
+--- a/App/android/app/src/main/java/ie/tuh/equiplog/SpeechController.kt
++++ b/App/android/app/src/main/java/ie/tuh/equiplog/SpeechController.kt
+@@ -33,7 +33,21 @@
+         partial = ""
+     }
+ 
++    // CAPTURE BUILD ONLY: plays a scripted dictation word by word instead of using the mic.
++    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
++    private val script = "Book wheelchair four eight two nine ten fifty three, no wait, ending three five, " +
++        "for the patient in bed 4B twelve, oh and the cushion in bed seven is broken by the way, for the next three weeks"
++    private fun playScript() {
++        val words = script.split(" ")
++        words.indices.forEach { i ->
++            handler.postDelayed({
++                if (listening) { partial = words.take(i + 1).joinToString(" "); level = 0.3f + 0.7f * kotlin.math.abs(kotlin.math.sin(i * 1.7f)) }
++            }, 250L + i * 190L)
++        }
++    }
++
+     fun start(append: Boolean) {
++        if (true) { error = null; if (!append) setText(""); listening = true; playScript(); return }
+         if (!available) {
+             error = "No speech recognition service on this device. Type the request instead."
+             return
+@@ -46,6 +60,7 @@
+ 
+     fun stop() {
+         listening = false
++        handler.removeCallbacksAndMessages(null); commitPartial()
+         // The final segment arrives via onResults/onError, which commit it; committing here too would duplicate it.
+         recognizer?.stopListening()
+         level = 0f
