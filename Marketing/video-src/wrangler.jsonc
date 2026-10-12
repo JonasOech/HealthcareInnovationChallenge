@@ -1,0 +1,9 @@
+{
+  // Static-assets-only Worker: it serves the built deck, nothing else.
+  // `node build-deck.mjs` writes dist/ (about 190 files, 18 MB); without this config
+  // wrangler would upload the whole folder, node_modules included.
+  "name": "healthcareinnovationchallenge",
+  "compatibility_date": "2026-10-06",
+  "observability": { "enabled": true },
+  "assets": { "directory": "dist" }
+}
