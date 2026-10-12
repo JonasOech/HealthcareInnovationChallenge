@@ -2,3 +2,5 @@ node_modules/
 tmpcap/
 shots/
 dist/
+.dev.vars
+.wrangler/

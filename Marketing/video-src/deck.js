@@ -17,6 +17,7 @@ async function startDeck() {
   ui.innerHTML = `
     <div id="deck-loading"><div class="ring"></div><div>Loading presentation…</div></div>
     <div id="deck-black"></div>
+    <button id="deck-live" hidden></button>
     <div id="deck-hint">Click or press <kbd>→</kbd> to start · <kbd>F</kbd> fullscreen · <kbd>P</kbd> presenter view</div>
     <div id="deck-hud"><button data-act="prev" aria-label="Previous slide">‹</button><span id="deck-count"></span><button data-act="next" aria-label="Next slide">›</button><button data-act="full" aria-label="Fullscreen">⛶</button></div>
     <aside id="deck-panel">
@@ -46,20 +47,29 @@ async function startDeck() {
 
   // ---------- timeline state ----------
   const stops = story.stops, last = stops.length - 1;
+  // live session (worker.js): while the presenter is connected, viewers can't go past the presenter's slide
+  const adminKey = params.get('admin');
+  let isAdmin = false, locked = false, liveIdx = last, ws = null, ended = false, rejected = false, watching = 0, nudgeUntil = 0;
+  const cap = () => (locked ? liveIdx : last);
   let idx = clampIdx(parseInt(location.hash.slice(1), 10) || 0);
   let t = stops[idx].t, target = -1;
   let hold = 0, held = 0;   // seconds in the current hold, and in all holds (see renderFrame's deck clocks)
 
-  function clampIdx(i) { return Math.min(last, Math.max(0, i | 0)); }
+  function clampIdx(i) { return Math.min(cap(), Math.max(0, i | 0)); }
+  const shown = () => (target >= 0 ? target : idx);
   function jump(i) { idx = clampIdx(i); t = stops[idx].t; target = -1; hold = 0; changed(); }
   function play(from, to) { idx = from; t = stops[from].t; target = to; hold = 0; changed(); }
 
   // local actions are mirrored to the other window (audience <-> presenter view)
   const chan = 'BroadcastChannel' in window ? new BroadcastChannel('quick-equipment-log-deck') : null;
-  const send = m => chan && chan.postMessage(m);
+  const send = m => {
+    if (chan) chan.postMessage(m);
+    if (isAdmin && ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(m));   // and to the audience
+  };
   function next() {
     if (target >= 0) { jump(target); send({ type: 'jump', idx }); }               // skip the running animation
-    else if (idx < last) { play(idx, idx + 1); send({ type: 'play', from: idx, to: idx + 1 }); }
+    else if (idx < cap()) { play(idx, idx + 1); send({ type: 'play', from: idx, to: idx + 1 }); }
+    else if (locked) { nudgeUntil = performance.now() + 1800; liveUI(); setTimeout(liveUI, 1900); }
   }
   function prev() { jump(target >= 0 ? idx : idx - 1); send({ type: 'jump', idx }); }
   function go(i) { jump(i); send({ type: 'jump', idx }); }
@@ -71,6 +81,67 @@ async function startDeck() {
     else if (m.type === 'hello') send({ type: target >= 0 ? 'play' : 'jump', idx, from: idx, to: target });
   };
   if (presenter) send({ type: 'hello' });
+
+  // ---------- live session ----------
+  const badge = $('deck-live');
+  let retry = 1, unlockTimer = 0;
+  function connect() {
+    if (!/^https?:$/.test(location.protocol)) return;
+    const q = adminKey ? `?key=${encodeURIComponent(adminKey)}&idx=${shown()}` : '';
+    const sock = ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/live${q}`);
+    sock.onmessage = ({ data }) => onLive(JSON.parse(data));
+    sock.onclose = () => {
+      if (ws === sock) ws = null;
+      liveUI();
+      if (ended) return;
+      // fail open: a viewer who can't reach the server for a while is unlocked rather than stuck
+      clearTimeout(unlockTimer); unlockTimer = setTimeout(() => setLock(false), 30000);
+      setTimeout(connect, 1000 * retry); retry = Math.min(15, retry * 2);
+    };
+  }
+  function onLive(m) {
+    if (m.type === 'hello') { retry = 1; clearTimeout(unlockTimer); isAdmin = m.admin; rejected = !!adminKey && !m.admin; setLock(m.live, m.idx); }
+    else if (m.type === 'live') setLock(m.on, m.idx);
+    else if (m.type === 'count') watching = m.n;
+    else if (m.type === 'ended') ended = true;
+    else if (!locked) return;
+    // viewers on the presenter's slide move with it; viewers who went back stay where they are
+    else if (m.type === 'jump') { const follow = shown() >= liveIdx || shown() > m.idx; liveIdx = m.idx; if (follow) jump(m.idx); }
+    else if (m.type === 'play') { const follow = shown() >= liveIdx; liveIdx = m.to; if (follow) play(m.from, m.to); }
+    liveUI();
+  }
+  function setLock(on, i = liveIdx) {
+    const was = locked;
+    liveIdx = i; locked = on && !isAdmin;
+    if (locked && (!was || shown() > liveIdx)) jump(liveIdx);   // joining a live talk starts on the presenter's slide
+    liveUI();
+  }
+  function liveUI() {
+    let state = '', html = '';
+    if (adminKey) {
+      state = 'admin';
+      if (rejected) html = 'Presenter key not accepted';
+      else if (ended) html = 'Live session ended · <b>Go live</b>';
+      else if (isAdmin && ws) html = `<i></i>Live · ${watching} watching · <b>End</b>`;
+      else html = 'Connecting…';
+    } else if (locked) {
+      state = shown() < liveIdx ? 'behind' : 'live';
+      html = state === 'behind' ? '<i></i>Back to live ›'
+        : performance.now() < nudgeUntil ? "<i></i>Live · you're on the presenter's slide" : '<i></i>Live';
+    }
+    root.classList.toggle('locked', locked);
+    badge.hidden = !state;
+    badge.dataset.state = state;
+    badge.innerHTML = html;
+  }
+  badge.addEventListener('click', e => {
+    e.stopPropagation();
+    if (badge.dataset.state === 'behind') jump(liveIdx);
+    else if (badge.dataset.state !== 'admin') return;
+    else if (ended) { ended = false; connect(); }
+    else if (isAdmin && ws) ws.send(JSON.stringify({ type: 'end' }));
+    liveUI();
+  });
 
   // ---------- render loop ----------
   let lastNow = performance.now();
@@ -101,6 +172,7 @@ async function startDeck() {
       $('p-next').textContent = shown < last ? stops[shown + 1].title : 'End of presentation';
     }
     if (shown > 0 && startedAt.v === null) startedAt.v = Date.now();
+    liveUI();
   }
   changed();
   if (presenter) {
@@ -131,7 +203,10 @@ async function startDeck() {
     else if (k === 'End') go(last);
     else if (k === 'f' || k === 'F') actions.full();
     else if (k === 'b' || k === 'B' || k === '.') { const on = !root.classList.contains('black'); setBlack(on); send({ type: 'black', on }); }
-    else if ((k === 'p' || k === 'P') && !presenter) window.open(`${location.pathname}?presenter#${idx}`, 'quick-equipment-log-presenter', 'width=1280,height=760');
+    else if ((k === 'p' || k === 'P') && !presenter && !locked) {   // viewers don't get the notes during a live talk
+      const key = adminKey ? `&admin=${encodeURIComponent(adminKey)}` : '';
+      window.open(`${location.pathname}?presenter${key}#${idx}`, 'quick-equipment-log-presenter', 'width=1280,height=760');
+    }
     else return;
     e.preventDefault();
   });
@@ -145,6 +220,8 @@ async function startDeck() {
     const dx = e.changedTouches[0].clientX - touch.clientX; touch = null;
     if (Math.abs(dx) > 50) { e.preventDefault(); (dx < 0 ? next : prev)(); }
   });
+
+  connect();
 
   // the small slide counter shows while the mouse moves, then gets out of the way
   let hudTimer = 0;

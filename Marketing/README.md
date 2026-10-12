@@ -54,15 +54,36 @@ npm run deck          # builds dist/ and serves it on http://localhost:3000
 
 `#7` at the end of the URL opens slide 7.
 
-## Hosting on Cloudflare Pages
+## Live talks: the audience follows along on their phones
+
+Share the normal link with the audience. While the presenter has the deck open with the presenter key, everyone
+else can go back as far as they like but never past the presenter's slide. Viewers on the presenter's slide move
+with it; viewers who went back get a "Back to live" button. With no presenter connected nothing is locked, so the
+deck is freely browsable before and after the talk.
+
+- Present from `https://<site>/?admin=<PRESENTER_KEY>` (never share this link). `P` opens the presenter view with
+  the key too, so either window can drive.
+- Moving the mouse shows a badge at the top: "Live · 12 watching · End". **End** unlocks everyone at once; closing
+  the tab unlocks them after 45 s (so a reload or a Wi-Fi blip doesn't end the session).
+- Set the key once: `npx wrangler secret put PRESENTER_KEY`. For `wrangler dev`, put `PRESENTER_KEY=...` in
+  `video-src/.dev.vars` (gitignored).
+
+`worker.js` serves `dist/` and runs `/live`: one Durable Object stores the presenter's slide and sends it to every
+viewer over a WebSocket. The cap is enforced in the browser, so a technical viewer could still read the static
+files ahead of time. Without the Worker (e.g. `npm run deck`, or Cloudflare Pages) `/live` doesn't exist and the
+deck simply stays unlocked.
+
+## Hosting on Cloudflare
 
 `node build-deck.mjs` writes a static site to `video-src/dist/` (about 190 files, 18 MB). It copies only the
-files the page loads and moves `node_modules` files to `vendor/`. Two ways to deploy:
+files the page loads and moves `node_modules` files to `vendor/`.
 
-- **Git integration:** set the root directory to `Marketing/video-src`, the build command to
-  `node build-deck.mjs` and the output directory to `dist`. Cloudflare installs the npm dependencies itself,
-  and `.node-version` selects Node 22.
-- **Manual:** `npx wrangler pages deploy dist --project-name quick-equipment-log`.
+- **Worker (needed for live talks):** `node build-deck.mjs && npx wrangler deploy` uses `wrangler.jsonc`. With
+  Workers Builds (Git integration), set the root directory to `Marketing/video-src`, the build command to
+  `node build-deck.mjs` and the deploy command to `npx wrangler deploy`. Set `PRESENTER_KEY` once (see above).
+- **Static only (Cloudflare Pages or any host, no live talks):** root directory `Marketing/video-src`, build
+  command `node build-deck.mjs`, output directory `dist`; or `npx wrangler pages deploy dist --project-name
+  quick-equipment-log`. `.node-version` selects Node 22.
 
 ## Where the screens come from
 
