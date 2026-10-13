@@ -211,6 +211,8 @@ async function startDeck() {
     e.preventDefault();
   });
   stage.addEventListener('click', next);
+  // links on the end card open in a new tab instead of advancing the deck
+  document.querySelectorAll('#blog a').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
   addEventListener('hashchange', () => { const i = parseInt(location.hash.slice(1), 10); if (i >= 0 && i !== idx) go(i); });
 
   let touch = null;
