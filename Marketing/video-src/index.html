@@ -91,10 +91,11 @@
   #blog .t { font: 400 132px/1.08 Playfair; letter-spacing: -0.01em; color: #f4f4f6; }
   #blog .t .ln { display: block; overflow: hidden; padding: 0 10px 14px; }
   #blog .t .ln > span { display: inline-block; }
-  #blog .t em { font-style: normal; color: #e0a85c; }
+  #blog a { color: inherit; text-decoration: none; cursor: pointer; }
+  #blog .t em { font-style: normal; color: #e0a85c; text-decoration: underline; text-decoration-thickness: 4px; text-underline-offset: 12px; }
   #blog .rule { height: 2px; background: #34353d; margin: 46px 0 34px; width: 0; }
   #blog .by { font: 400 28px/1.3 DMSans; color: #a3a4ac; }
-  #blog .cta { margin-top: 30px; font: 500 26px/1 DMSans; color: #f4f4f6; padding-bottom: 12px; border-bottom: 1.5px solid #e0a85c; }
+  #blog .cta { display: inline-block; margin-top: 30px; font: 500 26px/1 DMSans; color: #f4f4f6; padding-bottom: 12px; border-bottom: 1.5px solid #e0a85c; }
 </style>
 </head>
 <body>
@@ -112,11 +113,11 @@
   <div id="blog">
     <div class="shade"></div><div class="glow cool"></div><div class="glow warm"></div><div class="dots"></div>
     <div class="content">
-      <div class="eyebrow">FROM THE BLOG</div>
-      <div class="t"><span class="ln"><span>Read about this</span></span><span class="ln"><span>on <em>oechsner.dev</em></span></span></div>
+      <div class="eyebrow">SELF ADVERTISEMENT</div>
+      <div class="t"><span class="ln"><span>I posted about this</span></span><span class="ln"><span>on <a href="https://oechsner.dev" target="_blank" rel="noopener"><em>oechsner.dev</em></a></span></span></div>
       <div class="rule"></div>
-      <div class="by">Jonas Öchsner</div>
-      <div class="cta">oechsner.dev &nbsp;→</div>
+      <div class="by">I published a blog post about the solution covering the technical stuff</div>
+      <a class="cta" href="https://oechsner.dev" target="_blank" rel="noopener">oechsner.dev &nbsp;→</a>
     </div>
   </div>
 </div>
