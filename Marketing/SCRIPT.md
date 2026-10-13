@@ -17,7 +17,32 @@ How to edit:
 - Headline: Equipment Tracking / just got ==trivial==
 - Sub: Book, return and track specialist equipment by voice, in seconds
 
-*Transition: a teal wipe; the phone spins 360° to the left side, and the background turns light.*
+*Transition: a teal wipe and the background turns light; the phone slides further right.*
+
+---
+
+## How it works · HC21 labels (deck only) · text top left
+**Screen:** Log Equip, Book form. After the scan, "HC21-000001" types into Equipment ID (highlight), then "PT-90421 · Bed 4B-12" into Patient ID & location (highlight).
+
+- Kicker: HOW IT WORKS
+- Headline: Medical equipment tracking / & booking with ==HC21 labels.==
+- Sub: Track · Book · Manage · Monitor in real-time
+- Equipment with HC21 labels: wheelchair HC21-000001, hospital bed HC21-000002, monitor HC21-000003. A laser scans each label in turn and it gets a tick; an arrow carries HC21-000001 into the phone.
+- Step 1 · Equipment identified: All medical equipment has a unique HC21 barcode label with serial number.
+- Step 2 · Record or write details: Nurse scans the HC21 label and enters the Patient ID to book the equipment.
+
+*Transition: the phone spins 360° to the left.*
+
+---
+
+## How it works · Capture → Synchronize → Visualization (deck only)
+**Screen:** Bookings tab ("Active bookings").
+
+- 1 Capture: the phone. A pipe with data packets runs to a sync hub.
+- 2 Synchronize: the hub beams up into the "Acute Equipment Tracker" sheet; its rows fill in one by one, colour-coded (on loan amber, available green, repair red).
+- 3 Visualization: a second pipe runs on to the "Medical Equipment Management Dashboard": Wheelchairs (total) 215, Bookings (total) 1,350, Available equipment 98 (count up); Equipment distribution donut (wheelchairs, hospital beds, syringe pumps, other); Booking trends line; Equipment status bars (in use, available, repair, reserved).
+
+*Transition: the phone leans in on the left, back on Log Equip.*
 
 ---
 

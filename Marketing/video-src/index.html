@@ -74,6 +74,111 @@
           transform: translateX(-140%) skewX(-12deg); }
   #progress { position: absolute; left: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--primary), var(--mint)); }
 
+  /* how it works (how.js): HC21 labels, then capture → synchronize → visualization */
+  .text.top { justify-content: flex-start; padding-top: 78px; width: 1150px; }
+  .text.top .title { font-size: 64px; }
+  .text.top .sub { font-size: 30px; margin-top: 14px; color: var(--primary); font-weight: 500; }
+  .text.top .sub b { color: var(--mint-dim); margin: 0 6px; }
+  .how { position: absolute; inset: 0; display: none; pointer-events: none; }
+  .how .ic svg { width: 100%; height: 100%; }
+  #hc21 .eq-label { position: absolute; left: 150px; top: 420px; display: flex; align-items: center; gap: 10px;
+                    font: 700 20px/1 Inter; letter-spacing: .12em; text-transform: uppercase; color: var(--on-var); }
+  #hc21 .eq-label .ic { width: 24px; height: 24px; color: var(--primary); }
+  #hc21 .eq-row { position: absolute; left: 150px; top: 462px; display: flex; gap: 26px; }
+  #hc21 .eq { position: relative; width: 300px; height: 278px; background: #fff; border: 1.5px solid #E2E7FF; border-radius: 26px;
+              box-shadow: 0 16px 40px rgba(19,27,46,.08); display: flex; flex-direction: column; align-items: center; padding-top: 18px; }
+  #hc21 .art { height: 118px; display: grid; place-items: center; color: var(--primary); }
+  #hc21 .art svg { height: 112px; width: 150px; }
+  #hc21 .ecg { stroke-dasharray: 70 34; }
+  #hc21 .lbl { position: relative; margin-top: 12px; width: 246px; padding: 10px 14px 9px; border-radius: 12px; background: #fff;
+               border: 2px dashed #C7CFE8; text-align: center; transition: none; }
+  #hc21 .lbl.done { border: 2px solid var(--primary); box-shadow: 0 0 0 5px rgba(109,245,225,.35); }
+  #hc21 .lbl .cap { font: 600 14px/1 Inter; color: var(--on-var); margin-bottom: 6px; text-align: left; }
+  #hc21 .lbl .bars { width: 214px; height: 42px; fill: var(--on-surface); display: block; }
+  #hc21 .lbl .id { font: 600 17px/1 Inter; letter-spacing: .12em; margin-top: 6px; color: var(--on-surface); font-variant-numeric: tabular-nums; }
+  #hc21 .finder { position: absolute; inset: -8px; border-radius: 14px; opacity: 0;
+                  background: linear-gradient(var(--red), var(--red)) 0 0/22px 4px, linear-gradient(var(--red), var(--red)) 0 0/4px 22px,
+                              linear-gradient(var(--red), var(--red)) 100% 0/22px 4px, linear-gradient(var(--red), var(--red)) 100% 0/4px 22px,
+                              linear-gradient(var(--red), var(--red)) 0 100%/22px 4px, linear-gradient(var(--red), var(--red)) 0 100%/4px 22px,
+                              linear-gradient(var(--red), var(--red)) 100% 100%/22px 4px, linear-gradient(var(--red), var(--red)) 100% 100%/4px 22px;
+                  background-repeat: no-repeat; }
+  #hc21 .laser { position: absolute; left: -6px; right: -6px; height: 3px; background: var(--red); border-radius: 2px; opacity: 0;
+                 box-shadow: 0 0 12px 3px rgba(239,68,68,.6); }
+  #hc21 .ok { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: #fff;
+              padding: 9px; opacity: 0; box-shadow: 0 6px 16px rgba(0,104,95,.35); }
+  #hc21 .link { position: absolute; left: 1100px; top: 583px; width: 260px; height: 40px; overflow: visible; }
+  #hc21 .link path { fill: none; stroke: var(--primary); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  #hc21 .link .head { opacity: 0; }
+  #hc21 .packet { position: absolute; left: 1114px; top: 548px; display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px;
+                  background: var(--primary); color: #fff; font: 600 18px/1 Inter; letter-spacing: .06em; opacity: 0; transform-origin: right center;
+                  box-shadow: 0 10px 24px rgba(0,104,95,.35); white-space: nowrap; }
+  #hc21 .packet .ic { width: 20px; height: 20px; }
+  #hc21 .steps { position: absolute; left: 150px; top: 778px; width: 952px; display: flex; align-items: stretch; gap: 14px; }
+  #hc21 .step { flex: 1; display: flex; gap: 18px; background: #fff; border: 1.5px solid #E2E7FF; border-radius: 22px; padding: 22px 24px;
+                box-shadow: 0 10px 30px rgba(19,27,46,.07); }
+  #hc21 .step .n { flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; font: 800 24px/1 Jakarta; }
+  #hc21 .step:last-child .n { background: var(--ai); }
+  #hc21 .step .h { display: flex; align-items: center; gap: 10px; font: 800 25px/1.15 Jakarta; color: var(--on-surface); margin: 8px 0 10px; }
+  #hc21 .step .h .ic { width: 28px; height: 28px; color: var(--primary); flex: none; }
+  #hc21 .step:last-child .h .ic { color: var(--ai); }
+  #hc21 .step p { font: 400 22px/1.4 Inter; color: var(--on-var); }
+  #hc21 .chev { align-self: center; font: 800 40px/1 Jakarta; color: var(--mint-dim); }
+
+  #flow .pipes { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+  #flow .pipes path { fill: none; stroke: rgba(70,72,212,.45); stroke-width: 14; stroke-linecap: round; }
+  #flow .packets i { position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-radius: 4px; background: #B9FFF4;
+                     border: 2px solid #fff; box-shadow: 0 0 14px 4px rgba(109,245,225,.85); }
+  #flow .pill { position: absolute; top: 74px; display: inline-flex; align-items: center; gap: 12px; font: 700 24px/1 Inter; letter-spacing: .1em;
+                text-transform: uppercase; color: var(--primary); background: rgba(109,245,225,.45); padding: 13px 22px 13px 14px; border-radius: 999px; opacity: 0; }
+  #flow .pill .num { background: var(--primary); color: #fff; border-radius: 999px; padding: 5px 11px; letter-spacing: 0; }
+  #flow .p1 { left: 270px; } #flow .p2 { left: 810px; } #flow .p3 { left: 1440px; }
+  #flow .hub { position: absolute; left: 910px; top: 776px; width: 140px; height: 140px; border-radius: 34px; padding: 34px; color: #fff;
+               background: linear-gradient(140deg, var(--primary-c), var(--primary)); box-shadow: 0 20px 50px rgba(0,104,95,.4), inset 0 2px 0 rgba(255,255,255,.25); opacity: 0; }
+  #flow .hub svg { width: 100%; height: 100%; position: relative; }
+  #flow .hub .ring { position: absolute; inset: 0; border-radius: 34px; border: 3px solid var(--mint-dim); }
+  #flow .beam { position: absolute; left: 860px; top: 600px; width: 240px; height: 196px; transform-origin: 50% 100%; opacity: 0;
+                clip-path: polygon(0 0, 100% 0, 66% 100%, 34% 100%); background: linear-gradient(180deg, rgba(109,245,225,0) 0%, rgba(109,245,225,.65) 100%); }
+  #flow .sheet { position: absolute; left: 770px; top: 168px; width: 420px; background: #fff; border-radius: 18px; overflow: hidden; opacity: 0;
+                 border: 1.5px solid #D6DCF5; box-shadow: 0 30px 70px rgba(19,27,46,.18); }
+  #flow .sheet .bar { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #EEF7F5; font: 700 19px/1 Jakarta; color: var(--on-surface); }
+  #flow .sheet .xl { width: 26px; height: 26px; border-radius: 6px; background: #1D7A45; color: #fff; display: grid; place-items: center; font: 800 15px/1 Inter; }
+  #flow .sheet .row { display: grid; grid-template-columns: 128px 1fr 54px 92px; font: 500 15px/1 Inter; color: var(--on-surface);
+                      border-top: 1px solid #E3E6EF; font-variant-numeric: tabular-nums; }
+  #flow .sheet .row span { padding: 13px 0 13px 12px; white-space: nowrap; overflow: hidden; }
+  #flow .sheet .row span + span { border-left: 1px solid #E3E6EF; }
+  #flow .sheet .row.head { font-weight: 700; color: var(--on-var); background: #F4F5FA; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+  #flow .sheet .row.loan span:last-child { background: #FEF3C7; color: #92400E; }
+  #flow .sheet .row.ok span:last-child { background: #DCFCE7; color: #166534; }
+  #flow .sheet .row.rep { background: #FEE2E2; color: #991B1B; }
+  #flow .dash { position: absolute; left: 1300px; top: 160px; width: 560px; height: 760px; background: #fff; border-radius: 26px; overflow: hidden; opacity: 0;
+                border: 1.5px solid #D6DCF5; box-shadow: 0 30px 80px rgba(19,27,46,.2); display: flex; flex-direction: column; transform-origin: 0 60%; }
+  #flow .dash .top { background: linear-gradient(100deg, var(--primary), var(--primary-c)); color: #fff; font: 800 23px/1.2 Jakarta; padding: 20px 24px; }
+  #flow .tiles { display: flex; gap: 12px; padding: 16px 16px 0; }
+  #flow .tile { flex: 1; background: var(--surface); border: 1.5px solid #E2E7FF; border-radius: 16px; padding: 14px; }
+  #flow .tile span { display: block; font: 600 14px/1.2 Inter; color: var(--on-var); }
+  #flow .tile b { display: block; font: 800 40px/1 Jakarta; color: var(--on-surface); margin-top: 10px; font-variant-numeric: tabular-nums; }
+  #flow .tile:nth-child(3) b { color: var(--primary); }
+  #flow .mid { display: flex; gap: 12px; padding: 12px 16px 0; }
+  #flow .panel { background: var(--surface); border: 1.5px solid #E2E7FF; border-radius: 16px; padding: 14px; flex: 1; }
+  #flow .panel h4 { font: 700 16px/1 Jakarta; color: var(--on-surface); margin-bottom: 8px; }
+  #flow .pie { display: flex; align-items: center; gap: 8px; }
+  #flow .pie svg { width: 130px; height: 130px; transform: rotate(-90deg); flex: none; }
+  #flow .pie circle { fill: none; stroke-width: 26; }
+  #flow .pie ul { list-style: none; font: 500 13px/1.2 Inter; color: var(--on-var); display: flex; flex-direction: column; gap: 7px; }
+  #flow .pie li { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  #flow .pie li i { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  #flow .line { width: 100%; height: 150px; display: block; overflow: visible; }
+  #flow .line .stroke { fill: none; stroke: var(--ai); stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+  #flow .line .area { fill: rgba(96,99,238,.14); opacity: 0; }
+  #flow .line circle { fill: #fff; stroke: var(--ai); stroke-width: 3; opacity: 0; }
+  #flow .line text { font: 500 12px Inter; fill: var(--on-var); text-anchor: middle; }
+  #flow .status { margin: 12px 16px 16px; flex: 1; display: flex; flex-direction: column; }
+  #flow .bars { flex: 1; display: flex; gap: 22px; align-items: stretch; padding: 4px 18px 0; }
+  #flow .bars .b { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #flow .bars .col { flex: 1; width: 100%; display: flex; align-items: flex-end; border-bottom: 2px solid #D6DCF5; }
+  #flow .bars i { display: block; width: 100%; height: 100%; border-radius: 10px 10px 0 0; transform-origin: 50% 100%; transform: scaleY(0); }
+  #flow .bars span { font: 600 14px/1 Inter; color: var(--on-var); }
+
   /* Ollama mascot sticker (scene 7) */
   #mascot { position: absolute; width: 400px; height: 400px; border-radius: 48px; overflow: hidden; background: #fff;
             box-shadow: 0 30px 80px rgba(19,27,46,.28), 0 0 0 6px rgba(255,255,255,.6); display: none; }
