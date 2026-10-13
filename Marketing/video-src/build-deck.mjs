@@ -25,7 +25,7 @@ fs.mkdirSync(out, { recursive: true });
 fs.writeFileSync(path.join(out, 'index.html'), html);
 
 for (const d of deps) copy(d, vendor(d));
-for (const f of ['engine.js', 'story.js', 'deck.js', 'deck.css', 'words.json', 'hospital_logo.png']) copy(f);
+for (const f of ['engine.js', 'story.js', 'how.js', 'deck.js', 'deck.css', 'words.json', 'hospital_logo.png']) copy(f);
 const images = story.allImages();
 for (const f of images) copy(f);
 

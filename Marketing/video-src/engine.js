@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { story } from './story.js';
+import { buildHow, drawHow } from './how.js';
 
 // ---------- helpers ----------
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -141,6 +142,14 @@ function drawScreen(t, T) {
         const [x, y, w, h] = words[n - 1];
         sctx.fillStyle = '#4648D4'; sctx.fillRect(x + w + 6, y, 4, h);
       }
+    } else if (L.type) {     // text typed into an input field over its placeholder
+      const { x, y, w, h, tx, text, k } = L.type;
+      if (k <= 0) continue;
+      const n = Math.round(k * text.length);
+      sctx.fillStyle = '#fff'; sctx.fillRect(x, y, w, h);
+      sctx.fillStyle = '#131B2E'; sctx.font = '500 42px Inter'; sctx.textBaseline = 'middle';
+      sctx.fillText(text.slice(0, n), tx, y + h / 2);
+      if (k < 1) { sctx.fillStyle = '#00685F'; sctx.fillRect(tx + sctx.measureText(text.slice(0, n)).width + 4, y + h / 2 - 26, 4, 52); }
     } else if (L.pulse) {    // live mic level rings while listening
       const { x, y, t: lt } = L.pulse;
       for (let j = 0; j < 3; j++) {
@@ -309,6 +318,7 @@ window.renderFrame = (T, deck) => {
   drawBackground(t, { x: (v.x + 1) / 2 * 1920, y: (1 - v.y) / 2 * 1080 }, A);
   drawTexts(t);
   drawMascot(t, L);
+  drawHow(t, A);
   drawBlog(t, deck ? A : t);
   renderer.render(scene, camera);
 };
@@ -321,6 +331,7 @@ window.setupDone = (async () => {
   await document.fonts.ready;
   await Promise.all(story.allImages().map(loadImage));
   buildTexts();
+  buildHow();
   window.renderFrame(0);
   return story.duration;
 })();
