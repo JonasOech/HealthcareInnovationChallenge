@@ -18,8 +18,8 @@ async function startDeck() {
     <div id="deck-loading"><div class="ring"></div><div>Loading presentation…</div></div>
     <div id="deck-black"></div>
     <button id="deck-live" hidden></button>
-    <div id="deck-hint">Click or press <kbd>→</kbd> to start · <kbd>F</kbd> fullscreen · <kbd>P</kbd> presenter view</div>
-    <div id="deck-hud"><button data-act="prev" aria-label="Previous slide">‹</button><span id="deck-count"></span><button data-act="next" aria-label="Next slide">›</button><button data-act="full" aria-label="Fullscreen">⛶</button></div>
+    <div id="deck-hint"><span class="for-keys">Click or press <kbd>→</kbd> to start · <kbd>F</kbd> fullscreen · <kbd>P</kbd> presenter view</span><span class="for-touch">Tap or swipe to start · tap the expand button to fill the screen</span></div>
+    <div id="deck-hud"><button data-act="prev" aria-label="Previous slide">‹</button><span id="deck-count"></span><button data-act="next" aria-label="Next slide">›</button><button data-act="full" id="deck-full" aria-label="Fullscreen"></button></div>
     <aside id="deck-panel">
       <div class="row"><span id="p-count"></span><span id="p-timer" title="Click to reset">00:00</span></div>
       <h1 id="p-title"></h1>
@@ -32,8 +32,14 @@ async function startDeck() {
   const $ = id => document.getElementById(id);
 
   // ---------- fit the 1920x1080 stage into the window ----------
+  // Maximized on a phone (.max): fullscreen where the browser allows it (iPhone Safari doesn't for pages), and in
+  // portrait the whole page is turned sideways (.rotated) so the 16:9 slide fills the screen.
+  let rotated = false;
   function fit() {
-    const W = innerWidth, H = innerHeight;
+    rotated = root.classList.contains('max') && innerHeight > innerWidth;
+    root.classList.toggle('rotated', rotated);
+    const W = rotated ? innerHeight : innerWidth, H = rotated ? innerWidth : innerHeight;
+    document.body.style.cssText = rotated ? `width: ${W}px; height: ${H}px; transform: translateX(${H}px) rotate(90deg)` : '';
     const box = presenter ? { x: 24, y: 24, w: Math.max(320, W - 460), h: H - 48 } : { x: 0, y: 0, w: W, h: H };
     const s = Math.min(box.w / 1920, box.h / 1080);
     stage.style.transform = `translate(${box.x + (box.w - 1920 * s) / 2}px, ${box.y + (box.h - 1080 * s) / 2}px) scale(${s})`;
@@ -185,10 +191,34 @@ async function startDeck() {
   }
 
   // ---------- input ----------
-  const actions = {
-    next, prev,
-    full: () => (document.fullscreenElement ? document.exitFullscreen() : root.requestFullscreen()).catch(() => {}),
+  const fsElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+  const touchUI = matchMedia('(hover: none)').matches;
+  const icons = {
+    expand: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg>',
+    shrink: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>',
   };
+  function fullUI() {
+    const on = !!fsElement() || root.classList.contains('max');
+    $('deck-full').innerHTML = on ? icons.shrink : icons.expand;
+    $('deck-full').setAttribute('aria-label', on ? 'Exit fullscreen' : 'Fullscreen');
+  }
+  function setMax(on) { root.classList.toggle('max', on); fit(); fullUI(); }
+  function full() {
+    if (fsElement() || root.classList.contains('max')) {
+      setMax(false);
+      if (fsElement()) Promise.resolve((document.exitFullscreen || document.webkitExitFullscreen).call(document)).catch(() => {});
+      return;
+    }
+    const request = root.requestFullscreen || root.webkitRequestFullscreen;
+    // phones: also try to turn to landscape (Android Chrome allows it in fullscreen)
+    if (request) Promise.resolve(request.call(root)).then(() => touchUI && screen.orientation?.lock?.('landscape')).catch(() => {});
+    if (touchUI || !request) setMax(true);
+  }
+  for (const ev of ['fullscreenchange', 'webkitfullscreenchange'])
+    document.addEventListener(ev, () => (fsElement() ? fullUI() : setMax(false)));
+  fullUI();
+
+  const actions = { next, prev, full };
   document.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); actions[b.dataset.act](); }));
 
   let digits = '', digitsTimer = 0;
@@ -219,7 +249,8 @@ async function startDeck() {
   stage.addEventListener('touchstart', e => { touch = e.touches[0]; }, { passive: true });
   stage.addEventListener('touchend', e => {
     if (!touch) return;
-    const dx = e.changedTouches[0].clientX - touch.clientX; touch = null;
+    const end = e.changedTouches[0];   // turned sideways, the slide's x axis runs down the screen
+    const dx = rotated ? end.clientY - touch.clientY : end.clientX - touch.clientX; touch = null;
     if (Math.abs(dx) > 50) { e.preventDefault(); (dx < 0 ? next : prev)(); }
   });
 

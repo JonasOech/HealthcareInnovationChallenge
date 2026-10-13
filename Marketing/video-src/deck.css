@@ -1,6 +1,10 @@
 /* Presentation mode (deck.js adds .deck to <html>). Without it, index.html is the fixed 1920x1080 video page. */
 html.deck, html.deck body { width: 100%; height: 100%; overflow: hidden; background: #000; }
-html.deck #stage { inset: auto; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; cursor: pointer; }
+html.deck { touch-action: manipulation; }   /* no double-tap zoom when tapping through slides */
+/* maximized phone in portrait: deck.js sizes the body to the landscape box and turns it sideways */
+html.rotated body { position: fixed; left: 0; top: 0; transform-origin: 0 0; }
+/* fixed, so the unscaled 1920px stage doesn't widen the layout viewport (phones would zoom the page out to fit it) */
+html.deck #stage { position: fixed; inset: auto; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; cursor: pointer; }
 html.deck canvas#gl { width: 1920px; height: 1080px; }
 html.deck #deck-panel { display: none; }
 html.deck kbd { font: 600 0.9em/1 Inter, system-ui, sans-serif; padding: 3px 7px; border-radius: 6px; border: 1px solid currentColor; opacity: .9; }
@@ -19,6 +23,8 @@ html.black #deck-black { opacity: 1; pointer-events: auto; }
              font: 500 clamp(12px, 1.3vw, 20px)/1.6 Inter, system-ui, sans-serif; color: rgba(255,255,255,.65);
              opacity: 0; transition: opacity .4s; padding: 0 16px; }
 html.at-start #deck-hint { opacity: 1; }
+#deck-hint .for-touch { display: none; }
+@media (hover: none) { #deck-hint .for-keys { display: none; } #deck-hint .for-touch { display: inline; } }
 
 #deck-hud { position: fixed; right: 16px; bottom: 16px; z-index: 10; display: flex; align-items: center; gap: 4px; padding: 4px;
             border-radius: 999px; background: rgba(19,27,46,.72); backdrop-filter: blur(8px); color: #fff;
@@ -26,7 +32,7 @@ html.at-start #deck-hint { opacity: 1; }
 html.hud #deck-hud, html.presenter #deck-hud { opacity: 1; }
 #deck-hud span { min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; }
 #deck-hud button, #deck-panel button { font: inherit; color: inherit; background: transparent; border: 0; cursor: pointer; border-radius: 999px; }
-#deck-hud button { width: 34px; height: 34px; font-size: 18px; }
+#deck-hud button { width: 34px; height: 34px; font-size: 18px; display: grid; place-items: center; }
 #deck-hud button:hover { background: rgba(255,255,255,.14); }
 @media (hover: none) { #deck-hud { opacity: 1; } }
 
