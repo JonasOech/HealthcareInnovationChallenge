@@ -42,7 +42,16 @@ How to edit:
 - 2 Synchronize: the hub beams up into the "Acute Equipment Tracker" sheet; its rows fill in one by one, colour-coded (on loan amber, available green, repair red).
 - 3 Visualization: a second pipe runs on to the "Medical Equipment Management Dashboard": Wheelchairs (total) 215, Bookings (total) 1,350, Available equipment 98 (count up); Equipment distribution donut (wheelchairs, hospital beds, syringe pumps, other); Booking trends line; Equipment status bars (in use, available, repair, reserved).
 
-*Transition: the phone leans in on the left, back on Log Equip.*
+*Transition: a teal wipe and the background turns dark; the phone spins back over to the right.*
+
+---
+
+## Tech Demo (deck only) · dark teal background, text left
+**Screen:** Log Equip tab, idle ("Hold to Speak Booking").
+
+- Headline: Tech ==Demo==
+
+*Transition: a teal wipe; the phone spins 360° to the left side, and the background turns light.*
 
 ---
 

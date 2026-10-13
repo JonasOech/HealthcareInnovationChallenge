@@ -2,10 +2,10 @@
 
 `video-src/` is the pitch presentation: a Three.js page where a 3D phone flies between scenes of the Android
 demo app, each with animated captions that highlight one feature. It runs as a clickable deck in the browser
-and holds at the 17 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
+and holds at the 18 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
 background and mascot keep moving while a slide holds. The concept is in `PRESENTATION_CONCEPT.md`.
 
-The two "how it works" slides are deck-only: they were added after the MP4 was rendered, so the video goes
+The two "how it works" slides and the "Tech Demo" title are deck-only: they were added after the MP4 was rendered, so the video goes
 straight from the intro to 01. Their phone, screen and captions live in `story.js` like every other scene; the
 equipment cards, scan, pipeline, tracker sheet and dashboard are DOM layers drawn by `how.js`.
 
@@ -17,6 +17,7 @@ same storyboard. The renderer itself is no longer in the repo — the deck is wh
 | 0:00 | Intro: "Equipment Tracking just got trivial" |
 | deck only | How it works: equipment with HC21 labels is scanned, the number lands in the booking form |
 | deck only | How it works: capture → synchronize (tracker sheet) → visualization (dashboard) |
+| deck only | "Tech Demo" section title (dark teal, like the intro) |
 | 0:05 | 01 Voice logging: hold to speak, live transcript |
 | 0:12 | 02 Gemini AI: self-corrections resolved, side remarks ignored, form filled in |
 | 0:21 | 03 One tap. Loaned. (confirm + toast) |
