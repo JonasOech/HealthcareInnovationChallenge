@@ -9,5 +9,13 @@
   "observability": { "enabled": true },
   "assets": { "directory": "dist", "binding": "ASSETS" },
   "durable_objects": { "bindings": [{ "name": "LIVE", "class_name": "Live" }] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Live"] }]
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Live"] }],
+  // `npx wrangler preview` (non-production branches in Workers Builds) needs this block. Previews don't
+  // inherit bindings, so LIVE is declared again; each Preview gets its own Durable Object namespace.
+  // assets and migrations stay top-level. Previews also don't get the production secret:
+  // `npx wrangler preview base-config secret put PRESENTER_KEY`.
+  "previews": {
+    "observability": { "enabled": true },
+    "durable_objects": { "bindings": [{ "name": "LIVE", "class_name": "Live" }] }
+  }
 }

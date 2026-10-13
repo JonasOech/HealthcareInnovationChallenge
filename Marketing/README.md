@@ -88,6 +88,9 @@ files the page loads and moves `node_modules` files to `vendor/`.
 - **Worker (needed for live talks):** `node build-deck.mjs && npx wrangler deploy` uses `wrangler.jsonc`. With
   Workers Builds (Git integration), set the root directory to `Marketing/video-src`, the build command to
   `node build-deck.mjs` and the deploy command to `npx wrangler deploy`. Set `PRESENTER_KEY` once (see above).
+  Non-production branches (e.g. `Slides`) run `npx wrangler preview`, which uses the `previews` block in
+  `wrangler.jsonc` (its own `LIVE` binding, so each Preview gets a separate Durable Object). Previews don't get the
+  production secret: set it once with `npx wrangler preview base-config secret put PRESENTER_KEY`.
 - **Static only (Cloudflare Pages or any host, no live talks):** root directory `Marketing/video-src`, build
   command `node build-deck.mjs`, output directory `dist`; or `npx wrangler pages deploy dist --project-name
   quick-equipment-log`. `.node-version` selects Node 22.
