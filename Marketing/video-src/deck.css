@@ -47,3 +47,18 @@ html.presenter #deck-panel { display: flex; flex-direction: column; gap: 18px; p
 #deck-panel .btns button { flex: 1; padding: 14px; border-radius: 12px; background: #00685F; color: #fff; font-weight: 700; }
 #deck-panel .btns button:first-child { background: rgba(255,255,255,.1); }
 #deck-panel .keys { font-size: 13px; color: #8A93AB; line-height: 2; }
+
+/* live session badge (deck.js): viewers see it during a live talk, the presenter only with the HUD so it isn't projected */
+#deck-live { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 15; display: flex; align-items: center; gap: 8px;
+             padding: 8px 14px; border: 0; border-radius: 999px; background: rgba(19,27,46,.72); backdrop-filter: blur(8px); color: #fff;
+             font: 600 13px/1 Inter, system-ui, sans-serif; white-space: nowrap; cursor: default; transition: opacity .3s; }
+#deck-live[hidden] { display: none; }
+#deck-live i { width: 8px; height: 8px; border-radius: 50%; background: #EF4444; animation: deck-pulse 1.6s ease-in-out infinite; }
+#deck-live b { color: #6DF5E1; }
+#deck-live[data-state="behind"], #deck-live[data-state="admin"] { cursor: pointer; }
+#deck-live[data-state="behind"] { background: #fff; color: #00685F; box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+html.locked #deck-hint { display: none; }
+#deck-live[data-state="admin"] { opacity: 0; }
+html.hud #deck-live[data-state="admin"], html.presenter #deck-live[data-state="admin"] { opacity: 1; }
+html.presenter #deck-live { left: 24px; top: 32px; transform: none; }
+@keyframes deck-pulse { 50% { opacity: .35; } }
