@@ -190,6 +190,34 @@ function drawScreen(t, T) {
   screenTex.needsUpdate = true;
 }
 
+// ---------- synchronized access: four more phones ring the database with the presenting one ----------
+// Clones of the phone, each with a still app screen; they fly in from outside the ring, spinning, and shrink away
+// when the slide ends. Slots are stage pixels on the z = 0 plane (story.how.access).
+const PXU = 1080 / (2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));   // stage px per world unit at z = 0
+const sats = [];
+function buildSats() {
+  for (const ph of story.how.access.phones) {
+    const g = phone.clone();
+    const tex = new THREE.Texture(img(ph.screen));
+    tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.needsUpdate = true;
+    g.children.find(c => c.material === screenMat).material = new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
+    g.visible = false; scene.add(g); sats.push(g);
+  }
+}
+function drawSats(t, A) {
+  const ac = story.how.access, out = easeInOut(prog(t, story.how.flow.t1 - 0.45, 0.45));
+  sats.forEach((g, i) => {
+    const ph = ac.phones[i], k = prog(t, ph.t, 0.9);
+    g.visible = k > 0 && out < 1;
+    if (!g.visible) return;
+    const fly = 900 * (1 - easeOut(k)), x = ph.at[0] + ph.dir[0] * fly, y = ph.at[1] + ph.dir[1] * fly;
+    g.position.set((x - 960) / PXU, (540 - y) / PXU + 0.05 * Math.sin(A * 1.4 + i * 1.7), 0);
+    g.rotation.set(THREE.MathUtils.degToRad(ph.r[0] + 1.5 * Math.sin(A * 0.9 + i)),
+      THREE.MathUtils.degToRad(ph.r[1] - 220 * (1 - easeOut(k)) + 3 * Math.sin(A * 0.7 + i * 2.3)), THREE.MathUtils.degToRad(ph.r[2]));
+    g.scale.setScalar(ac.scale * (0.6 + 0.4 * easeOutBack(k)) * (1 - out));
+  });
+}
+
 // ---------- phone motion ----------
 function phonePose(t) {
   const K = story.phoneKeys;
@@ -319,6 +347,7 @@ window.renderFrame = (T, deck) => {
   drawTexts(t);
   drawMascot(t, L);
   drawHow(t, A);
+  drawSats(t, A);
   drawBlog(t, deck ? A : t);
   renderer.render(scene, camera);
 };
@@ -332,6 +361,7 @@ window.setupDone = (async () => {
   await Promise.all(story.allImages().map(loadImage));
   buildTexts();
   buildHow();
+  buildSats();
   window.renderFrame(0);
   return story.duration;
 })();

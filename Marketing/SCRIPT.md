@@ -39,11 +39,21 @@ How to edit:
 **Screen:** Bookings tab ("Active bookings").
 
 - 1 Capture: the phone. A pipe with data packets runs to a sync hub.
-- 2 Synchronize: the hub beams up into a teal database cylinder ("Centralised database" written below it).
+- 2 Synchronize: the hub beams up into a teal database cylinder ("Central database" written below it).
 - 3 Visualization: a second pipe runs on to the "Medical Equipment Management Dashboard": Wheelchairs (total) 215, Bookings (total) 1,350, Available equipment 98 (count up); Equipment distribution donut (wheelchairs, hospital beds, syringe pumps, other); Booking trends line; Equipment status bars (in use, available, repair, reserved).
 - Next click: the "Acute Equipment Tracker" sheet pops up out of the database, its rows filling in one by one, colour-coded (on loan amber, available green, repair red), with a green badge: "Excel support still provided".
 
-*Transition: a teal wipe and the background turns dark; the phone spins back over to the right.*
+*Transition: all text except "Central database" quickly fades out, the dashboard slides away, the pipes and the sync hub disappear. The phone shrinks into a ring slot while the database shrinks and moves to the middle; four more small phones fly in, spinning, and all five link up to the database.*
+
+---
+
+## How it works · Synchronized access (deck only) · title top centre
+**Screen:** five small phones in a ring around the "Central database": the presenting phone (Bookings) plus four more showing Log Equip, Roster, the Book form and Bookings. Each one is linked to the database, with records travelling both ways along every link.
+
+- Kicker: HOW IT WORKS
+- Headline: Synchronized ==access==
+
+*Transition: the four extra phones shrink away, a teal wipe and the background turns dark; the phone spins back over to the right.*
 
 ---
 
