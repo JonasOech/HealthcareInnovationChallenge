@@ -107,7 +107,7 @@ const FLOW = `
   <div class="pill p3"><span class="num">3</span>Visualization</div>
   <div class="beam"></div>
   <div class="hub"><span class="ring"></span><span class="ring"></span>${ICON.sync}</div>
-  <div class="db">${ICON.db}<div class="cap">Equipment database</div></div>
+  <div class="db">${ICON.db}<div class="cap">Centralised database</div></div>
   <div class="sheet">
     <div class="bar"><span class="xl">X</span>Acute Equipment Tracker</div>
     <div class="row head"><span>HC21 no.</span><span>Type</span><span>Ward</span><span>Status</span></div>
