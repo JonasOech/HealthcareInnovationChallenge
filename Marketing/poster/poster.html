@@ -25,39 +25,32 @@
   .poster { position: relative; width: 1680px; height: 2376px; overflow: hidden; zoom: 0.944882;
             background: radial-gradient(1500px 1300px at 28% 14%, #00897D 0%, #00685F 40%, #003D38 100%); }
   .glow { position: absolute; border-radius: 50%; }
-  .g1 { left: 760px; top: 760px; width: 1100px; height: 1100px; background: radial-gradient(closest-side, rgba(109,245,225,.30), rgba(109,245,225,0)); }
+  .g1 { left: 710px; top: 650px; width: 1100px; height: 1100px; background: radial-gradient(closest-side, rgba(109,245,225,.30), rgba(109,245,225,0)); }
   .g2 { left: 1000px; top: 1700px; width: 1100px; height: 1000px; background: radial-gradient(closest-side, rgba(96,99,238,.22), rgba(96,99,238,0)); }
   .g3 { left: -380px; top: 1500px; width: 1000px; height: 1000px; background: radial-gradient(closest-side, rgba(0,131,120,.35), rgba(0,131,120,0)); }
 
-  /* header: the challenge banner (bubbles kept from the original) */
-  .bubble { position: absolute; border-radius: 50%; background: rgba(109,245,225,.10); border: 3px solid rgba(109,245,225,.16); }
-  .head { position: absolute; left: 0; right: 0; top: 96px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .head .t { font: 800 168px/1 Jakarta; letter-spacing: -0.035em; color: #fff; }
-  .head .pill { margin-top: 34px; font: 800 84px/1 Jakarta; letter-spacing: -0.01em; color: #00201D; background: var(--mint);
-                padding: 20px 46px 24px; border-radius: 999px; box-shadow: 0 18px 50px rgba(0,30,27,.35); }
-  .head .sub { margin-top: 38px; font: 500 50px/1.2 Inter; color: rgba(255,255,255,.82); }
-
   /* "Equipment Tracking" band */
-  .band { position: absolute; left: 0; right: 0; top: 640px; height: 250px; display: flex; align-items: center; justify-content: center;
+  .band { position: absolute; left: 0; right: 0; top: 96px; height: 300px; display: flex; align-items: center; justify-content: center;
           background: linear-gradient(100deg, #004F48 0%, var(--primary-c) 55%, #00A193 100%);
           box-shadow: 0 30px 80px rgba(0,30,27,.35), inset 0 3px 0 rgba(255,255,255,.12), inset 0 -3px 0 rgba(0,0,0,.12); }
-  .band h1 { font: 800 160px/1 Jakarta; letter-spacing: -0.035em; color: #fff; padding-bottom: 10px; }
+  .band h1 { font: 800 164px/1 Jakarta; letter-spacing: -0.035em; color: #fff; padding-bottom: 10px; }
 
   /* middle: "Just say it." left, the phone right */
-  .say { position: absolute; left: 96px; width: 744px; top: 990px; height: 960px; display: flex; flex-direction: column; justify-content: center; }
-  .say .t { font: 800 150px/1.02 Jakarta; letter-spacing: -0.035em; color: #fff; position: relative; isolation: isolate; white-space: nowrap; }
-  .say .sub { margin-top: 30px; font: 400 46px/1.35 Inter; color: rgba(255,255,255,.85); }
+  .say { position: absolute; left: 96px; width: 760px; top: 470px; height: 1460px; display: flex; flex-direction: column; justify-content: center;
+         padding-bottom: 152px; }   /* lifts the block 76px so the A4 seam (y = 1188) runs between the title and the line below */
+  .say .t { font: 800 154px/1.02 Jakarta; letter-spacing: -0.035em; color: #fff; position: relative; isolation: isolate; white-space: nowrap; }
+  .say .sub { margin-top: 64px; font: 400 48px/1.35 Inter; color: rgba(255,255,255,.85); }
   mark { position: relative; background: none; color: inherit; white-space: nowrap; }
   mark::before { content: ""; position: absolute; left: -10px; right: -10px; bottom: 6%; height: 42%; border-radius: 14px;
                  background: rgba(109,245,225,.38); z-index: -1; }
 
-  .stage { position: absolute; left: 840px; width: 840px; top: 990px; height: 960px; }
-  .card { position: absolute; left: 130px; top: 40px; width: 580px; height: 880px; border-radius: 56px; transform: rotate(-7deg);
+  .stage { position: absolute; left: 840px; width: 840px; top: 470px; height: 1460px; }
+  .card { position: absolute; left: 110px; top: 150px; width: 620px; height: 1160px; border-radius: 56px; transform: rotate(-7deg);
           background: linear-gradient(160deg, rgba(109,245,225,.26) 0%, rgba(0,131,120,.30) 45%, rgba(0,61,56,.55) 100%);
           border: 3px solid rgba(109,245,225,.30); box-shadow: 0 40px 100px rgba(0,30,27,.45); }
 
   /* the phone, drawn from scratch: 360 x 800 dp screen, scaled up */
-  .phone { position: absolute; left: 224px; top: 26px; width: 392px; height: 832px; transform: rotate(4deg) scale(1.09); transform-origin: 50% 50%;
+  .phone { position: absolute; left: 224px; top: 314px; width: 392px; height: 832px; transform: rotate(4deg) scale(1.5); transform-origin: 50% 50%;
            border-radius: 56px; background: #0b0f12; padding: 16px;
            box-shadow: 0 50px 110px rgba(0,20,18,.6), inset 0 0 0 3px #3a4447, inset 0 0 0 5px #0b0f12, inset 0 0 0 6px #6b7779; }
   .phone .btn { position: absolute; right: -6px; width: 6px; border-radius: 0 4px 4px 0; background: #4a5558; }
@@ -108,10 +101,10 @@
   .sys svg { width: 14px; height: 14px; fill: #E2E4EE; }
 
   /* bottom band and tagline */
-  .feat { position: absolute; left: 96px; right: 96px; top: 2040px; height: 150px; border-radius: 40px; display: flex; align-items: center; justify-content: center;
-          background: rgba(109,245,225,.14); border: 3px solid rgba(109,245,225,.32); font: 700 62px/1 Jakarta; letter-spacing: -0.015em; color: #fff; white-space: nowrap; padding-bottom: 6px; }
+  .feat { position: absolute; left: 96px; right: 96px; top: 1990px; height: 160px; border-radius: 44px; display: flex; align-items: center; justify-content: center;
+          background: rgba(109,245,225,.14); border: 3px solid rgba(109,245,225,.32); font: 700 64px/1 Jakarta; letter-spacing: -0.015em; color: #fff; white-space: nowrap; padding-bottom: 6px; }
   .feat b { color: var(--mint); margin: 0 20px; }
-  .tag { position: absolute; left: 0; right: 0; top: 2236px; text-align: center; font: 800 76px/1 Jakarta; letter-spacing: -0.025em; color: #fff; isolation: isolate; }
+  .tag { position: absolute; left: 0; right: 0; top: 2210px; text-align: center; font: 800 86px/1 Jakarta; letter-spacing: -0.025em; color: #fff; isolation: isolate; }
 
   /* print: one A2 page, or four A4 tiles (?tiles) */
   .poster-wrap { width: 420mm; height: 594mm; overflow: hidden; }
@@ -126,17 +119,6 @@
 <div class="poster-wrap" id="wrap">
 <div class="poster">
   <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
-  <div class="bubble" style="left:-120px;top:-150px;width:420px;height:420px"></div>
-  <div class="bubble" style="left:190px;top:200px;width:170px;height:170px"></div>
-  <div class="bubble" style="left:40px;top:330px;width:90px;height:90px"></div>
-  <div class="bubble" style="left:330px;top:60px;width:60px;height:60px"></div>
-
-  <div class="head">
-    <div class="t">Transforming</div>
-    <div class="pill">Challenge 26</div>
-    <div class="sub">Co-create the future of healthcare</div>
-  </div>
-
   <div class="band"><h1>Equipment Tracking</h1></div>
 
   <div class="say">
