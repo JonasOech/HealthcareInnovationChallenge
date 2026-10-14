@@ -24,8 +24,9 @@ const PADS = [
   [52.65, 1.60], [54.75, 1.60], [57.4, 1.55],                   // 5 waitlist 9.50 -> 14.25
   [63.8, 1.60], [65.9, 1.65],                                  // 6 roster  6.50 -> 9.75
   [68.8, 2.25],                                                 // 7 privacy 4.50 -> 6.75
-  [76.3, 2.875],                                                // 8 outro   5.75 -> 8.625
-  [81.5, 3.375],                                                // 9 blog    6.75 -> 10.125
+  // the business case (deck only, after 07) gets no holds: the deck holds at its stops
+  [86.8, 2.875],                                                // 8 outro   5.75 -> 8.625
+  [92.0, 3.375],                                                // 9 blog    6.75 -> 10.125
 ];
 const warp = a => a + PADS.reduce((s, [p, d]) => s + (a > p ? d : 0), 0);   // authored -> output
 function unwarp(T) {                                                        // output -> authored
@@ -80,7 +81,7 @@ const clips = [
   // 07 privacy
   { t0: 66.75, fade: 0.25, layers: () => [{ src: P + 'log_idle.png' }] },
   // outro
-  { t0: 71.1, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
+  { t0: 81.6, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
 ];
 
 function screenLayers(t, T) {
@@ -110,12 +111,32 @@ const access = { ...AC,
 const world = ([x, y]) => [(x - 960) / PXU, (540 - y) / PXU, 0];
 const inRing = (t, dy = 0) => ({ t, p: world(access.main.at), r: [access.main.r[0], 360 + access.main.r[1] + dy, 0], s: access.scale });
 
+// ---------- business case (deck only) ----------
+// The team's "Savings & ROI" spreadsheet: the inputs as entered there, and the outputs derived the same way, so
+// the slides can't drift from the sheet (money.js draws them). Hours are per year.
+const roi = (() => {
+  const i = {
+    hours: [['Searching', 120], ['Stock checks', 104], ['Excel updates', 63], ['Waitlist', 42]],
+    withApp: 30, day: 7.5,                              // hours a year with the app, hours in a working day
+    assistant: 84, assistantRate: 25, overtimeRate: 30,  // saved hours that are healthcare-assistant hours; the rest is overtime
+    loss: 8000, lossCut: 0.3,                           // equipment lost a year, expected reduction
+    setup: 7000, running: 800, years: 1,
+  };
+  const today = i.hours.reduce((n, [, h]) => n + h, 0), saved = today - i.withApp;
+  const staff = i.assistant * i.assistantRate + (saved - i.assistant) * i.overtimeRate, losses = i.loss * i.lossCut;
+  const total = staff + losses, monthly = (total - i.running) / 12, cost = i.setup + i.running * i.years;
+  return { ...i, today, saved, days: saved / i.day, staff, losses, total, monthly, payback: i.setup / monthly, cost,
+    roi: (total * i.years - cost) / cost };
+})();
+const eur = v => '€' + Math.round(v).toLocaleString('en-US');
+
 // ---------- phone path ----------
 const Z = 3.3;
 const RIGHT = { p: [1.22, -0.02, Z], r: [-3, -20, 2] };   // phone on the right, text left
 const LEFT = { p: [-1.22, -0.02, Z], r: [-3, 20, -2] };   // phone on the left, text right
 const k = (t, pose, extra = {}) => ({ t, p: [...pose.p], r: [...pose.r], ...extra });
 const spin = (pose, dy) => ({ p: pose.p, r: [pose.r[0], pose.r[1] + dy, pose.r[2]] });
+const OFF = { p: [-1.5, -4.8, 1.6], r: [40, 300, -20] };   // below the frame, out of the way of the business case charts
 
 const phoneKeys = [
   { t: 0, p: [3.2, -3.6, -1.5], r: [35, -250, 30], float: 0 },
@@ -147,9 +168,11 @@ const phoneKeys = [
   k(66.2, RIGHT, { p: [1.2, 0.02, 3.5] }),
   k(67.1, spin(LEFT, 360)),
   k(70.5, spin(LEFT, 360), { p: [-1.2, 0.0, 3.45] }),
-  { t: 71.9, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },
-  { t: 76.5, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
-  { t: 78.0, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
+  { t: 71.5, ...OFF },                                            // business case: the phone dives out of the frame
+  { t: 81.3, ...OFF },
+  { t: 82.4, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },             // and comes back up for the outro
+  { t: 87.0, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
+  { t: 88.5, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
 ];
 
 // ---------- copy ----------
@@ -226,7 +249,12 @@ const texts = [
     `<div class="sub">Our app is fully compatible with ollama - Privacy by design</div>` +
     `<div class="chips">${chip('lock', 'GDPR-minded from day one')}</div>` },
 
-  { t0: 71.8, t1: 76.9, side: 'left', dark: true, markDelay: 1.1, html:
+  // business case: the cards and the payback chart are the #money layer in money.js
+  { t0: 71.35, t1: 77.2, side: 'center', cls: 'top', html: `<div class="kicker">The business case</div>` + lines('Time back. <mark>Money saved.</mark>') },
+  { t0: 77.25, t1: 81.3, side: 'center', cls: 'top', html:
+    `<div class="kicker">Return on investment</div>` + lines(`Pays for itself in <mark>${roi.payback.toFixed(1)} months.</mark>`) },
+
+  { t0: 82.3, t1: 87.4, side: 'left', dark: true, markDelay: 1.1, html:
     `<div class="brand"><img src="hospital_logo.png"><div><div style="font:800 34px/1.1 Jakarta;color:#fff">Quick Equipment Log</div><div style="font:500 22px/1.4 Inter;color:var(--mint)">Speak it. Log it. Find it.</div></div></div>` +
     `<div style="height:44px"></div>` + lines('Smarter equipment', 'tracking for better', '<mark>patient care.</mark>') +
     `<div class="foot">Healthcare Innovation Challenge 2026 · Tallaght University Hospital<br>Grace, Marvin &amp; Jonas</div>` +
@@ -280,8 +308,11 @@ const stops = [
   { t: 63.85, title: '06 · Roster: filter', notes: 'The roster shows every item and where it is. Filter by category…' },
   { t: 65.95, title: '06 · Roster: search', notes: '…or search by ID, type or location, and filter by status: available, on loan, repair, missing, late.' },
   { t: 70.1, title: '07 · Private by design', notes: 'Patient data stays minimal: MRN only, no names. The parsing step can be swapped for a locally hosted model (e.g. Ollama), so no data has to leave the hospital.' },
-  { t: 76.3, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
-  { t: 81.0, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
+  { t: 74.3, title: 'Business case: staff time', notes: `Today OT spends ${roi.today} hours a year on stock checks, Excel updates, the waitlist and searching for equipment. With the app that drops to about ${roi.withApp} hours: ${roi.saved} hours saved, about ${Math.round(roi.days)} working days.` },
+  { t: 76.6, title: 'Business case: money saved', notes: `${roi.assistant} of the saved hours are healthcare-assistant hours at €25, the other ${roi.saved - roi.assistant} would be overtime at €30: ${eur(roi.staff)}. Cutting the ${eur(roi.loss)} of equipment lost a year by 30% saves ${eur(roi.losses)}. Together about ${eur(roi.total)} a year.` },
+  { t: 80.4, title: 'Business case: payback', notes: `${eur(roi.setup)} to set up and ${eur(roi.running)} a year to run. Net savings of ${eur(roi.monthly)} a month pay it back after ${roi.payback.toFixed(1)} months, and the first year returns ${Math.round(roi.roi * 100)}% on the ${eur(roi.cost)} spent.` },
+  { t: 86.8, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
+  { t: 91.5, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
 ];
 
 const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
@@ -295,9 +326,11 @@ export const story = {
   // how it works: the HC21 scan scene and the capture → synchronize → visualization scene (how.js); flow runs on
   // through the synchronized access slide, which reuses its database (access)
   how: { hc21: { t0: 5.3, t1: 11.45 }, flow: { t0: 11.5, t1: 22.0 }, access },
+  // business case after 07 (deck only): staff time and money saved cards, then the payback chart (money.js)
+  money: { t0: 71.0, t1: 81.3, roi, eur },
   // scene 9: oechsner.dev end card
-  blog: { t0: 76.75 },
-  duration: warp(83.5),
+  blog: { t0: 87.25 },
+  duration: warp(94.0),
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
     ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png',
@@ -306,7 +339,7 @@ export const story = {
   // phone keyframes live in output time and are evaluated against real time, so the phone keeps
   // drifting through a hold instead of freezing with the rest of the frame
   phoneKeys: phoneKeys.map(K => ({ ...K, t: warp(K.t) })),
-  darkness: t => Math.max(1 - clamp((t - 4.95) / 0.3), clamp((t - 22.05) / 0.4) * (1 - clamp((t - 24.45) / 0.3)), clamp((t - 71.2) / 0.4)),
+  darkness: t => Math.max(1 - clamp((t - 4.95) / 0.3), clamp((t - 22.05) / 0.4) * (1 - clamp((t - 24.45) / 0.3)), clamp((t - 81.7) / 0.4)),
   // wipe passes at scene changes into/out of the dark intro/outro
-  wipeAt: t => { for (const c of [5.0, 22.1, 24.5, 71.25]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },
+  wipeAt: t => { for (const c of [5.0, 22.1, 24.5, 81.75]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },
 };

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { story } from './story.js';
 import { buildHow, drawHow } from './how.js';
+import { buildMoney, drawMoney } from './money.js';
 
 // ---------- helpers ----------
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -348,6 +349,7 @@ window.renderFrame = (T, deck) => {
   drawMascot(t, L);
   drawHow(t, A);
   drawSats(t, A);
+  drawMoney(t);
   drawBlog(t, deck ? A : t);
   renderer.render(scene, camera);
 };
@@ -361,6 +363,7 @@ window.setupDone = (async () => {
   await Promise.all(story.allImages().map(loadImage));
   buildTexts();
   buildHow();
+  buildMoney();
   buildSats();
   window.renderFrame(0);
   return story.duration;

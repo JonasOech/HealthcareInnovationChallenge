@@ -143,6 +143,17 @@ How to edit:
 - Sub: Our app is fully compatible with ollama - Privacy by design
 - Chips: 🔒 GDPR-minded from day one
 
+---
+
+## Business case (deck only, 3 stops) · light background, phone dives out of the frame
+Numbers from the team's "Savings & ROI" spreadsheet (inputs in `story.js`, `roi`).
+
+- Kicker: THE BUSINESS CASE · Headline: Time back. ==Money saved.==
+- Card "Staff time": a big circle **329 h** "Today (manual)", ringed by where the hours go (searching 120 h, stock checks 104 h, Excel updates 63 h, waitlist 42 h) → a small circle **30 h** "With our app" (areas to scale). Footer: **299 hours** saved per year ≈ 40 working days
+- Next click, card "Money saved": bars €2,400 fewer lost items · €8,550 staff time recovered · €10,950 total per year. Footer: €10,950 a year, plus the sums behind it
+- Next click, the cards make way. Kicker: RETURN ON INVESTMENT · Headline: Pays for itself in ==8.3 months.==
+- Tiles: €7,000 setup (one-off) · €800 / year running · +40% return in year one. Chart: cumulative cost vs. cumulative savings over year one, break-even at 8.3 months, +€3,150 by month 12
+
 *Transition: a teal wipe, and the background turns dark again.*
 
 ---
