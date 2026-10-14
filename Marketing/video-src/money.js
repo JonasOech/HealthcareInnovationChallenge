@@ -3,6 +3,8 @@
 // stop 2 — the money-saved card: fewer lost items + staff time recovered = total a year,
 // stop 3 — the cards make way for the payback chart: cumulative cost vs. savings over year one, with the tiles.
 // The numbers come from story.money.roi (the team's spreadsheet); times are offsets from story.money.t0.
+// Before it, the "Here comes the money" title gets a pot of gold on the right, its rainbow leaving the frame top right
+// (story.money.pot, times are offsets from its t0).
 import { story } from './story.js';
 
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -78,6 +80,41 @@ const TILES = [
   ['Return in year one', `+${Math.round(roi.roi * 100)}%`, `${eur(roi.total)} saved − ${eur(roi.cost)} spent`],
 ];
 
+// ---------- pot of gold (the "Here comes the money" title), in stage pixels ----------
+// The rainbow's bands are quarter circles round a centre off the right edge: they rise out of the coins in the pot and
+// leave the frame through the top-right corner.
+const R = { cx: 2120, cy: 700, outer: 800, band: 36, colors: ['#E53935', '#FB8C00', '#FDD835', '#43A047', '#1E88E5', '#3949AB', '#8E24AA'] };
+const BANDS = R.colors.map((c, i) => {
+  const r = R.outer - R.band * (i + 0.5);
+  return `<path d="M${R.cx - r} ${R.cy}A${r} ${r} 0 0 1 ${R.cx} ${R.cy - r}" stroke="${c}" pathLength="1"/>`;
+}).join('');
+const coin = (x, y, rx = 30) => `<ellipse class="coin" cx="${x}" cy="${y}" rx="${rx}" ry="${rx * 0.34}"/>`;
+const SPARKLES = [[1265, 560, 1], [1560, 540, 0.8], [1405, 505, 1.2], [1680, 700, 0.7], [1180, 690, 0.75], [1500, 300, 0.9], [1745, 150, 0.8]];
+const POT = `
+  <svg viewBox="0 0 1920 1080">
+    <defs>
+      <linearGradient id="pot-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE68A"/><stop offset=".55" stop-color="#F7B500"/><stop offset="1" stop-color="#C47F00"/></linearGradient>
+      <radialGradient id="pot-iron" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#4A5258"/><stop offset=".6" stop-color="#1D2124"/><stop offset="1" stop-color="#0B0D0E"/></radialGradient>
+      <radialGradient id="pot-glow"><stop offset="0" stop-color="#FFD54F" stop-opacity=".55"/><stop offset="1" stop-color="#FFD54F" stop-opacity="0"/></radialGradient>
+    </defs>
+    <circle class="glow" cx="1420" cy="640" r="380" fill="url(#pot-glow)"/>
+    <g class="rainbow">${BANDS}</g>
+    <g class="pot">
+      <ellipse cx="1420" cy="972" rx="250" ry="22" fill="#000" opacity=".28"/>
+      ${coin(1150, 962, 32)}${coin(1205, 978, 26)}${coin(1688, 966, 30)}
+      <path class="leg" d="M1290 925l-14 50h46l6-40zM1550 925l14 50h-46l-6-40z"/>
+      <ellipse cx="1420" cy="650" rx="205" ry="38" fill="#2A2F33"/>
+      <ellipse cx="1420" cy="652" rx="182" ry="28" fill="#0E1011"/>
+      <path class="heap" d="M1242 660Q1290 592 1420 574Q1550 592 1598 660Z"/>
+      ${coin(1330, 628)}${coin(1395, 604)}${coin(1462, 612)}${coin(1525, 634)}${coin(1430, 586, 26)}${coin(1290, 650, 26)}${coin(1560, 652, 26)}
+      <path class="body" d="M1215 650A205 38 0 0 0 1625 650C1712 735 1700 892 1570 948L1270 948C1140 892 1128 735 1215 650Z"/>
+      <path class="lip" d="M1215 650A205 38 0 0 0 1625 650"/>
+      <path class="shine" d="M1236 724C1222 792 1238 860 1290 902"/>
+    </g>
+    <g class="sparkles">${SPARKLES.map(([x, y, k]) =>
+      `<path transform="translate(${x} ${y}) scale(${k})" d="M0-26C3-6 6-3 26 0C6 3 3 6 0 26C-3 6-6 3-26 0C-6-3-3-6 0-26Z"/>`).join('')}</g>
+  </svg>`;
+
 const HTML = `
   <div class="card staff">${STAFF}</div>
   <div class="card money">${MONEY}</div>
@@ -85,8 +122,14 @@ const HTML = `
   <div class="card chart">${CHART}</div>`;
 
 // ---------- build ----------
-let M;
+let M, G;
 export function buildMoney() {
+  const pot = document.createElement('div');
+  pot.id = 'pot'; pot.className = 'how'; pot.innerHTML = POT;
+  document.getElementById('mascot').before(pot);
+  G = { el: pot, glow: pot.querySelector('.glow'), pot: pot.querySelector('.pot'), bands: [...pot.querySelectorAll('.rainbow path')],
+    sparkles: [...pot.querySelectorAll('.sparkles path')] };
+
   const el = document.createElement('div');
   el.id = 'money'; el.className = 'how'; el.innerHTML = HTML;
   document.getElementById('mascot').before(el);
@@ -100,7 +143,25 @@ export function buildMoney() {
 }
 
 // ---------- draw ----------
-export function drawMoney(t) {
+function drawPot(t, A) {
+  const { t0, t1 } = story.money.pot;
+  const vis = t >= t0 - 0.4 && t <= t1 + 0.05;
+  G.el.style.display = vis ? 'block' : 'none';
+  if (!vis) return;
+  const s = t - t0;
+  G.el.style.opacity = 1 - easeInOut(prog(t, t1 - 0.45, 0.45));
+  // the pot bounces up into place under the wipe, then the rainbow draws out of it band by band, then the gold twinkles
+  const k = prog(s, -0.3, 0.8);
+  G.pot.setAttribute('transform', `translate(0 ${320 * (1 - easeOutBack(k))})`);
+  G.pot.style.opacity = clamp(k * 3);
+  G.glow.style.opacity = easeOut(prog(s, 0.2, 0.8));
+  G.bands.forEach((b, i) => (b.style.strokeDashoffset = 1 - easeInOut(prog(s, 0.45 + i * 0.03, 0.75))));
+  const on = prog(s, 1.0, 0.4);
+  G.sparkles.forEach((p, i) => (p.style.opacity = on * Math.pow(0.5 + 0.5 * Math.sin(A * 2.6 + i * 1.9), 2)));
+}
+
+export function drawMoney(t, A) {
+  drawPot(t, A);
   const { t0, t1 } = story.money;
   const vis = t >= t0 - 0.05 && t <= t1 + 0.05;
   M.el.style.display = vis ? 'block' : 'none';
