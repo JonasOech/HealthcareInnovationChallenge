@@ -149,19 +149,33 @@
   #flow .links { position: absolute; inset: 0; width: 1920px; height: 1080px; }
   #flow .links path { fill: none; stroke: rgba(0,104,95,.38); stroke-width: 8; stroke-linecap: round; }
   #flow .lp i { width: 14px; height: 14px; }
-  #flow .sheet { position: absolute; left: 770px; top: 236px; width: 420px; background: #fff; border-radius: 18px; overflow: hidden; opacity: 0;
+  #flow .sheet { position: absolute; left: 636px; top: 206px; width: 604px; background: #fff; border-radius: 14px; overflow: hidden; opacity: 0;
                  border: 1.5px solid #D6DCF5; box-shadow: 0 30px 70px rgba(19,27,46,.18); }
-  #flow .sheet .bar { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #EEF7F5; font: 700 19px/1 Jakarta; color: var(--on-surface); }
-  #flow .sheet .xl { width: 26px; height: 26px; border-radius: 6px; background: #1D7A45; color: #fff; display: grid; place-items: center; font: 800 15px/1 Inter; }
-  #flow .sheet .row { display: grid; grid-template-columns: 128px 1fr 54px 92px; font: 500 15px/1 Inter; color: var(--on-surface);
-                      border-top: 1px solid #E3E6EF; font-variant-numeric: tabular-nums; }
-  #flow .sheet .row span { padding: 13px 0 13px 12px; white-space: nowrap; overflow: hidden; }
-  #flow .sheet .row span + span { border-left: 1px solid #E3E6EF; }
-  #flow .sheet .row.head { font-weight: 700; color: var(--on-var); background: #F4F5FA; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
-  #flow .sheet .row.loan span:last-child { background: #FEF3C7; color: #92400E; }
-  #flow .sheet .row.ok span:last-child { background: #DCFCE7; color: #166534; }
-  #flow .sheet .row.rep { background: #FEE2E2; color: #991B1B; }
-  #flow .xl-note { position: absolute; left: 836px; top: 186px; display: flex; align-items: center; gap: 12px; padding: 12px 22px 12px 12px; border-radius: 999px;
+  #flow .sheet .bar { display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: #1D7A45; font: 700 17px/1 Jakarta; color: #fff; }
+  #flow .sheet .bar em { font-style: normal; font-weight: 500; opacity: .7; }
+  #flow .sheet .bar .xl { width: 24px; height: 24px; border-radius: 6px; background: #fff; color: #1D7A45; display: grid; place-items: center; font: 800 14px/1 Inter; }
+  /* the wheelchair tab of the real tracker: Excel gridlines, row numbers, and its colour coding */
+  #flow .sheet .rows { -webkit-mask-image: linear-gradient(#000 82%, transparent); mask-image: linear-gradient(#000 82%, transparent); }
+  #flow .sheet .row { display: grid; grid-template-columns: 22px 34px 48px 128px 58px 56px 52px 1fr 92px; font: 500 10.5px/1 Inter; color: #1F2937;
+                      border-top: 1px solid #DADCE0; font-variant-numeric: tabular-nums; }
+  #flow .sheet .row span { padding: 5px 0 5px 4px; white-space: nowrap; overflow: hidden; }
+  #flow .sheet .row span + span { border-left: 1px solid #DADCE0; }
+  #flow .sheet .row .n { padding: 5px 4px 5px 0; text-align: right; background: #F1F3F4; color: #80868B; font-size: 9.5px; }
+  #flow .sheet .row span:nth-child(3) { font-weight: 700; }
+  #flow .sheet .row.head span { background: #C9D3E8; font-weight: 700; color: #1F2937; }
+  #flow .sheet .row.head .n { background: #F1F3F4; color: #80868B; font-weight: 500; }
+  #flow .sheet .row .at { background: #F2A53A; }
+  #flow .sheet .row .svc { background: #7CB65A; color: #1E4D1A; }
+  #flow .sheet .row.note span:nth-child(8) { background: #FFF200; }
+  #flow .sheet .row.issue span:not(.n) { background: #FFF200; }
+  #flow .sheet .row.missing span:not(.n) { background: #D9232E; color: #7A0A10; }
+  #flow .sheet .row.missing span:nth-child(8) { overflow: visible; color: #fff; }
+  #flow .sheet .tabs { display: flex; align-items: stretch; gap: 2px; padding: 0 10px; background: #F1F3F4; border-top: 1px solid #DADCE0;
+                       font: 600 11px/1 Inter; color: #5F6368; }
+  #flow .sheet .tabs span { padding: 7px 12px 8px; }
+  #flow .sheet .tabs .on { background: #fff; color: #1D7A45; box-shadow: inset 0 -2px 0 #1D7A45; }
+  #flow .sheet .tabs .add { color: #80868B; }
+  #flow .xl-note { position: absolute; left: 880px; top: 150px; display: flex; align-items: center; gap: 12px; padding: 12px 22px 12px 12px; border-radius: 999px;
                    background: #1D7A45; color: #fff; font: 800 22px/1 Jakarta; white-space: nowrap; box-shadow: 0 16px 36px rgba(29,122,69,.4); opacity: 0; }
   #flow .xl-note .xl { width: 32px; height: 32px; border-radius: 8px; background: #fff; color: #1D7A45; display: grid; place-items: center; font: 800 18px/1 Inter; }
   #flow .dash { position: absolute; left: 1300px; top: 160px; width: 560px; height: 760px; background: #fff; border-radius: 26px; overflow: hidden; opacity: 0;

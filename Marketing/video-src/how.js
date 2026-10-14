@@ -81,17 +81,36 @@ const HC21 = `
       <p>Nurse scans the HC21 label and enters the Patient ID to book the equipment.</p></div></div>
   </div>`;
 
-// tracker rows: the real tracker colour-codes repair (red) and loans (amber)
+// tracker rows: the first rows of the real Acute Equipment Tracker's wheelchair tab (Context/IMG_*.jpeg), with its
+// colour coding: AT- asset cells orange, the row to issue yellow, the missing chair red, serviced dates green.
+// [asset, asset no., type, size, HC21 no., status, comments, last service, row class]
+const SVC = '29/09/2026';
 const ROWS = [
-  ['HC21-000001', 'Wheelchair', '4B', 'On loan', 'loan'],
-  ['HC21-000002', 'Hospital bed', '3A', 'Available', 'ok'],
-  ['HC21-000003', 'Monitor', 'ICU', 'In use', 'loan'],
-  ['HC21-000004', 'Wheelchair', 'OT', 'Repair', 'rep'],
-  ['HC21-000005', 'Pressure cushion', '4B', 'On loan', 'loan'],
-  ['HC21-000006', 'Syringe pump', '2C', 'Available', 'ok'],
-  ['HC21-000007', 'Sliding board', '3A', 'Available', 'ok'],
-  ['HC21-000008', 'Hospital bed', '5D', 'Reserved', 'loan'],
+  ['AT+', 'D02', 'Rea Azalea Assist', '17"', '1309325', 'OWWP', 'To issue to patient for d/c', '03.07.2025', 'issue'],
+  ['AT+', 'D3', 'Rea Azalea Assist', '18"', '1394575', 'OWWP', '', SVC],
+  ['AT-', 'D04', 'Rea Azalea Assist', '17"', '1397546', 'OT Dept', '', SVC],
+  ['AT-', 'D05', 'Aveon TIS Care Chair', 'Adj: W16-22', '1377466', 'OT dept', '', SVC],
+  ['AT+', 'D06', 'Sedeo Ibis X Series (xc-xa)', '20"', '1325130', 'OT Dept', '', SVC],
+  ['AT-', 'D10', 'HD Balance', '20x17"', '1398230', 'OT Dept', '', SVC],
+  ['AT-', 'D22', 'Rea Azalea Assist', '15"', '1398263', 'OT Dept', 'R footplate temporarely w', SVC, 'note'],
+  ['AT+', 'D27', 'Rea Azalea Assist', '18"', '1391578', 'OWWP', '', SVC],
+  ['AT-', 'D29', 'Rea Azalea Transit', '17"', '1397579', 'OWWP', '', SVC],
+  ['AT-', 'D32', 'Rea Azalea MAX Bariatric', '24-25"', '1397566', 'OWWP', '', SVC],
+  ['AT+', 'D38', 'Rea Azalea Assist', '17"', '1380054', 'OT Dept', '', SVC],
+  ['AT-', 'D42', 'Rea Azalea Assist', '18"', '1397572', 'OWWP', '', SVC],
+  ['AT+', 'D44', 'Rea Azalea Assist (Mixed parts)', '18"', '1269197', 'OWWP', '', SVC],
+  ['AT+', 'D45', 'Rea Azalea', '15"', '1063363', 'OWWP', '', SVC],
+  ['AT+', 'D46', 'Rea Azalea Transit', '15"', '1394600', '', 'Missing since 19/09/2025 and unable to be', '', 'missing'],
+  ['AT-', 'D47', 'CareFlex HydroTilt', '17" adj', '1397592', 'OWWP', '', SVC],
+  ['AT+', 'D49', 'Rea Azalea Assist (medium chassis)', '17"', '1377424', 'OWWP', '', SVC],
+  ['AT+', 'D50', 'Rea Azalea Assist', '15"', '1377417', 'OT Dept', '', SVC],
+  ['AT-', 'D51', 'Rea azalea', '18" x 18"', '1268993', 'OWWP', '', SVC],
+  ['AT-', 'D52', 'Rea Azalea', '17"', '1397564', 'OT dept', '', SVC],
 ];
+const COLS = ['Asset', 'Asset No.', 'Type', 'Size (WxD)', 'HC21 No.', 'Status', 'Comments', 'Last Service date:'];
+const TABS = ['Wheelchairs', 'Cushions', 'Transfer boards', 'Waitlist'];
+const sheetRow = (cells, n, cls = '') => `<div class="row ${cls}"><span class="n">${n}</span>${cells.map((c, i) =>
+  `<span class="${i === 0 && c === 'AT-' ? 'at' : i === 7 && c === SVC ? 'svc' : ''}">${c}</span>`).join('')}</div>`;
 const SLICES = [['Wheelchairs', 0.38, '#00685F'], ['Hospital beds', 0.27, '#4648D4'], ['Syringe pumps', 0.2, '#4FDBC8'], ['Other', 0.15, '#A5A6F6']];
 const TREND = [32, 46, 40, 62, 50, 74];
 const STATUS = [['In use', 0.82, '#00685F'], ['Available', 0.56, '#4FDBC8'], ['Repair', 0.24, '#EF4444'], ['Reserved', 0.4, '#4648D4']];
@@ -123,9 +142,9 @@ const FLOW = `
   <div class="packets lp">${'<i></i>'.repeat(2 * LINKS.length)}</div>
   <div class="db">${ICON.db}<div class="cap"><span>Central database</span></div></div>
   <div class="sheet">
-    <div class="bar"><span class="xl">X</span>Acute Equipment Tracker</div>
-    <div class="row head"><span>HC21 no.</span><span>Type</span><span>Ward</span><span>Status</span></div>
-    ${ROWS.map(([id, type, ward, st, c]) => `<div class="row ${c}"><span>${id}</span><span>${type}</span><span>${ward}</span><span>${st}</span></div>`).join('')}
+    <div class="bar"><span class="xl">X</span>Acute Equipment Tracker<em>.xlsx</em></div>
+    <div class="rows">${sheetRow(COLS, 1, 'head')}${ROWS.map((r, i) => sheetRow(r.slice(0, 8), i + 2, r[8])).join('')}</div>
+    <div class="tabs">${TABS.map((t, i) => `<span${i ? '' : ' class="on"'}>${t}</span>`).join('')}<span class="add">+</span></div>
   </div>
   <div class="xl-note"><span class="xl">X</span>Excel support still provided</div>
   <div class="dash-note">- opportunity -</div>
@@ -259,7 +278,7 @@ export function drawHow(t, A) {
     F.sheet.style.opacity = clamp(sh * 2) * txt;
     F.sheet.style.transform = `perspective(1600px) rotateY(-12deg) rotateX(6deg) translateY(${120 * (1 - easeOut(sh))}px) scale(${(0.5 + 0.5 * easeOutBack(sh)) * (0.85 + 0.15 * txt)})`;
     F.rows.forEach((r, i) => {
-      const k = prog(s, 4.85 + i * 0.07, 0.3);
+      const k = prog(s, 4.85 + i * 0.035, 0.3);
       r.style.opacity = k; r.style.transform = `translateX(${-16 * (1 - easeOut(k))}px)`;
       r.style.boxShadow = k > 0 && k < 1 ? 'inset 0 0 0 2px #4FDBC8' : '';
     });

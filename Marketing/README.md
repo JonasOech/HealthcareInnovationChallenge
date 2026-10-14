@@ -36,7 +36,7 @@ same storyboard. The renderer itself is no longer in the repo — the deck is wh
 | 0:00 | Intro: "Equipment Tracking just got trivial" |
 | deck only | How it works: equipment with HC21 labels is scanned, the number lands in the booking form |
 | deck only | How it works: capture → synchronize (database) → visualization (dashboard) |
-| deck only | Same slide, next click: the tracker sheet pops up, "Excel support still provided" |
+| deck only | Same slide, next click: the tracker sheet (the first rows of the real wheelchair tab, from `Context/IMG_*.jpeg`) pops up, "Excel support still provided" |
 | deck only | Synchronized access: the phone and four more ring the central database, all linked to it |
 | deck only | "Tech Demo" section title (dark teal, like the intro) |
 | 0:05 | 01 Voice logging: hold to speak, live transcript |
