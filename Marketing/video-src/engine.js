@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { story } from './story.js';
 import { buildHow, drawHow } from './how.js';
+import { buildMoney, drawMoney } from './money.js';
 import { buildFollow, drawFollow } from './follow.js';
 
 // ---------- helpers ----------

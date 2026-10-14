@@ -328,6 +328,8 @@ export const story = {
   how: { hc21: { t0: 5.3, t1: 11.45 }, flow: { t0: 11.5, t1: 22.0 }, access },
   // business case after 07 (deck only): staff time and money saved cards, then the payback chart (money.js)
   money: { t0: 71.0, t1: 81.3, roi, eur },
+  // slide 0 (deck only): "Follow along" QR card, slides out over [0, t1] as the intro starts (follow.js)
+  follow: { url: 'https://tuh.oechsner.dev/', t1: 0.5 },
   // scene 9: oechsner.dev end card
   blog: { t0: 87.25 },
   duration: warp(94.0),
