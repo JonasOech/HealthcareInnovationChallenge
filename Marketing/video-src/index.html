@@ -255,14 +255,8 @@
   #money .chart .ends text { font: 800 24px Jakarta; fill: var(--on-surface); dominant-baseline: central; opacity: 0; }
   #money .chart .ends .gain { text-anchor: end; font-size: 26px; }
   /* pot of gold on the "Here comes the money" title (money.js) */
-  #pot svg { width: 1920px; height: 1080px; display: block; }
-  #pot .rainbow path { fill: none; stroke-width: 37; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: .92; }
-  #pot .coin { fill: url(#pot-gold); stroke: #A86C00; stroke-width: 2.5; }
-  #pot .heap { fill: url(#pot-gold); }
-  #pot .body { fill: url(#pot-iron); }
-  #pot .lip { fill: none; stroke: #3A4146; stroke-width: 22; stroke-linecap: round; }
-  #pot .leg { fill: #15181A; }
-  #pot .shine { fill: none; stroke: rgba(255,255,255,.22); stroke-width: 12; stroke-linecap: round; }
+  #pot svg { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+  #pot img { position: absolute; left: 1170px; top: -205px; width: 705px; transform-origin: 50% 96%; }   /* row 164 of 920: the rainbow's cut end, just above the frame */
   #pot .sparkles path { fill: #FFF6C8; opacity: 0; }
 
   /* Ollama mascot sticker (scene 7) */

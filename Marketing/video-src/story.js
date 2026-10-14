@@ -331,7 +331,7 @@ export const story = {
   how: { hc21: { t0: 5.3, t1: 11.45 }, flow: { t0: 11.5, t1: 22.0 }, access },
   // business case after 07 (deck only): staff time and money saved cards, then the payback chart (money.js);
   // pot: the pot of gold and rainbow on the "Here comes the money" title before it
-  money: { t0: 73.8, t1: 84.1, pot: { t0: 71.55, t1: 73.6 }, roi, eur },
+  money: { t0: 73.8, t1: 84.1, pot: { t0: 71.55, t1: 73.6, img: P + 'pot_of_gold.webp' }, roi, eur },
   // slide 0 (deck only): "Follow along" QR card, slides out over [0, t1] as the intro starts (follow.js)
   follow: { url: 'https://tuh.oechsner.dev/', t1: 0.5 },
   // scene 9: oechsner.dev end card
@@ -340,7 +340,7 @@ export const story = {
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
     ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png',
-    ...access.phones.map(p => p.screen)])],
+    ...access.phones.map(p => p.screen), P + 'pot_of_gold.webp'])],
   screenLayers, highlights, taps, texts, stops,
   // phone keyframes live in output time and are evaluated against real time, so the phone keeps
   // drifting through a hold instead of freezing with the rest of the frame

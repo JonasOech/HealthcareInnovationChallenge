@@ -148,7 +148,7 @@ How to edit:
 ---
 
 ## Here comes the money (deck only) · dark teal background, text left
-**Right:** no phone. A black pot of gold bounces up into place, glowing; a rainbow draws out of the coins and leaves the frame top right, and the gold twinkles.
+**Right:** no phone. The pot of gold picture (`screens/pot_of_gold.webp`) pops up with a golden glow behind it; its rainbow rises out of the coins and leaves the frame top right, and a few sparkles twinkle.
 
 - Headline: Here comes / the ==money==
 

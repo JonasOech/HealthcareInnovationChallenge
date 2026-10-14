@@ -15,7 +15,8 @@ equipment cards, scan, pipeline, database, tracker sheet, dashboard and access l
 four extra phones of "Synchronized access" are clones of the 3D phone in `engine.js`.
 
 The "Here comes the money" title (dark teal, like "Tech Demo") and the three "business case" slides after it are deck-only too. The phone dives out of the frame for all four, and `money.js` draws
-the title's pot of gold and rainbow, the cards and the payback chart as DOM layers. The numbers come from the team's "Savings & ROI" spreadsheet: `story.js`
+the title's pot of gold (the team's picture `screens/pot_of_gold.webp`, placed so its rainbow leaves the frame top right),
+the cards and the payback chart as DOM layers. The numbers come from the team's "Savings & ROI" spreadsheet: `story.js`
 (`roi`) holds the sheet's inputs and works out the outputs the same way the sheet does (329 h → 30 h a year, €10,950 saved a
 year, payback in 8.3 months, +40% ROI). To change a figure, change the input there.
 
