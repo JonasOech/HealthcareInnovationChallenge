@@ -318,7 +318,7 @@ The nurse or therapist scans the label and enters the patient ID, and the item i
 This is the "simple, centralised, real-time view" the OT team asked for: anyone can see at a glance what is available, on loan, in repair or missing.
 
 → Next click: the Excel sheet pops out of the database.` },
-  { t: 17.5, title: 'How it works: Excel still supported', notes: `Important for adoption: the database can still be opened as the familiar Acute Equipment Tracker spreadsheet, same columns, same colour coding (on loan, available, repair).
+  { t: 17.5, title: 'How it works: Excel still supported', notes: `Important for adoption: the database can still be opened as the familiar Acute Equipment Tracker spreadsheet. The sheet shown is the real wheelchair tab: same columns, same colour coding (yellow: to issue or needs attention, red: missing, like D46 since 19/09/2025, green: serviced).
 
 Nobody has to give up their sheet on day one, and we can import the existing tracker so we start with the real ~155 items, not an empty system.
 
