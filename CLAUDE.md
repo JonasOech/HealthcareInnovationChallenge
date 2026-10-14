@@ -1,4 +1,4 @@
-https://claude-eloquent-bardeen-5mni1g-healthcareinnovationchallenge.jonasoechsner06.workers.dev/#18# CLAUDE.md
+# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
