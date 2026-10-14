@@ -1,7 +1,9 @@
 // The two "how it works" scenes between the intro and 01 Voice logging, as DOM layers over the 3D phone:
 // #hc21 — equipment with HC21 labels is scanned and the number lands in the phone's booking form,
 // #flow — capture (the phone) → synchronize (the database) → visualization (the dashboard); on the next click
-// the tracker sheet pops up out of the database: Excel support is still provided.
+// the tracker sheet pops up out of the database: Excel support is still provided. The click after that clears the
+// slide down to the database, which moves to the middle as the synchronized access hub: the phone and four more
+// (engine.js) ring it and link up to it.
 // Times come from story.how; everything below is an offset from a scene's t0.
 import { story } from './story.js';
 
@@ -96,6 +98,16 @@ const STATUS = [['In use', 0.82, '#00685F'], ['Available', 0.56, '#4FDBC8'], ['R
 const R = 62, CIRC = 2 * Math.PI * R;
 const linePts = TREND.map((v, i) => [12 + i * 50, 120 - v * 1.35]);
 
+// synchronized access: a link from the database (ring centre) to the edge of each phone, the presenting one first
+const AC = story.how.access;
+const LINKS = [AC.main, ...AC.phones].map(({ at: [x, y] }) => {
+  const dx = x - AC.cx, dy = y - AC.cy, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+  const e = Math.min(AC.half[0] / Math.abs(ux || 1e-6), AC.half[1] / Math.abs(uy || 1e-6)) + 18;
+  return `M${AC.cx} ${AC.cy} L${(x - ux * e).toFixed(1)} ${(y - uy * e).toFixed(1)}`;
+});
+// database: its box (left 850, top 236, 260 x 314, scaled about its bottom centre) and the cylinder's centre
+const DB = { ox: 980, oy: 550, cy: 157, s: 0.55 };
+
 const FLOW = `
   <svg class="pipes" viewBox="0 0 1920 1080">
     <path id="pipe1" d="M600 868 C 700 868, 760 846, 910 846"/>
@@ -107,7 +119,9 @@ const FLOW = `
   <div class="pill p3"><span class="num">3</span>Visualization</div>
   <div class="beam"></div>
   <div class="hub"><span class="ring"></span><span class="ring"></span>${ICON.sync}</div>
-  <div class="db">${ICON.db}<div class="cap">Centralised database</div></div>
+  <svg class="links" viewBox="0 0 1920 1080">${LINKS.map(d => `<path d="${d}"/>`).join('')}</svg>
+  <div class="packets lp">${'<i></i>'.repeat(2 * LINKS.length)}</div>
+  <div class="db">${ICON.db}<div class="cap"><span>Central database</span></div></div>
   <div class="sheet">
     <div class="bar"><span class="xl">X</span>Acute Equipment Tracker</div>
     <div class="row head"><span>HC21 no.</span><span>Type</span><span>Ward</span><span>Status</span></div>
@@ -144,10 +158,13 @@ export function buildHow() {
   H = { el: h, label: q(h, '.eq-label'), cards: qa(h, '.eq'), lasers: qa(h, '.laser'), finders: qa(h, '.finder'), lbls: qa(h, '.lbl'), oks: qa(h, '.ok'),
     link: q(h, '.link path'), head: q(h, '.link .head'), packet: q(h, '.packet'), steps: qa(h, '.step'), chev: q(h, '.chev'), ecg: q(h, '.ecg') };
   const pipes = [q(f, '#pipe1'), q(f, '#pipe2')];
-  F = { el: f, pills: qa(f, '.pill'), pipes, lens: pipes.map(p => p.getTotalLength()), packets: qa(f, '.packets i'), beam: q(f, '.beam'), hub: q(f, '.hub'),
-    rings: qa(f, '.hub .ring'), db: q(f, '.db'), leds: qa(f, '.db .leds circle'), sheet: q(f, '.sheet'), note: q(f, '.xl-note'), rows: qa(f, '.sheet .row:not(.head)'), dash: q(f, '.dash'), tiles: qa(f, '.tile'),
+  F = { el: f, pills: qa(f, '.pill'), pipes, lens: pipes.map(p => p.getTotalLength()), packets: qa(f, '.packets:not(.lp) i'), beam: q(f, '.beam'), hub: q(f, '.hub'),
+    rings: qa(f, '.hub .ring'), db: q(f, '.db'), cap: q(f, '.db .cap'), leds: qa(f, '.db .leds circle'), sheet: q(f, '.sheet'), note: q(f, '.xl-note'), rows: qa(f, '.sheet .row:not(.head)'), dash: q(f, '.dash'), tiles: qa(f, '.tile'),
     nums: qa(f, '.tile b'), slices: qa(f, '.pie circle'), legend: qa(f, '.pie li'), area: q(f, '.line .area'), line: q(f, '.line .stroke'),
-    dots: qa(f, '.line circle'), cols: qa(f, '.bars i'), panels: qa(f, '.panel') };
+    dots: qa(f, '.line circle'), cols: qa(f, '.bars i'), panels: qa(f, '.panel'), pipeSvg: q(f, '.pipes'),
+    links: qa(f, '.links path'), lpk: qa(f, '.lp i') };
+  F.linkLens = F.links.map(l => l.getTotalLength());
+  F.links.forEach((l, i) => (l.style.strokeDasharray = F.linkLens[i]));
   F.lineLen = F.line.getTotalLength();
   F.line.style.strokeDasharray = F.lineLen;
   F.pipes.forEach((p, i) => (p.style.strokeDasharray = F.lens[i]));
@@ -198,41 +215,66 @@ export function drawHow(t, A) {
 
   if (scene(F.el, t, flow)) {
     const s = t - flow.t0;
-    F.pills.forEach((p, i) => pop(p, prog(s, 0.5 + i * 1.3, 0.5)));
+    // synchronized access (from the Excel stop on): the captions, the sheet and the note go first, then the
+    // dashboard, then the pipes and the sync hub; meanwhile the phone (engine.js) and the database shrink into the ring
+    const o = AC.t0;
+    const txt = 1 - easeInOut(prog(t, o, 0.35));
+    const dashOut = easeInOut(prog(t, o + 0.1, 0.5));
+    const path = 1 - easeInOut(prog(t, o + 0.2, 0.5));
+    const m = easeInOut(prog(t, o + 0.5, 1.2));
+    F.pills.forEach((p, i) => { pop(p, prog(s, 0.5 + i * 1.3, 0.5)); p.style.opacity *= txt; });
     const d = [easeInOut(prog(s, 0.9, 0.6)), easeInOut(prog(s, 2.4, 0.5))];
-    F.pipes.forEach((p, i) => (p.style.strokeDashoffset = F.lens[i] * (1 - d[i])));
-    pop(F.hub, prog(s, 1.35, 0.5));
+    F.pipes.forEach((p, i) => (p.style.strokeDashoffset = F.lens[i] * (1 - d[i] * path)));
+    F.pipeSvg.style.opacity = path;
+    const hk = prog(s, 1.35, 0.5);
+    F.hub.style.opacity = clamp(hk * 2) * path;
+    F.hub.style.transform = `scale(${(0.6 + 0.4 * easeOutBack(hk)) * (0.4 + 0.6 * path)})`;
     F.rings.forEach((r, i) => { const ph = (A * 0.6 + i / 2) % 1; r.style.transform = `scale(${1 + 0.9 * ph})`; r.style.opacity = 0.5 * (1 - ph) * prog(s, 1.6, 0.4); });
     const b = easeOut(prog(s, 1.5, 0.5));
-    F.beam.style.opacity = b * (0.75 + 0.25 * Math.sin(A * 3));
+    F.beam.style.opacity = b * (0.75 + 0.25 * Math.sin(A * 3)) * path;
     F.beam.style.transform = `scaleY(${b})`;
-    // the beam fills the database; its lights blink while records come in
-    const db = prog(s, 1.5, 0.6);
+    // the beam fills the database; its lights blink while records come in. In the ring it moves to the middle,
+    // smaller, and the caption keeps its size on a white pill
+    const db = prog(s, 1.5, 0.6), sc = (0.7 + 0.3 * easeOutBack(db)) * (1 - (1 - DB.s) * m);
     F.db.style.opacity = clamp(db * 2);
-    F.db.style.transform = `translateY(${40 * (1 - easeOut(db))}px) scale(${0.7 + 0.3 * easeOutBack(db)})`;
+    F.db.style.transform = `translate(${(AC.cx - DB.ox) * m}px, ${40 * (1 - easeOut(db)) + (AC.cy - 25 - DB.oy + DB.cy * DB.s) * m}px) scale(${sc})`;
+    F.cap.style.transform = `scale(${1 + (1.05 / DB.s - 1) * m})`;
+    F.cap.style.setProperty('--pill', m);
     F.leds.forEach((l, i) => (l.style.opacity = 0.35 + 0.65 * (Math.sin(A * 5 + i * 2.1) > 0.2 ? 1 : 0) * prog(s, 1.9, 0.3)));
+    // links draw out from the database to each phone, then records travel both ways along them
+    const lnk = F.links.map((l, i) => {
+      const k = easeInOut(prog(t, o + 2.0 + i * 0.12, 0.5));
+      l.style.strokeDashoffset = F.linkLens[i] * (1 - k);
+      return k;
+    });
+    F.lpk.forEach((el, j) => {
+      const i = j >> 1, u = (A * 0.4 + (j & 1) * 0.5 + i * 0.13) % 1, v = j & 1 ? 1 - u : u;
+      const pt = F.links[i].getPointAtLength(v * F.linkLens[i]);
+      el.style.transform = `translate(${pt.x - 7}px, ${pt.y - 7}px) rotate(45deg)`;
+      el.style.opacity = (lnk[i] >= 1 ? 1 : 0) * Math.min(1, u * 6, (1 - u) * 6);
+    });
     // next click: the tracker sheet pops up out of the database, then the Excel note
     const sh = prog(s, 4.6, 0.6);
-    F.sheet.style.opacity = clamp(sh * 2);
-    F.sheet.style.transform = `perspective(1600px) rotateY(-12deg) rotateX(6deg) translateY(${120 * (1 - easeOut(sh))}px) scale(${0.5 + 0.5 * easeOutBack(sh)})`;
+    F.sheet.style.opacity = clamp(sh * 2) * txt;
+    F.sheet.style.transform = `perspective(1600px) rotateY(-12deg) rotateX(6deg) translateY(${120 * (1 - easeOut(sh))}px) scale(${(0.5 + 0.5 * easeOutBack(sh)) * (0.85 + 0.15 * txt)})`;
     F.rows.forEach((r, i) => {
       const k = prog(s, 4.85 + i * 0.07, 0.3);
       r.style.opacity = k; r.style.transform = `translateX(${-16 * (1 - easeOut(k))}px)`;
       r.style.boxShadow = k > 0 && k < 1 ? 'inset 0 0 0 2px #4FDBC8' : '';
     });
     const nt = prog(s, 5.25, 0.5);
-    F.note.style.opacity = clamp(nt * 2);
+    F.note.style.opacity = clamp(nt * 2) * txt;
     F.note.style.transform = `rotate(-4deg) scale(${0.6 + 0.4 * easeOutBack(nt)})`;
     // packets ride the pipes once they are drawn; each pipe gets its own share
     F.packets.forEach((el, i) => {
       const pipe = i % 2, u = (A * 0.32 + Math.floor(i / 2) / 5) % 1;
       const pt = F.pipes[pipe].getPointAtLength(u * F.lens[pipe]);
       el.style.transform = `translate(${pt.x - 9}px, ${pt.y - 9}px) rotate(45deg)`;
-      el.style.opacity = (d[pipe] >= 1 ? 1 : 0) * Math.min(1, u * 6, (1 - u) * 6);
+      el.style.opacity = (d[pipe] >= 1 ? 1 : 0) * Math.min(1, u * 6, (1 - u) * 6) * path;
     });
     const ds = prog(s, 2.8, 0.6);
-    F.dash.style.opacity = easeOut(ds);
-    F.dash.style.transform = `translateY(${40 * (1 - easeOut(ds))}px) scale(${0.94 + 0.06 * easeOutBack(ds)})`;
+    F.dash.style.opacity = easeOut(ds) * (1 - dashOut);
+    F.dash.style.transform = `translate(${120 * dashOut}px, ${40 * (1 - easeOut(ds))}px) scale(${(0.94 + 0.06 * easeOutBack(ds)) * (1 - 0.12 * dashOut)})`;
     F.tiles.forEach((tl, i) => rise(tl, easeOut(prog(s, 3.0 + i * 0.1, 0.4)), 14));
     F.nums.forEach(n => { n.textContent = Math.round(+n.dataset.n * easeOut(prog(s, 3.1, 1.0))).toLocaleString('en-US'); });
     F.panels.forEach((p, i) => rise(p, easeOut(prog(s, 3.2 + i * 0.12, 0.45)), 14));
