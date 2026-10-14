@@ -198,6 +198,30 @@
             box-shadow: 0 30px 80px rgba(19,27,46,.28), 0 0 0 6px rgba(255,255,255,.6); display: none; }
   #mascot canvas { width: 100%; height: 100%; display: block; }
 
+  /* "Follow along" QR card on slide 0 (follow.js), on the dark intro background */
+  #follow { position: absolute; inset: 0; display: none; }
+  #follow .copy { position: absolute; left: 150px; top: 0; bottom: 0; width: 900px; display: flex; flex-direction: column; justify-content: center; }
+  #follow .kicker { color: var(--mint); background: rgba(109,245,225,.14); }
+  #follow .title { font-size: 104px; color: #fff; }
+  #follow mark::before { background: rgba(109,245,225,.38); }
+  #follow .sub { color: rgba(255,255,255,.82); }
+  #follow .points { display: flex; flex-direction: column; gap: 18px; margin-top: 44px; }
+  #follow .points > div { display: flex; align-items: center; gap: 18px; font: 500 28px/1.2 Inter; color: rgba(255,255,255,.9); }
+  #follow .points .ic { width: 50px; height: 50px; border-radius: 14px; padding: 12px; flex: none; background: rgba(109,245,225,.14); color: var(--mint); }
+  #follow .ic svg { width: 100%; height: 100%; display: block; }
+  #follow .code { position: absolute; left: 1170px; top: 212px; width: 600px; }
+  #follow .card { display: block; position: relative; padding: 52px 52px 34px; border-radius: 44px; background: #fff; text-decoration: none; cursor: pointer;
+                  box-shadow: 0 40px 100px rgba(0,30,27,.45), 0 0 0 10px rgba(109,245,225,.16); }
+  #follow .card > svg { display: block; width: 496px; height: 496px; }
+  #follow .url { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 34px; font: 800 34px/1 Jakarta; letter-spacing: -0.01em; color: var(--on-surface); }
+  #follow .url .ic { width: 36px; height: 36px; color: var(--primary); }
+  #follow .aim { position: absolute; inset: -34px; pointer-events: none; }
+  #follow .aim i { position: absolute; width: 74px; height: 74px; border: 6px solid var(--mint); }
+  #follow .aim i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 30px; }
+  #follow .aim i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 30px; }
+  #follow .aim i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 30px; }
+  #follow .aim i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 30px; }
+
   /* oechsner.dev end card (scene 9) — mirrors the site's design tokens */
   #blog { position: absolute; inset: 0; display: none; overflow: hidden; }
   #blog .shade { position: absolute; inset: 0; background: linear-gradient(180deg, #0e0f12 0%, #0e0f12 55%, #0a0b0d 100%); }

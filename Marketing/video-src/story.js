@@ -261,7 +261,7 @@ const taps = [
 // Each stop is a story time where everything on screen has finished animating in. The deck holds there, and a
 // click plays the timeline on to the next stop. Notes show in the presenter view (?presenter).
 const stops = [
-  { t: 0, title: 'Start', notes: 'Blank dark screen. Click to start the intro.' },
+  { t: 0, title: 'Follow along', notes: 'QR code to tuh.oechsner.dev: the audience opens the slides on their phones and follows the talk live. Leave it up while people scan, then click to start the intro.' },
   { t: 4.4, title: 'Equipment tracking just got trivial', notes: 'OT tracks ~155 specialist items in an Excel sheet that is updated after the fact. About €4,600 of equipment goes missing every year. Our app makes logging take seconds, by voice.' },
   { t: 11.0, title: 'How it works: HC21 labels', notes: 'Every item already carries a unique HC21 barcode label with its serial number. The nurse scans the label and enters the patient ID to book it, so the record is updated at the handover itself.' },
   { t: 16.0, title: 'How it works: capture → sync → dashboard', notes: 'Bookings captured on the ward are synchronised into a central equipment database and visualised on a live dashboard: totals, distribution, booking trends and status.' },
@@ -295,6 +295,8 @@ export const story = {
   // how it works: the HC21 scan scene and the capture → synchronize → visualization scene (how.js); flow runs on
   // through the synchronized access slide, which reuses its database (access)
   how: { hc21: { t0: 5.3, t1: 11.45 }, flow: { t0: 11.5, t1: 22.0 }, access },
+  // slide 0 (deck only): "Follow along" QR card, slides out over [0, t1] as the intro starts (follow.js)
+  follow: { url: 'https://tuh.oechsner.dev/', t1: 0.5 },
   // scene 9: oechsner.dev end card
   blog: { t0: 76.75 },
   duration: warp(83.5),

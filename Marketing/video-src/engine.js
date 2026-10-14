@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { story } from './story.js';
 import { buildHow, drawHow } from './how.js';
+import { buildFollow, drawFollow } from './follow.js';
 
 // ---------- helpers ----------
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -349,6 +350,7 @@ window.renderFrame = (T, deck) => {
   drawHow(t, A);
   drawSats(t, A);
   drawBlog(t, deck ? A : t);
+  drawFollow(t, A, !!deck);
   renderer.render(scene, camera);
 };
 
@@ -362,6 +364,7 @@ window.setupDone = (async () => {
   buildTexts();
   buildHow();
   buildSats();
+  buildFollow();
   window.renderFrame(0);
   return story.duration;
 })();
