@@ -128,6 +128,7 @@ const FLOW = `
     ${ROWS.map(([id, type, ward, st, c]) => `<div class="row ${c}"><span>${id}</span><span>${type}</span><span>${ward}</span><span>${st}</span></div>`).join('')}
   </div>
   <div class="xl-note"><span class="xl">X</span>Excel support still provided</div>
+  <div class="dash-note">- opportunity -</div>
   <div class="dash">
     <div class="top">Medical Equipment Management Dashboard</div>
     <div class="tiles">
@@ -159,7 +160,7 @@ export function buildHow() {
     link: q(h, '.link path'), head: q(h, '.link .head'), packet: q(h, '.packet'), steps: qa(h, '.step'), chev: q(h, '.chev'), ecg: q(h, '.ecg') };
   const pipes = [q(f, '#pipe1'), q(f, '#pipe2')];
   F = { el: f, pills: qa(f, '.pill'), pipes, lens: pipes.map(p => p.getTotalLength()), packets: qa(f, '.packets:not(.lp) i'), beam: q(f, '.beam'), hub: q(f, '.hub'),
-    rings: qa(f, '.hub .ring'), db: q(f, '.db'), cap: q(f, '.db .cap'), leds: qa(f, '.db .leds circle'), sheet: q(f, '.sheet'), note: q(f, '.xl-note'), rows: qa(f, '.sheet .row:not(.head)'), dash: q(f, '.dash'), tiles: qa(f, '.tile'),
+    rings: qa(f, '.hub .ring'), db: q(f, '.db'), cap: q(f, '.db .cap'), leds: qa(f, '.db .leds circle'), sheet: q(f, '.sheet'), note: q(f, '.xl-note'), rows: qa(f, '.sheet .row:not(.head)'), dash: q(f, '.dash'), dashNote: q(f, '.dash-note'), tiles: qa(f, '.tile'),
     nums: qa(f, '.tile b'), slices: qa(f, '.pie circle'), legend: qa(f, '.pie li'), area: q(f, '.line .area'), line: q(f, '.line .stroke'),
     dots: qa(f, '.line circle'), cols: qa(f, '.bars i'), panels: qa(f, '.panel'), pipeSvg: q(f, '.pipes'),
     links: qa(f, '.links path'), lpk: qa(f, '.lp i') };
@@ -275,6 +276,8 @@ export function drawHow(t, A) {
     const ds = prog(s, 2.8, 0.6);
     F.dash.style.opacity = easeOut(ds) * (1 - dashOut);
     F.dash.style.transform = `translate(${120 * dashOut}px, ${40 * (1 - easeOut(ds))}px) scale(${(0.94 + 0.06 * easeOutBack(ds)) * (1 - 0.12 * dashOut)})`;
+    F.dashNote.style.opacity = easeOut(prog(s, 3.3, 0.5)) * (1 - dashOut);
+    F.dashNote.style.transform = `translateX(${120 * dashOut}px)`;
     F.tiles.forEach((tl, i) => rise(tl, easeOut(prog(s, 3.0 + i * 0.1, 0.4)), 14));
     F.nums.forEach(n => { n.textContent = Math.round(+n.dataset.n * easeOut(prog(s, 3.1, 1.0))).toLocaleString('en-US'); });
     F.panels.forEach((p, i) => rise(p, easeOut(prog(s, 3.2 + i * 0.12, 0.45)), 14));

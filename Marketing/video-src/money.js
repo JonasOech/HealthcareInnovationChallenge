@@ -75,9 +75,9 @@ const CHART = `
     </g>
   </svg>`;
 const TILES = [
-  ['Setup, one-off', eur(roi.setup), `paid back after ${pb.toFixed(1)} months`],
-  ['Running cost', `${eur(roi.running)}<small> / year</small>`, `net saving ${eur(roi.monthly)} a month`],
-  ['Return in year one', `+${Math.round(roi.roi * 100)}%`, `${eur(roi.total)} saved − ${eur(roi.cost)} spent`],
+  ['Setup, one-off', eur(roi.setup)],
+  ['Running cost', `${eur(roi.running)}<small> / year</small>`],
+  ['Return in year one', `+${Math.round(roi.roi * 100)}%`],
 ];
 
 // ---------- pot of gold (the "Here comes the money" title), in stage pixels ----------
@@ -93,7 +93,7 @@ const POT = `
 const HTML = `
   <div class="card staff">${STAFF}</div>
   <div class="card money">${MONEY}</div>
-  <div class="tiles">${TILES.map(([h, v, s], i) => `<div class="tile${i === 2 ? ' good' : ''}"><span>${h}</span><b>${v}</b><p>${s}</p></div>`).join('')}</div>
+  <div class="tiles">${TILES.map(([h, v], i) => `<div class="tile${i === 2 ? ' good' : ''}"><span>${h}</span><b>${v}</b></div>`).join('')}</div>
   <div class="card chart">${CHART}</div>`;
 
 // ---------- build ----------

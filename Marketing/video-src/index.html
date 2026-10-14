@@ -166,6 +166,8 @@
   #flow .xl-note .xl { width: 32px; height: 32px; border-radius: 8px; background: #fff; color: #1D7A45; display: grid; place-items: center; font: 800 18px/1 Inter; }
   #flow .dash { position: absolute; left: 1300px; top: 160px; width: 560px; height: 760px; background: #fff; border-radius: 26px; overflow: hidden; opacity: 0;
                 border: 1.5px solid #D6DCF5; box-shadow: 0 30px 80px rgba(19,27,46,.2); display: flex; flex-direction: column; transform-origin: 0 60%; }
+  #flow .dash-note { position: absolute; left: 1300px; top: 946px; width: 560px; text-align: center; font: 500 20px/1 Inter; letter-spacing: .06em;
+                    color: #8A919E; opacity: 0; }
   #flow .dash .top { background: linear-gradient(100deg, var(--primary), var(--primary-c)); color: #fff; font: 800 23px/1.2 Jakarta; padding: 20px 24px; }
   #flow .tiles { display: flex; gap: 12px; padding: 16px 16px 0; }
   #flow .tile { flex: 1; background: var(--surface); border: 1.5px solid #E2E7FF; border-radius: 16px; padding: 14px; }
@@ -230,11 +232,10 @@
   #money .tile { flex: 1; background: #fff; border: 1.5px solid #E2E7FF; border-radius: 26px; padding: 26px 30px; box-shadow: 0 18px 44px rgba(19,27,46,.08);
                  display: flex; flex-direction: column; justify-content: center; opacity: 0; }
   #money .tile span { font: 700 20px/1 Inter; letter-spacing: .1em; text-transform: uppercase; color: var(--on-var); }
-  #money .tile b { font: 800 66px/1.05 Jakarta; letter-spacing: -0.03em; color: var(--on-surface); margin: 10px 0 6px; }
-  #money .tile b small { font-size: 30px; letter-spacing: 0; color: var(--on-var); }
-  #money .tile p { font: 500 22px/1.3 Inter; color: var(--on-var); }
+  #money .tile b { font: 800 104px/1 Jakarta; letter-spacing: -0.035em; color: var(--on-surface); margin-top: 18px; white-space: nowrap; }
+  #money .tile b small { font-size: 40px; letter-spacing: 0; color: var(--on-var); }
   #money .tile.good { background: linear-gradient(120deg, var(--primary), var(--primary-c)); border-color: transparent; }
-  #money .tile.good span, #money .tile.good p { color: rgba(255,255,255,.82); } #money .tile.good b { color: #fff; }
+  #money .tile.good span { color: rgba(255,255,255,.82); } #money .tile.good b { color: #fff; }
   #money .chart { left: 680px; width: 1100px; opacity: 0; }
   #money .chart .head { display: flex; align-items: center; justify-content: space-between; }
   #money .chart .key { list-style: none; display: flex; gap: 26px; font: 500 21px/1 Inter; color: var(--on-var); }
