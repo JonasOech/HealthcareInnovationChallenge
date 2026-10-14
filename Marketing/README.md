@@ -139,3 +139,10 @@ files the page loads and moves `node_modules` files to `vendor/`.
    a camera bar and a punch-hole display. Each frame of the screen is composited on a canvas texture, with
    spotlight highlights, tap ripples and the word-by-word transcript. `story.js` holds the timeline: phone
    keyframes, screen clips, highlights and captions, and `renderFrame(t)` draws any moment directly.
+
+## Poster
+
+`poster/poster.html` is the A2 poster (portrait, in the dark title-slide style of the deck; the phone is drawn in HTML/CSS,
+not a screenshot). `node poster/build-poster.mjs` (after `npm ci` in `video-src/`, which provides the fonts) renders
+`Poster_A2.pdf` (one A2 page, for a print shop), `Poster_A2_4xA4.pdf` (four A4 pages in the order top-left, top-right,
+bottom-left, bottom-right, to glue together; print at 100 % / actual size, borderless if possible) and `poster_preview.png`.

@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Equipment Tracking Poster</title>
+<style>
+  /* fonts and the hospital crest come from the deck (../video-src, run `npm ci` there first) */
+  @font-face { font-family: Jakarta; font-weight: 600; src: url(../video-src/node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-600-normal.woff2); }
+  @font-face { font-family: Jakarta; font-weight: 700; src: url(../video-src/node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-700-normal.woff2); }
+  @font-face { font-family: Jakarta; font-weight: 800; src: url(../video-src/node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-800-normal.woff2); }
+  @font-face { font-family: Inter; font-weight: 400; src: url(../video-src/node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2); }
+  @font-face { font-family: Inter; font-weight: 500; src: url(../video-src/node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2); }
+  @font-face { font-family: Inter; font-weight: 600; src: url(../video-src/node_modules/@fontsource/inter/files/inter-latin-600-normal.woff2); }
+
+  :root {
+    --primary: #00685F; --primary-c: #008378; --mint: #6DF5E1; --mint-dim: #4FDBC8;
+    --surface: #FAF8FF; --on-surface: #131B2E; --on-var: #3D4947;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #003D38; }
+  @page { margin: 0; }
+
+  /* The poster is drawn on a 1680 x 2376 px canvas (4 px per mm) and zoomed to A2 (420 x 594 mm = 1587.4 x 2245 CSS px).
+     Seams of the 2 x 2 A4 tiles: x = 840, y = 1188. */
+  .poster { position: relative; width: 1680px; height: 2376px; overflow: hidden; zoom: 0.944882;
+            background: radial-gradient(1500px 1300px at 28% 14%, #00897D 0%, #00685F 40%, #003D38 100%); }
+  .glow { position: absolute; border-radius: 50%; }
+  .g1 { left: 760px; top: 760px; width: 1100px; height: 1100px; background: radial-gradient(closest-side, rgba(109,245,225,.30), rgba(109,245,225,0)); }
+  .g2 { left: 1000px; top: 1700px; width: 1100px; height: 1000px; background: radial-gradient(closest-side, rgba(96,99,238,.22), rgba(96,99,238,0)); }
+  .g3 { left: -380px; top: 1500px; width: 1000px; height: 1000px; background: radial-gradient(closest-side, rgba(0,131,120,.35), rgba(0,131,120,0)); }
+
+  /* header: the challenge banner (bubbles kept from the original) */
+  .bubble { position: absolute; border-radius: 50%; background: rgba(109,245,225,.10); border: 3px solid rgba(109,245,225,.16); }
+  .head { position: absolute; left: 0; right: 0; top: 96px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .head .t { font: 800 168px/1 Jakarta; letter-spacing: -0.035em; color: #fff; }
+  .head .pill { margin-top: 34px; font: 800 84px/1 Jakarta; letter-spacing: -0.01em; color: #00201D; background: var(--mint);
+                padding: 20px 46px 24px; border-radius: 999px; box-shadow: 0 18px 50px rgba(0,30,27,.35); }
+  .head .sub { margin-top: 38px; font: 500 50px/1.2 Inter; color: rgba(255,255,255,.82); }
+
+  /* "Equipment Tracking" band */
+  .band { position: absolute; left: 0; right: 0; top: 640px; height: 250px; display: flex; align-items: center; justify-content: center;
+          background: linear-gradient(100deg, #004F48 0%, var(--primary-c) 55%, #00A193 100%);
+          box-shadow: 0 30px 80px rgba(0,30,27,.35), inset 0 3px 0 rgba(255,255,255,.12), inset 0 -3px 0 rgba(0,0,0,.12); }
+  .band h1 { font: 800 160px/1 Jakarta; letter-spacing: -0.035em; color: #fff; padding-bottom: 10px; }
+
+  /* middle: "Just say it." left, the phone right */
+  .say { position: absolute; left: 96px; width: 744px; top: 990px; height: 960px; display: flex; flex-direction: column; justify-content: center; }
+  .say .t { font: 800 150px/1.02 Jakarta; letter-spacing: -0.035em; color: #fff; position: relative; isolation: isolate; white-space: nowrap; }
+  .say .sub { margin-top: 30px; font: 400 46px/1.35 Inter; color: rgba(255,255,255,.85); }
+  mark { position: relative; background: none; color: inherit; white-space: nowrap; }
+  mark::before { content: ""; position: absolute; left: -10px; right: -10px; bottom: 6%; height: 42%; border-radius: 14px;
+                 background: rgba(109,245,225,.38); z-index: -1; }
+
+  .stage { position: absolute; left: 840px; width: 840px; top: 990px; height: 960px; }
+  .card { position: absolute; left: 130px; top: 40px; width: 580px; height: 880px; border-radius: 56px; transform: rotate(-7deg);
+          background: linear-gradient(160deg, rgba(109,245,225,.26) 0%, rgba(0,131,120,.30) 45%, rgba(0,61,56,.55) 100%);
+          border: 3px solid rgba(109,245,225,.30); box-shadow: 0 40px 100px rgba(0,30,27,.45); }
+
+  /* the phone, drawn from scratch: 360 x 800 dp screen, scaled up */
+  .phone { position: absolute; left: 224px; top: 26px; width: 392px; height: 832px; transform: rotate(4deg) scale(1.09); transform-origin: 50% 50%;
+           border-radius: 56px; background: #0b0f12; padding: 16px;
+           box-shadow: 0 50px 110px rgba(0,20,18,.6), inset 0 0 0 3px #3a4447, inset 0 0 0 5px #0b0f12, inset 0 0 0 6px #6b7779; }
+  .phone .btn { position: absolute; right: -6px; width: 6px; border-radius: 0 4px 4px 0; background: #4a5558; }
+  .screen { position: relative; width: 360px; height: 800px; border-radius: 42px; overflow: hidden; background: var(--surface);
+            font-family: Inter; color: var(--on-surface); }
+  .cam { position: absolute; left: 50%; top: 12px; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%; background: #0b0f12; z-index: 2; }
+  .sb { height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 6px 22px 0 24px; font: 500 13px/1 Inter; color: #3d4048; }
+  .sb svg { height: 12px; fill: #3d4048; }
+  .apphead { display: flex; align-items: center; gap: 10px; padding: 4px 14px 0; height: 56px; }
+  .apphead img { width: 32px; height: 32px; }
+  .apphead .nm { flex: 1; }
+  .apphead .nm b { display: block; font: 700 17px/1.1 Jakarta; letter-spacing: -0.01em; }
+  .apphead .nm span { display: block; font: 600 11.5px/1.4 Inter; color: var(--primary); margin-top: 3px; }
+  .apphead .bell { width: 22px; height: 22px; stroke: #2b313d; fill: none; stroke-width: 2; margin-right: 8px; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(140deg, var(--mint), var(--mint-dim)); color: #00403A;
+            display: grid; place-items: center; font: 700 13px/1 Jakarta; box-shadow: 0 0 0 2px #fff, 0 0 0 3px #cfd6e4; }
+  .mic { margin: 12px 14px 0; height: 205px; border: 1px solid #DCE0EE; border-radius: 18px; background: #fff; text-align: center; padding-top: 24px; }
+  .mic .ring { width: 84px; height: 84px; margin: 0 auto; border-radius: 50%; background: #DCEBE9; display: grid; place-items: center; }
+  .mic .btn2 { width: 68px; height: 68px; border-radius: 50%; background: var(--primary); display: grid; place-items: center; box-shadow: 0 0 0 3px #BFD8D5; }
+  .mic .btn2 svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.4; stroke-linecap: round; }
+  .mic h4 { margin-top: 14px; font: 700 17px/1 Jakarta; }
+  .mic p { margin: 9px 14px 0; font: 400 12.5px/1.65 Inter; color: #3a3f4a; }
+  .or { display: flex; align-items: center; gap: 12px; margin: 18px 14px 0; font: 600 9.5px/1 Inter; letter-spacing: .04em; color: #3a3f4a; }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: #DCE0EE; }
+  .form { margin: 18px 14px 0; border: 1px solid #DCE0EE; border-radius: 18px; background: #fff; padding: 13px 13px 0; height: 400px; }
+  .seg { display: flex; height: 46px; border-radius: 999px; background: #EEF1F8; padding: 4px; font: 600 13px/1 Inter; color: #39404c; }
+  .seg span { flex: 1; display: grid; place-items: center; }
+  .seg .on { background: #fff; border-radius: 999px; color: var(--on-surface); font-weight: 700; box-shadow: 0 1px 3px rgba(19,27,46,.08); }
+  .fld { margin-top: 12px; border-radius: 14px; background: #F1F2FF; padding: 12px 12px; }
+  .fld.focus { border: 2px solid #BFD3DB; padding: 10px; }
+  .fld label { display: flex; align-items: center; gap: 7px; font: 700 9.5px/1 Inter; letter-spacing: .03em; color: #39404c; }
+  .fld label svg { width: 14px; height: 14px; stroke: var(--primary); fill: none; stroke-width: 2; }
+  .inp { margin-top: 11px; height: 50px; border: 1px solid #D5D9E6; border-radius: 9px; background: #fff; display: flex; align-items: center; gap: 12px;
+         padding: 0 13px; font: 400 14.5px/1 Inter; color: #3a3f4a; }
+  .inp b { color: var(--primary); font-weight: 700; font-size: 14px; }
+  .inp svg { width: 18px; height: 18px; stroke: var(--primary); fill: none; stroke-width: 2; }
+  .chips { display: flex; gap: 8px; margin-top: 11px; }
+  .chips i { flex: 1; height: 40px; border: 1px solid #D5D9E6; border-radius: 9px; background: #fff; }
+  .nav { position: absolute; left: 0; right: 0; bottom: 0; height: 112px; background: #F7F7FE; box-shadow: 0 -1px 0 #ECEEF6; }
+  .nav .items { display: flex; padding: 12px 6px 0; }
+  .nav .it { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font: 600 10.5px/1 Inter; color: #39404c; }
+  .nav .ic { width: 56px; height: 28px; border-radius: 999px; display: grid; place-items: center; }
+  .nav .ic svg { width: 20px; height: 20px; stroke: #39404c; fill: none; stroke-width: 1.8; stroke-linejoin: round; }
+  .nav .on { color: var(--primary); }
+  .nav .on .ic { background: #E4E8FF; }
+  .nav .on .ic svg { stroke: none; fill: var(--primary); }
+  .sys { position: absolute; left: 0; right: 0; bottom: 14px; display: flex; justify-content: space-around; padding: 0 70px; }
+  .sys svg { width: 14px; height: 14px; fill: #E2E4EE; }
+
+  /* bottom band and tagline */
+  .feat { position: absolute; left: 96px; right: 96px; top: 2040px; height: 150px; border-radius: 40px; display: flex; align-items: center; justify-content: center;
+          background: rgba(109,245,225,.14); border: 3px solid rgba(109,245,225,.32); font: 700 62px/1 Jakarta; letter-spacing: -0.015em; color: #fff; white-space: nowrap; padding-bottom: 6px; }
+  .feat b { color: var(--mint); margin: 0 20px; }
+  .tag { position: absolute; left: 0; right: 0; top: 2236px; text-align: center; font: 800 76px/1 Jakarta; letter-spacing: -0.025em; color: #fff; isolation: isolate; }
+
+  /* print: one A2 page, or four A4 tiles (?tiles) */
+  .poster-wrap { width: 420mm; height: 594mm; overflow: hidden; }
+  .tile { width: 210mm; height: 297mm; overflow: hidden; position: relative; break-after: page; contain: strict; }
+  .tile:last-child { break-after: auto; }
+  .tile .poster-wrap { position: absolute; }
+  body.tiles { width: 210mm; }
+  @media screen { body { padding: 20px; } .tile { margin-bottom: 20px; outline: 1px dashed #6DF5E1; } }
+</style>
+</head>
+<body>
+<div class="poster-wrap" id="wrap">
+<div class="poster">
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+  <div class="bubble" style="left:-120px;top:-150px;width:420px;height:420px"></div>
+  <div class="bubble" style="left:190px;top:200px;width:170px;height:170px"></div>
+  <div class="bubble" style="left:40px;top:330px;width:90px;height:90px"></div>
+  <div class="bubble" style="left:330px;top:60px;width:60px;height:60px"></div>
+
+  <div class="head">
+    <div class="t">Transforming</div>
+    <div class="pill">Challenge 26</div>
+    <div class="sub">Co-create the future of healthcare</div>
+  </div>
+
+  <div class="band"><h1>Equipment Tracking</h1></div>
+
+  <div class="say">
+    <div class="t">Just <mark>say it.</mark></div>
+    <div class="sub">And we will do everything for you</div>
+  </div>
+
+  <div class="stage">
+    <div class="card"></div>
+    <div class="phone">
+      <i class="btn" style="top:170px;height:70px"></i><i class="btn" style="top:270px;height:120px"></i>
+      <div class="screen">
+        <div class="cam"></div>
+        <div class="sb"><span>9:30</span>
+          <span style="display:flex;gap:5px;align-items:center">
+            <svg viewBox="0 0 16 12"><path d="M8 12 0 3.2A11.6 11.6 0 0 1 16 3.2z"/></svg>
+            <svg viewBox="0 0 12 12"><path d="M12 0v12H0z"/></svg>
+            <svg viewBox="0 0 7 12"><rect x="0" y="1" width="7" height="11" rx="1.2"/><rect x="2" y="0" width="3" height="2"/></svg>
+          </span></div>
+        <div class="apphead">
+          <img src="../video-src/hospital_logo.png" alt="">
+          <div class="nm"><b>Quick Equipment Log</b><span>Ward 4B • Sarah Jenkins, RN</span></div>
+          <svg class="bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z"/><path d="M10 21.5a2 2 0 0 0 4 0"/></svg>
+          <div class="avatar">SJ</div>
+        </div>
+        <div class="mic">
+          <div class="ring"><div class="btn2"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3" fill="#fff" stroke="none"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></div></div>
+          <h4>Hold to Speak Booking</h4>
+          <p>eg. "Book Wheelchair 4829-1053 to the patient in Bed 4B-12 for the next 3 weeks"</p>
+        </div>
+        <div class="or">OR EDIT</div>
+        <div class="form">
+          <div class="seg"><span class="on">Book</span><span>Return</span><span>Repair</span></div>
+          <div class="fld focus"><label>EQUIPMENT ID (HC21)</label><div class="inp"><b>#</b>HC21 number</div></div>
+          <div class="fld"><label>PATIENT ID &amp; LOCATION</label><div class="inp"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6z"/></svg>&nbsp;PT-xxxxx or bed</div></div>
+          <div class="fld"><label><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>BOOKING DURATION</label><div class="chips"><i></i><i></i><i></i></div></div>
+        </div>
+        <div class="nav">
+          <div class="items">
+            <div class="it on"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 5v4h4v2h-4v4h-2v-4H7v-2h4V7z"/></svg></div>Log Equip</div>
+            <div class="it"><div class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="1.5"/><path d="M4 9.5h16M8 3v4M16 3v4M9 14.5l2 2 4-4"/></svg></div>Bookings</div>
+            <div class="it"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="13" rx="1.5"/><path d="M9 7V4.5h6V7M12 10.5v6M9 13.5h6"/></svg></div>Roster</div>
+            <div class="it"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="13" rx="1.5"/><path d="M10 7V4h4v3M7 16.5c.4-1.5 1.4-2.2 2.5-2.2s2.1.7 2.5 2.2M14.5 12h3M14.5 15h3"/><circle cx="9.5" cy="11.8" r="1.5"/></svg></div>Profile</div>
+          </div>
+          <div class="sys">
+            <svg viewBox="0 0 14 14"><path d="M12 1v12L2 7z"/></svg>
+            <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6.5"/></svg>
+            <svg viewBox="0 0 14 14"><rect x="1" y="1" width="12" height="12" rx="1.5"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feat">Track<b>·</b>Book<b>·</b>Manage<b>·</b>Monitor in real-time</div>
+  <div class="tag">Just one tap. <mark>Loaned.</mark></div>
+</div>
+</div>
+<script>
+  // ?tiles: four A4 pages (top-left, top-right, bottom-left, bottom-right) to glue into the A2 poster; ?a2: one A2 page
+  const q = new URLSearchParams(location.search), wrap = document.getElementById('wrap');
+  if (q.has('a2')) document.body.classList.add('a2');
+  if (q.has('tiles')) {
+    document.body.classList.add('tiles');
+    for (const [x, y] of [[0, 0], [1, 0], [0, 1], [1, 1]]) {
+      const tile = document.createElement('div'); tile.className = 'tile';
+      const w = wrap.cloneNode(true); w.removeAttribute('id');
+      w.style.left = `${-210 * x}mm`; w.style.top = `${-297 * y}mm`;
+      tile.appendChild(w); document.body.appendChild(tile);
+    }
+    wrap.remove();
+  }
+</script>
+</body>
+</html>
