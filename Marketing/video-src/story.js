@@ -264,8 +264,7 @@ const texts = [
 ];
 
 const highlights = [
-  { t0: 9.4, t1: 10.35, x: 86, y: 512, w: 908, h: 310, color: '#00685F' },                        // HC21 field, scanned
-  { t0: 10.3, t1: 11.4, x: 84, y: 854, w: 912, h: 304, color: '#00685F' },                         // patient field
+  { t0: 9.4, t1: 11.4, x: 86, y: 512, w: 908, h: 310, color: '#00685F' },                         // HC21 field, scanned
   { t0: 26.8, t1: 30.15, x: 84, y: 1000, w: 912, h: 320, color: '#4648D4' },                       // transcript
   { t0: 33.7, t1: 36.05, x: 44, y: C0 + 1310 - 1000, w: 992, h: 705, color: '#4648D4' },          // AI parsed card
   { t0: 37.2, t1: 40.4, x: 86, y: C0 + 2380 - 2230, w: 910, h: 1465, color: '#4648D4' },          // AI-filled form
@@ -275,7 +274,7 @@ const highlights = [
   { t0: 53.75, t1: 55.15, x: 43, y: 295, w: 993, h: 262, color: '#D97706' },                       // waitlist toast
   { t0: 56.5, t1: 57.8, x: 40, y: C0 + 2470 - 1034, w: 1000, h: 320, color: '#D97706' },          // waitlist entry
   { t0: 59.1, t1: 60.1, x: 43, y: 295, w: 993, h: 262, color: '#00685F' },                         // next notified
-  { t0: 62.8, t1: 64.2, x: 245, y: 598, w: 300, h: 84, color: '#00685F' },                         // category chip
+  { t0: 62.8, t1: 64.2, x: 287, y: 598, w: 313, h: 85, color: '#00685F' },                         // category chip
   { t0: 64.7, t1: 66.5, x: 40, y: 255, w: 1000, h: 815, color: '#EF4444' },                        // search + late
 ];
 
@@ -284,7 +283,7 @@ const taps = [
   { t: 41.65, x: 540, y: 1916 },
   { t: 53.05, x: 540, y: 1915 },
   { t: 58.4, x: 300, y: 1400 },
-  { t: 62.3, x: 395, y: 640 },
+  { t: 62.3, x: 443, y: 640 },
 ];
 
 // ---------- presentation deck ----------
