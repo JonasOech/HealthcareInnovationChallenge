@@ -39,8 +39,9 @@ How to edit:
 **Screen:** Bookings tab ("Active bookings").
 
 - 1 Capture: the phone. A pipe with data packets runs to a sync hub.
-- 2 Synchronize: the hub beams up into the "Acute Equipment Tracker" sheet; its rows fill in one by one, colour-coded (on loan amber, available green, repair red).
+- 2 Synchronize: the hub beams up into a teal database cylinder ("Equipment database").
 - 3 Visualization: a second pipe runs on to the "Medical Equipment Management Dashboard": Wheelchairs (total) 215, Bookings (total) 1,350, Available equipment 98 (count up); Equipment distribution donut (wheelchairs, hospital beds, syringe pumps, other); Booking trends line; Equipment status bars (in use, available, repair, reserved).
+- Next click: the "Acute Equipment Tracker" sheet pops up out of the database, its rows filling in one by one, colour-coded (on loan amber, available green, repair red), with a green badge: "Excel support still provided".
 
 *Transition: a teal wipe and the background turns dark; the phone spins back over to the right.*
 
