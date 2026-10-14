@@ -289,33 +289,142 @@ const taps = [
 
 // ---------- presentation deck ----------
 // Each stop is a story time where everything on screen has finished animating in. The deck holds there, and a
-// click plays the timeline on to the next stop. Notes show in the presenter view (?presenter).
+// click plays the timeline on to the next stop. Notes show in the presenter view (?presenter): the talking points
+// first, then a "→" line with what to do or what is coming on the next click.
 const stops = [
-  { t: 0, title: 'Follow along', notes: 'QR code to tuh.oechsner.dev: the audience opens the slides on their phones and follows the talk live. Leave it up while people scan, then click to start the intro.' },
-  { t: 4.4, title: 'Equipment tracking just got trivial', notes: 'OT tracks ~155 specialist items in an Excel sheet that is updated after the fact. About €4,600 of equipment goes missing every year. Our app makes logging take seconds, by voice.' },
-  { t: 11.0, title: 'How it works: HC21 labels', notes: 'Every item already carries a unique HC21 barcode label with its serial number. The nurse scans the label and enters the patient ID to book it, so the record is updated at the handover itself.' },
-  { t: 16.0, title: 'How it works: capture → sync → dashboard', notes: 'Bookings captured on the ward are synchronised into a central equipment database and visualised on a live dashboard: totals, distribution, booking trends and status.' },
-  { t: 17.5, title: 'How it works: Excel still supported', notes: 'The database can still be opened as the familiar Acute Equipment Tracker spreadsheet, so Excel support is still provided and nobody has to give up their sheet.' },
-  { t: 21.5, title: 'Synchronized access', notes: 'Every phone on every ward reads and writes the same central database, so everyone sees the same live status the moment an item is booked or returned.' },
-  { t: 23.85, title: 'Tech Demo', notes: 'Section break: from here on it is the real app, captured from the Android emulator.' },
-  { t: 29.65, title: '01 · Voice logging', notes: 'The nurse holds the mic and just talks, including the self-correction and the side remark about the broken cushion. Long, messy dictation is fine.' },
-  { t: 35.75, title: '02 · Gemini: AI parsed', notes: 'Gemini returns a structured result: it resolves "no wait, ending 35" and ignores the cushion remark.' },
-  { t: 40.0, title: '02 · Gemini: form filled', notes: 'The booking form is filled in for them: item, patient MRN, bed, duration. They only check it.' },
-  { t: 44.5, title: '03 · One tap. Loaned.', notes: 'One tap confirms. The record updates in real time, at the handover, not hours later.' },
-  { t: 49.8, title: '04 · Overdue alerts', notes: 'Due dates come from the booking duration. Late loans jump to the top in red.' },
-  { t: 52.7, title: '05 · Waitlist: item is out', notes: 'Someone books the tilt-in-space wheelchair, but it is already on loan. The app warns them.' },
-  { t: 54.8, title: '05 · Waitlist: queued', notes: 'Confirming puts the patient on the waitlist automatically. Nobody can skip the queue.' },
-  { t: 57.45, title: '05 · Waitlist: the queue', notes: 'The waitlist sits under bookings, so everyone can see who is next.' },
-  { t: 59.6, title: '05 · Waitlist: return → notify', notes: 'When the chair is returned, the next patient on the waitlist is notified straight away.' },
-  { t: 63.85, title: '06 · Roster: filter', notes: 'The roster shows every item and where it is. Filter by category…' },
-  { t: 65.95, title: '06 · Roster: search', notes: '…or search by ID, type or location, and filter by status: available, on loan, repair, missing, late.' },
-  { t: 70.1, title: '07 · Private by design', notes: 'Patient data stays minimal: MRN only, no names. The parsing step can be swapped for a locally hosted model (e.g. Ollama), so no data has to leave the hospital.' },
-  { t: 73.0, title: 'Here comes the money', notes: 'Section break: from here on it is the business case.' },
-  { t: 77.1, title: 'Business case: staff time', notes: `Today OT spends ${roi.today} hours a year on stock checks, Excel updates, the waitlist and searching for equipment. With the app that drops to about ${roi.withApp} hours: ${roi.saved} hours saved, about ${Math.round(roi.days)} working days.` },
-  { t: 79.4, title: 'Business case: money saved', notes: `${roi.assistant} of the saved hours are healthcare-assistant hours at €25, the other ${roi.saved - roi.assistant} would be overtime at €30: ${eur(roi.staff)}. Cutting the ${eur(roi.loss)} of equipment lost a year by 30% saves ${eur(roi.losses)}. Together about ${eur(roi.total)} a year.` },
-  { t: 83.2, title: 'Business case: payback', notes: `${eur(roi.setup)} to set up and ${eur(roi.running)} a year to run. Net savings of ${eur(roi.monthly)} a month pay it back after ${roi.payback.toFixed(1)} months, and the first year returns ${Math.round(roi.roi * 100)}% on the ${eur(roi.cost)} spent.` },
-  { t: 89.6, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
-  { t: 94.3, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
+  { t: 0, title: 'Follow along', notes: `Welcome, introduce yourself and the team: Grace, Marvin & Jonas. We picked Challenge 2 from the Occupational Therapy department at Tallaght: smarter equipment tracking for better patient care.
+
+Invite everyone to scan the QR code (tuh.oechsner.dev): the slides follow the talk live on their phones, and they can scroll back any time.
+
+→ Give people ~10 seconds to scan, then click to start the intro.` },
+  { t: 4.4, title: 'Equipment tracking just got trivial', notes: `The problem in one breath: OT looks after ~155 items of specialist seating and manual handling equipment across 9 categories: wheelchairs, pressure cushions, leg rests, headrests, sliding boards.
+
+All of it is tracked in an Excel "Acute Equipment Tracker" on a shared drive, usually updated after the fact. Therapy assistants spend hours on monthly stock checks, the waitlist gets bypassed, and about €4,600 of equipment goes missing every year.
+
+Our answer: Quick Equipment Log. Speak it. Log it. Find it. Booking a piece of equipment takes seconds, by voice.
+
+→ Next: how it works.` },
+  { t: 11.0, title: 'How it works: HC21 labels', notes: `Key insight: we don't need new hardware. Every item already carries a unique HC21 barcode label with its serial number.
+
+The nurse or therapist scans the label and enters the patient ID, and the item is booked. The record is updated at the handover itself, not later at a desk. That removes the retrospective updates and the reliance on people remembering (problems 3 and 4 in the brief).
+
+→ Next: where that booking goes.` },
+  { t: 16.0, title: 'How it works: capture → sync → dashboard', notes: `1. Capture on the ward, on the phone.
+2. Synchronise into one central equipment database.
+3. Visualise on a live dashboard: totals, distribution by type, booking trends and status (in use, available, repair).
+
+This is the "simple, centralised, real-time view" the OT team asked for: anyone can see at a glance what is available, on loan, in repair or missing.
+
+→ Next click: the Excel sheet pops out of the database.` },
+  { t: 17.5, title: 'How it works: Excel still supported', notes: `Important for adoption: the database can still be opened as the familiar Acute Equipment Tracker spreadsheet, same columns, same colour coding (on loan, available, repair).
+
+Nobody has to give up their sheet on day one, and we can import the existing tracker so we start with the real ~155 items, not an empty system.
+
+→ Next: many phones, one database.` },
+  { t: 21.5, title: 'Synchronized access', notes: `Every phone on every ward reads and writes the same central database. When an item is booked or returned on one ward, everyone sees it straight away.
+
+No more logging into the shared folder, finding the right tab and hoping it is up to date. One source of truth for OT, the wards, and later other departments that share equipment.
+
+→ Next: enough slides, let's see the real app.` },
+  { t: 23.85, title: 'Tech Demo', notes: `Section break. Everything from here on is the real working Android app, recorded from the emulator, not a mockup.
+
+We'll follow one booking from start to finish: voice → AI → one tap → overdue → waitlist → roster.
+
+→ Click to start the demo.` },
+  { t: 29.65, title: '01 · Voice logging', notes: `The nurse holds the mic button and just talks, the way people actually talk on a busy ward.
+
+Read the transcript out: "Book wheelchair… ending five three, no wait, ending three five, for the patient in bed 4B twelve, oh and the cushion in bed seven is broken by the way, for the next three weeks."
+
+It has a self-correction and an unrelated side remark. Long, messy, hands-free dictation is fine.
+
+→ Next: what the AI makes of it.` },
+  { t: 35.75, title: '02 · Gemini: AI parsed', notes: `Gemini turns that ramble into a clean, structured record.
+
+Point out the two tricky bits: it resolved "no wait, ending 35" to the right wheelchair, and it ignored the remark about the broken cushion instead of booking it.
+
+→ Next: the form it fills in.` },
+  { t: 40.0, title: '02 · Gemini: form filled', notes: `The booking form is filled in for them: equipment ID, patient MRN, bed/location and loan duration.
+
+The clinician only checks it. No typing, no hunting for the right spreadsheet tab, no transcribing serial numbers.
+
+→ Next: confirm.` },
+  { t: 44.5, title: '03 · One tap. Loaned.', notes: `One tap confirms. The record updates in real time, at the handover, not hours later at a desk.
+
+Human in the loop: the AI suggests, the clinician decides. Nothing is logged without someone confirming it, which keeps accountability and an audit trail of who changed what.
+
+→ Next: what happens when an item isn't returned.` },
+  { t: 49.8, title: '04 · Overdue alerts', notes: `The due date comes from the booking duration, so the app always knows how long a loan has left.
+
+Late loans jump to the top in red, with the patient and ward, so staff know exactly where to reach out. This is how we tackle lost equipment: items get chased while they are still easy to find, not discovered missing at the next monthly stock check.
+
+→ Next: the waitlist.` },
+  { t: 52.7, title: '05 · Waitlist: item is out', notes: `Someone tries to book the tilt-in-space wheelchair, but it is already on loan. The app warns them straight away instead of letting them walk to the store room for nothing.
+
+→ Next: they confirm anyway.` },
+  { t: 54.8, title: '05 · Waitlist: queued', notes: `Confirming puts the patient on the waitlist automatically.
+
+Today the waitlist is a separate tab in the spreadsheet, and because checking it takes time, items get handed out without it being looked at. Here the waitlist is part of the booking itself, so nobody can skip the queue.
+
+→ Next: the queue.` },
+  { t: 57.45, title: '05 · Waitlist: the queue', notes: `The waitlist sits right under the bookings, so everyone can see who is next for what. Equipment goes to whoever is next in the queue, not whoever happened to ask first in the corridor.
+
+→ Next: the chair comes back.` },
+  { t: 59.6, title: '05 · Waitlist: return → notify', notes: `When the chair is returned, the next patient on the waitlist is notified straight away.
+
+Equipment we already own gets back into use faster, which means fewer delays for patients and less pressure to buy or hire extra equipment.
+
+→ Next: finding things.` },
+  { t: 63.85, title: '06 · Roster: filter', notes: `The roster shows every item and where it is right now. Filter by category: wheelchairs, cushions, leg rests…
+
+This replaces most of the monthly stock check: the record is already right, so therapy assistants only need to check the exceptions.
+
+→ Next: search.` },
+  { t: 65.95, title: '06 · Roster: search', notes: `…or search by ID, type or location, and filter by status: available, on loan, in repair, missing, late.
+
+"Where is the tilt-in-space chair?" now takes seconds instead of a walk round the wards.
+
+→ Next: privacy.` },
+  { t: 70.1, title: '07 · Private by design', notes: `Patient data stays minimal: we store the MRN only, never patient names, and every change is logged with who made it. GDPR-minded from day one.
+
+The speech-parsing step is swappable: instead of Gemini it can run on a locally hosted model such as Ollama, so no data has to leave the hospital network.
+
+→ Next: the business case.` },
+  { t: 73.0, title: 'Here comes the money', notes: `Section break, a bit of fun: the pot of gold.
+
+So far we've shown it helps staff and patients. Now: does it pay for itself? These figures come from our savings & ROI spreadsheet.
+
+→ Click for the numbers.` },
+  { t: 77.1, title: 'Business case: staff time', notes: `Today OT spends about ${roi.today} hours a year on equipment admin: ${roi.hours.map(([k, h]) => `${k} ${h} h`).join(', ')}.
+
+With the app that drops to about ${roi.withApp} hours: ${roi.saved} hours saved, roughly ${Math.round(roi.days)} working days given back to patient care.
+
+→ Next: what that is worth.` },
+  { t: 79.4, title: 'Business case: money saved', notes: `${roi.assistant} of the saved hours are healthcare-assistant hours at €${roi.assistantRate}/h, the other ${roi.saved - roi.assistant} would be overtime at €${roi.overtimeRate}/h: ${eur(roi.staff)} a year.
+
+Equipment losses: we assume ${eur(roi.loss)} lost a year and cut it by ${Math.round(roi.lossCut * 100)}%, saving ${eur(roi.losses)}.
+
+Together about ${eur(roi.total)} a year.
+
+→ Next: payback.` },
+  { t: 83.2, title: 'Business case: payback', notes: `${eur(roi.setup)} to set up and ${eur(roi.running)} a year to run.
+
+Net savings of ${eur(roi.monthly)} a month pay it back after ${roi.payback.toFixed(1)} months, and the first year returns ${Math.round(roi.roi * 100)}% on the ${eur(roi.cost)} spent.
+
+And it doesn't stop at OT: any department that loans or shares equipment can use the same system (goal 9 in the brief).
+
+→ Next: wrap-up.` },
+  { t: 89.6, title: 'Smarter equipment tracking for better patient care', notes: `Wrap-up in three lines:
+• Logging happens at the handover, by voice, in seconds.
+• The waitlist can't be skipped, and overdue items get chased early.
+• It pays for itself in under a year and scales beyond OT.
+
+Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!` },
+  { t: 94.3, title: 'oechsner.dev', notes: `Read more on the blog. Open up for questions.
+
+Likely questions:
+• Patient data? MRN only, no names; the AI step can run locally (Ollama).
+• What if the AI gets it wrong? The clinician confirms every booking before it is saved.
+• Rollout? Import the existing Excel tracker; the sheet stays available as an export.` },
 ];
 
 const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
