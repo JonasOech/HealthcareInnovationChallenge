@@ -4,7 +4,7 @@
 // stop 3 — the cards make way for the payback chart: cumulative cost vs. savings over year one, with the tiles.
 // The numbers come from story.money.roi (the team's spreadsheet); times are offsets from story.money.t0.
 // Before it, the "Here comes the money" title gets a pot of gold on the right, its rainbow leaving the frame top right
-// (story.money.pot, times are offsets from its t0).
+// (story.money.pot).
 import { story } from './story.js';
 
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -82,16 +82,13 @@ const TILES = [
 
 // ---------- pot of gold (the "Here comes the money" title), in stage pixels ----------
 // The picture (story.money.pot.img) is placed so its rainbow, cut off at the top, leaves the frame top right; a golden
-// glow sits behind it and a few sparkles twinkle over it.
-const SPARKLES = [[1235, 545, 1], [1745, 585, 0.8], [1640, 300, 0.9], [1400, 215, 0.75], [1800, 880, 0.7], [1195, 905, 0.8]];
+// glow sits behind it.
 const POT = `
   <svg class="glow" viewBox="0 0 1920 1080">
     <defs><radialGradient id="pot-glow"><stop offset="0" stop-color="#FFD54F" stop-opacity=".5"/><stop offset="1" stop-color="#FFD54F" stop-opacity="0"/></radialGradient></defs>
     <circle cx="1490" cy="700" r="430" fill="url(#pot-glow)"/>
   </svg>
-  <img src="${story.money.pot.img}" alt="">
-  <svg class="sparkles" viewBox="0 0 1920 1080">${SPARKLES.map(([x, y, k]) =>
-    `<path transform="translate(${x} ${y}) scale(${k})" d="M0-26C3-6 6-3 26 0C6 3 3 6 0 26C-3 6-6 3-26 0C-6-3-3-6 0-26Z"/>`).join('')}</svg>`;
+  <img src="${story.money.pot.img}" alt="">`;
 
 const HTML = `
   <div class="card staff">${STAFF}</div>
@@ -105,7 +102,7 @@ export function buildMoney() {
   const pot = document.createElement('div');
   pot.id = 'pot'; pot.className = 'how'; pot.innerHTML = POT;
   document.getElementById('mascot').before(pot);
-  G = { el: pot, glow: pot.querySelector('.glow'), img: pot.querySelector('img'), sparkles: [...pot.querySelectorAll('.sparkles path')] };
+  G = { el: pot };
 
   const el = document.createElement('div');
   el.id = 'money'; el.className = 'how'; el.innerHTML = HTML;
@@ -120,26 +117,14 @@ export function buildMoney() {
 }
 
 // ---------- draw ----------
-function drawPot(t, A) {
+function drawPot(t) {
+  // no animation: the picture switches on and off while the wipes into and out of the title cover the stage
   const { t0, t1 } = story.money.pot;
-  const vis = t >= t0 - 0.4 && t <= t1 + 0.05;
-  G.el.style.display = vis ? 'block' : 'none';
-  if (!vis) return;
-  const s = t - t0;
-  G.el.style.opacity = 1 - easeInOut(prog(t, t1 - 0.45, 0.45));
-  // the pot pops up as the wipe clears, then the rainbow rises out of the coins (a clip opening upwards), then the gold
-  // twinkles. The picture never moves, so the rainbow's cut-off end stays out of frame.
-  const k = prog(s, -0.1, 0.7);
-  G.img.style.transform = `scale(${0.82 + 0.18 * easeOutBack(k)})`;
-  G.img.style.opacity = clamp(k * 3);
-  G.img.style.clipPath = `inset(${52 * (1 - easeInOut(prog(s, 0.4, 0.8)))}% 0 0 0)`;
-  G.glow.style.opacity = easeOut(prog(s, 0.2, 0.8));
-  const on = prog(s, 1.0, 0.4);
-  G.sparkles.forEach((p, i) => (p.style.opacity = on * Math.pow(0.5 + 0.5 * Math.sin(A * 2.6 + i * 1.9), 2)));
+  G.el.style.display = t >= t0 - 0.3 && t <= t1 + 0.05 ? 'block' : 'none';
 }
 
-export function drawMoney(t, A) {
-  drawPot(t, A);
+export function drawMoney(t) {
+  drawPot(t);
   const { t0, t1 } = story.money;
   const vis = t >= t0 - 0.05 && t <= t1 + 0.05;
   M.el.style.display = vis ? 'block' : 'none';

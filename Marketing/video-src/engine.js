@@ -350,7 +350,7 @@ window.renderFrame = (T, deck) => {
   drawMascot(t, L);
   drawHow(t, A);
   drawSats(t, A);
-  drawMoney(t, A);
+  drawMoney(t);
   drawBlog(t, deck ? A : t);
   drawFollow(t, A, !!deck);
   renderer.render(scene, camera);
