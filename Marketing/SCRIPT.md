@@ -143,16 +143,16 @@ How to edit:
 - Sub: Our app is fully compatible with ollama - Privacy by design
 - Chips: 🔒 GDPR-minded from day one
 
-*Transition: a teal wipe and the background turns dark; the phone spins back over to the right.*
+*Transition: a teal wipe and the background turns dark; the phone dives out of the frame.*
 
 ---
 
 ## Here comes the money (deck only) · dark teal background, text left
-**Screen:** Log Equip tab, idle ("Hold to Speak Booking").
+**Right:** no phone. The pot of gold picture (`screens/pot_of_gold.webp`), still, with a golden glow behind it; its rainbow leaves the frame top right.
 
 - Headline: Here comes / the ==money==
 
-*Transition: a teal wipe and the background turns light; the phone dives out of the frame.*
+*Transition: a teal wipe and the background turns light.*
 
 ---
 

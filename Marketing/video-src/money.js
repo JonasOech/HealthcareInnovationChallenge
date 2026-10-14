@@ -3,6 +3,8 @@
 // stop 2 — the money-saved card: fewer lost items + staff time recovered = total a year,
 // stop 3 — the cards make way for the payback chart: cumulative cost vs. savings over year one, with the tiles.
 // The numbers come from story.money.roi (the team's spreadsheet); times are offsets from story.money.t0.
+// Before it, the "Here comes the money" title gets a pot of gold on the right, its rainbow leaving the frame top right
+// (story.money.pot).
 import { story } from './story.js';
 
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -78,6 +80,16 @@ const TILES = [
   ['Return in year one', `+${Math.round(roi.roi * 100)}%`, `${eur(roi.total)} saved − ${eur(roi.cost)} spent`],
 ];
 
+// ---------- pot of gold (the "Here comes the money" title), in stage pixels ----------
+// The picture (story.money.pot.img) is placed so its rainbow, cut off at the top, leaves the frame top right; a golden
+// glow sits behind it.
+const POT = `
+  <svg class="glow" viewBox="0 0 1920 1080">
+    <defs><radialGradient id="pot-glow"><stop offset="0" stop-color="#FFD54F" stop-opacity=".5"/><stop offset="1" stop-color="#FFD54F" stop-opacity="0"/></radialGradient></defs>
+    <circle cx="1490" cy="700" r="430" fill="url(#pot-glow)"/>
+  </svg>
+  <img src="${story.money.pot.img}" alt="">`;
+
 const HTML = `
   <div class="card staff">${STAFF}</div>
   <div class="card money">${MONEY}</div>
@@ -85,8 +97,13 @@ const HTML = `
   <div class="card chart">${CHART}</div>`;
 
 // ---------- build ----------
-let M;
+let M, G;
 export function buildMoney() {
+  const pot = document.createElement('div');
+  pot.id = 'pot'; pot.className = 'how'; pot.innerHTML = POT;
+  document.getElementById('mascot').before(pot);
+  G = { el: pot };
+
   const el = document.createElement('div');
   el.id = 'money'; el.className = 'how'; el.innerHTML = HTML;
   document.getElementById('mascot').before(el);
@@ -100,7 +117,14 @@ export function buildMoney() {
 }
 
 // ---------- draw ----------
+function drawPot(t) {
+  // no animation: the picture switches on and off while the wipes into and out of the title cover the stage
+  const { t0, t1 } = story.money.pot;
+  G.el.style.display = t >= t0 - 0.3 && t <= t1 + 0.05 ? 'block' : 'none';
+}
+
 export function drawMoney(t) {
+  drawPot(t);
   const { t0, t1 } = story.money;
   const vis = t >= t0 - 0.05 && t <= t1 + 0.05;
   M.el.style.display = vis ? 'block' : 'none';
