@@ -311,12 +311,12 @@
   #dataflow .ollama { flex: none; width: 150px; height: 150px; border-radius: 22px; display: grid; place-items: center; background: #fff;
                       border: 1.5px solid #E2E7FF; box-shadow: 0 8px 22px rgba(19,27,46,.1); }
   #dataflow .ollama img { width: 96px; height: 96px; }
-  /* patient ID encryption + custom prompt: one card, two rows, a + on the divider between them */
+  /* patient ID encryption + custom prompt: one card, two rows, a + between them */
   #dataflow .node.merge { flex-direction: column; align-items: stretch; justify-content: space-around; gap: 0; padding: 14px 20px; }
   #dataflow .merge .row { display: flex; align-items: center; gap: 16px; opacity: 0; }
-  #dataflow .merge .plus { position: relative; align-self: center; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
-                           background: #B45309; color: #fff; font: 800 34px/1 Jakarta; box-shadow: 0 0 0 8px #fff, 0 6px 16px rgba(180,83,9,.3); opacity: 0; }
-  #dataflow .merge .plus::before { content: ""; position: absolute; left: -160px; right: -160px; top: 50%; height: 1.5px; background: #E2E7FF; z-index: -1; }
+  #dataflow .merge .plus { align-self: center; width: 44px; height: 44px; border-radius: 50%; background: #004F48; opacity: 0;
+                           box-shadow: 0 6px 14px rgba(0,79,72,.28); }
+  #dataflow .merge .plus svg { display: block; width: 100%; height: 100%; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; }
   #dataflow .node .tag { display: inline-block; margin-top: 10px; padding: 7px 14px; border-radius: 999px; background: var(--ai-bg); color: var(--ai-text);
                          font: 700 18px/1 Inter; }
   #dataflow .model { position: absolute; display: flex; align-items: center; gap: 12px; padding: 0 18px; background: #fff; border: 1.5px solid #E2E7FF;
@@ -336,7 +336,6 @@
   #dataflow .reveal { fill: none; stroke: #fff; stroke-width: 20; }
   #dataflow .packets i { position: absolute; left: 0; top: 0; width: 16px; height: 16px; border-radius: 4px; background: #B9FFF4; opacity: 0;
                          border: 2px solid #fff; box-shadow: 0 0 12px 3px rgba(109,245,225,.85); }
-  #dataflow .autofill { position: absolute; text-align: center; font: 700 15px/1 Inter; letter-spacing: .06em; white-space: nowrap; text-transform: uppercase; color: var(--primary); opacity: 0; }
   #dataflow .hitl { position: absolute; display: flex; align-items: center; gap: 12px; padding: 12px 24px 12px 12px; border-radius: 999px; white-space: nowrap;
                     background: #fff; border: 1.5px solid #E2E7FF; box-shadow: 0 12px 30px rgba(19,27,46,.1); font: 800 24px/1 Jakarta; color: var(--on-surface); opacity: 0; }
   #dataflow .hitl .ic { width: 40px; height: 40px; border-radius: 50%; padding: 8px; background: var(--primary); color: #fff; }

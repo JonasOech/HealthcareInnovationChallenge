@@ -86,13 +86,12 @@ const HTML = `
   ${mini(N.phoneIn, story.dataflow.screens[0])}
   ${node(N.trans, 'wave', 'Transcription', 'Speech becomes text')}
   <div class="node merge" ${at(N.merge)}>${row('lock', 'Patient ID encryption', 'Before anything leaves the server')}
-    <div class="plus">+</div>${row('prompt', 'Custom prompt', 'Roster, patients &amp; form schema')}</div>
+    <div class="plus"><svg viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></svg></div>${row('prompt', 'Custom prompt', 'Roster, patients &amp; form schema')}</div>
   <div class="node router" ${at(N.router)}><img class="logo" src="${LOGO('openrouter')}" alt=""><div class="h">OpenRouter</div><p>Any cloud model</p></div>
   ${MODELS.map(([n, f], i) => `<div class="model" ${at({ x: CHIP.x, y: CHIP.y(i), w: CHIP.w, h: CHIP.h })}><img src="${LOGO(f)}" alt="">${n}</div>`).join('')}
   <div class="or" style="left:${G[2].x}px;top:${N.local.y - 50}px;width:${G[2].w}px"><span>or</span></div>
   <div class="node local" ${at(N.local)}><span class="ollama"><img src="${LOGO('ollama')}" alt=""></span><div><div class="h">Local inference</div>
     <div class="tag">Ollama / OpenLLM</div><p>Patient data never leaves the hospital</p></div></div>
-  <div class="autofill" style="left:${G[2].x + G[2].w}px;top:${N.submit.cy - 44}px;width:${N.submit.x - G[2].x - G[2].w}px">autofill</div>
   ${node(N.submit, 'edit', 'Modification<br>&amp; submission', '', 'tight')}
   ${mini(N.phoneOut, story.dataflow.screens[1])}
   <div class="hitl" style="left:960px;top:${LOOP_Y}px"><span class="ic">${ICON.human}</span>Human in the loop</div>`;
@@ -104,7 +103,7 @@ export function buildDataflow() {
   el.id = 'dataflow'; el.className = 'how'; el.innerHTML = HTML;
   document.getElementById('mascot').before(el);
   const q = s => el.querySelector(s), qa = s => [...el.querySelectorAll(s)];
-  D = { el, groups: qa('.group'), nodes: qa('.node'), minis: qa('.mini'), models: qa('.model'), or: q('.or'), autofill: q('.autofill'),
+  D = { el, groups: qa('.group'), nodes: qa('.node'), minis: qa('.mini'), models: qa('.model'), or: q('.or'),
     hitl: q('.hitl'), rows: qa('.merge .row'), plus: q('.plus'), arrows: qa('.arrow path:not(.head)'), heads: qa('.arrow .head'), fans: qa('.fan'), loop: q('.loop'), reveal: q('.reveal'), packets: qa('.packets i') };
   D.lens = D.arrows.map(p => p.getTotalLength());
   D.arrows.forEach((p, i) => (p.style.strokeDasharray = D.lens[i]));
@@ -146,7 +145,6 @@ export function drawDataflow(t, A) {
     D.heads[i].style.opacity = prog(s, arrowAt[i] + 0.3, 0.12);
     return k;
   });
-  pop(D.autofill, prog(s, 2.95, 0.45));
   // records ride each arrow once it is drawn
   D.packets.forEach((el, j) => {
     const i = j >> 1, u = (A * 0.55 + (j & 1) * 0.5 + i * 0.17) % 1;
