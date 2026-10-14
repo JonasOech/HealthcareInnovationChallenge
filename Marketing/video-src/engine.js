@@ -349,6 +349,7 @@ window.renderFrame = (T, deck) => {
   drawMascot(t, L);
   drawHow(t, A);
   drawSats(t, A);
+  drawMoney(t);
   drawBlog(t, deck ? A : t);
   drawFollow(t, A, !!deck);
   renderer.render(scene, camera);
@@ -363,6 +364,7 @@ window.setupDone = (async () => {
   await Promise.all(story.allImages().map(loadImage));
   buildTexts();
   buildHow();
+  buildMoney();
   buildSats();
   buildFollow();
   window.renderFrame(0);

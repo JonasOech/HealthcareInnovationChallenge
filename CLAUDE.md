@@ -1,4 +1,4 @@
-# CLAUDE.md
+https://claude-eloquent-bardeen-5mni1g-healthcareinnovationchallenge.jonasoechsner06.workers.dev/#18# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -17,7 +17,7 @@ This is a hackathon repo for the **Healthcare Innovation Challenge 2026** (team:
 
 ## Presentation website (`Marketing/`)
 
-`Marketing/video-src/` is a Three.js page that is the pitch presentation: `engine.js` draws any storyboard moment (`renderFrame`), `story.js` holds the timeline, `how.js` draws the three deck-only "how it works" slides (HC21 scan, capture → sync → dashboard, synchronized access), `follow.js` draws the deck-only "Follow along" QR card on slide 0 (links to `https://tuh.oechsner.dev/`), and `deck.js` makes it a clickable deck that holds at `story.stops`. `node build-deck.mjs` builds the static site in `dist/`; `worker.js` (deployed with `npx wrangler deploy`) serves it and runs live talks: while the presenter is connected with `?admin=<PRESENTER_KEY>`, viewers can't go past the presenter's slide, and nothing is locked otherwise. See `Marketing/README.md`. `QuickEquipmentLog_promo.mp4` is the finished promo rendered from the same storyboard; the MP4 renderer itself was removed from the repo (recover `video-src/render.mjs` from git history if it is ever needed again).
+`Marketing/video-src/` is a Three.js page that is the pitch presentation: `engine.js` draws any storyboard moment (`renderFrame`), `story.js` holds the timeline, `how.js` draws the three deck-only "how it works" slides (HC21 scan, capture → sync → dashboard, synchronized access), `money.js` the deck-only business case after 07 (staff time, money saved, payback; numbers derived in `story.js` from the team's Savings & ROI spreadsheet), and `deck.js` makes it a clickable deck that holds at `story.stops`. `node build-deck.mjs` builds the static site in `dist/`; `worker.js` (deployed with `npx wrangler deploy`) serves it and runs live talks: while the presenter is connected with `?admin=<PRESENTER_KEY>`, viewers can't go past the presenter's slide, and nothing is locked otherwise. See `Marketing/README.md`. `QuickEquipmentLog_promo.mp4` is the finished promo rendered from the same storyboard; the MP4 renderer itself was removed from the repo (recover `video-src/render.mjs` from git history if it is ever needed again).
 
 ## Key files
 
