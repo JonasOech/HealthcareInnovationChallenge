@@ -24,9 +24,9 @@ const PADS = [
   [52.65, 1.60], [54.75, 1.60], [57.4, 1.55],                   // 5 waitlist 9.50 -> 14.25
   [63.8, 1.60], [65.9, 1.65],                                  // 6 roster  6.50 -> 9.75
   [68.8, 2.25],                                                 // 7 privacy 4.50 -> 6.75
-  // the business case (deck only, after 07) gets no holds: the deck holds at its stops
-  [89.6, 2.875],                                                // 8 outro   5.75 -> 8.625
-  [94.8, 3.375],                                                // 9 blog    6.75 -> 10.125
+  // the data flow and the business case (deck only, after 07) get no holds: the deck holds at its stops
+  [94.6, 2.875],                                                // 8 outro   5.75 -> 8.625
+  [99.8, 3.375],                                                // 9 blog    6.75 -> 10.125
 ];
 const warp = a => a + PADS.reduce((s, [p, d]) => s + (a > p ? d : 0), 0);   // authored -> output
 function unwarp(T) {                                                        // output -> authored
@@ -81,7 +81,7 @@ const clips = [
   // 07 privacy
   { t0: 66.75, fade: 0.25, layers: () => [{ src: P + 'log_idle.png' }] },
   // outro
-  { t0: 84.4, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
+  { t0: 89.4, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
 ];
 
 function screenLayers(t, T) {
@@ -168,11 +168,11 @@ const phoneKeys = [
   k(66.2, RIGHT, { p: [1.2, 0.02, 3.5] }),
   k(67.1, spin(LEFT, 360)),
   k(70.5, spin(LEFT, 360), { p: [-1.2, 0.0, 3.45] }),
-  { t: 71.5, ...OFF },                                            // here comes the money and the business case: the phone dives out of the frame
-  { t: 84.1, ...OFF },
-  { t: 85.2, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },             // and comes back up for the outro
-  { t: 89.8, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
-  { t: 91.3, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
+  { t: 71.5, ...OFF },                                            // data flow, here comes the money and the business case: the phone dives out of the frame
+  { t: 89.1, ...OFF },
+  { t: 90.2, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },             // and comes back up for the outro
+  { t: 94.8, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
+  { t: 96.3, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
 ];
 
 // ---------- copy ----------
@@ -209,7 +209,10 @@ const texts = [
 
   { t0: 22.4, t1: 24.45, side: 'left', dark: true, cls: 'demo', markDelay: 0.85, html: lines('Tech <mark>Demo</mark>') },
 
-  { t0: 71.55, t1: 73.6, side: 'left', dark: true, cls: 'demo', markDelay: 0.85, html: lines('Here comes', 'the <mark>money</mark>') },
+  // the rest of this slide (groups, arrows, phones) is the #dataflow layer in dataflow.js
+  { t0: 71.3, t1: 76.3, side: 'center', cls: 'top', html: `<div class="kicker">Data flow</div>` + lines('From voice to a <mark>verified record.</mark>') },
+
+  { t0: 76.55, t1: 78.6, side: 'left', dark: true, cls: 'demo', markDelay: 0.85, html: lines('Here comes', 'the <mark>money</mark>') },
 
   // the rest of this scene (equipment, scan, steps) is the #hc21 layer in how.js
   { t0: 5.3, t1: 11.45, side: 'left', cls: 'top', html:
@@ -252,11 +255,11 @@ const texts = [
     `<div class="chips">${chip('lock', 'GDPR-minded from day one')}</div>` },
 
   // business case: the cards and the payback chart are the #money layer in money.js
-  { t0: 74.15, t1: 80.0, side: 'center', cls: 'top', html: `<div class="kicker">The business case</div>` + lines('Time back. <mark>Money saved.</mark>') },
-  { t0: 80.05, t1: 84.1, side: 'center', cls: 'top', html:
+  { t0: 79.15, t1: 85.0, side: 'center', cls: 'top', html: `<div class="kicker">The business case</div>` + lines('Time back. <mark>Money saved.</mark>') },
+  { t0: 85.05, t1: 89.1, side: 'center', cls: 'top', html:
     `<div class="kicker">Return on investment</div>` + lines(`Pays for itself in <mark>${roi.payback.toFixed(1)} months.</mark>`) },
 
-  { t0: 85.1, t1: 90.2, side: 'left', dark: true, markDelay: 1.1, html:
+  { t0: 90.1, t1: 95.2, side: 'left', dark: true, markDelay: 1.1, html:
     `<div class="brand"><img src="hospital_logo.png"><div><div style="font:800 34px/1.1 Jakarta;color:#fff">Quick Equipment Log</div><div style="font:500 22px/1.4 Inter;color:var(--mint)">Speak it. Log it. Find it.</div></div></div>` +
     `<div style="height:44px"></div>` + lines('Smarter equipment', 'tracking for better', '<mark>patient care.</mark>') +
     `<div class="foot">Healthcare Innovation Challenge 2026 · Tallaght University Hospital<br>Grace, Marvin &amp; Jonas</div>` +
@@ -387,38 +390,47 @@ This replaces most of the monthly stock check: the record is already right, so t
 
 The speech-parsing step is swappable: instead of Gemini it can run on a locally hosted model such as Ollama, so no data has to leave the hospital network.
 
+→ Next: how the data flows.` },
+  { t: 75.7, title: 'Data flow: voice to verified record', notes: `How one booking travels, end to end:
+1. The phone records the speech.
+2. On the hospital's own server (on-premise or AWS) it is transcribed, and the patient ID is encrypted before anything goes further. Our custom prompt adds the equipment roster, the patients and the form's schema.
+3. An LLM turns it into the booking's fields: any cloud model through OpenRouter (Gemini, GPT, Claude, DeepSeek), or a local model with Ollama / OpenLLM, so patient data never leaves the hospital.
+4. The result autofills the form on the phone. The clinician fixes anything that is off and submits it.
+
+Human in the loop: the person who spoke is the person who confirms. The AI only ever suggests.
+
 → Next: the business case.` },
-  { t: 73.0, title: 'Here comes the money', notes: `Section break, a bit of fun: the pot of gold.
+  { t: 78.0, title: 'Here comes the money', notes: `Section break, a bit of fun: the pot of gold.
 
 So far we've shown it helps staff and patients. Now: does it pay for itself? These figures come from our savings & ROI spreadsheet.
 
 → Click for the numbers.` },
-  { t: 77.1, title: 'Business case: staff time', notes: `Today OT spends about ${roi.today} hours a year on equipment admin: ${roi.hours.map(([k, h]) => `${k} ${h} h`).join(', ')}.
+  { t: 82.1, title: 'Business case: staff time', notes: `Today OT spends about ${roi.today} hours a year on equipment admin: ${roi.hours.map(([k, h]) => `${k} ${h} h`).join(', ')}.
 
 With the app that drops to about ${roi.withApp} hours: ${roi.saved} hours saved, roughly ${Math.round(roi.days)} working days given back to patient care.
 
 → Next: what that is worth.` },
-  { t: 79.4, title: 'Business case: money saved', notes: `${roi.assistant} of the saved hours are healthcare-assistant hours at €${roi.assistantRate}/h, the other ${roi.saved - roi.assistant} would be overtime at €${roi.overtimeRate}/h: ${eur(roi.staff)} a year.
+  { t: 84.4, title: 'Business case: money saved', notes: `${roi.assistant} of the saved hours are healthcare-assistant hours at €${roi.assistantRate}/h, the other ${roi.saved - roi.assistant} would be overtime at €${roi.overtimeRate}/h: ${eur(roi.staff)} a year.
 
 Equipment losses: we assume ${eur(roi.loss)} lost a year and cut it by ${Math.round(roi.lossCut * 100)}%, saving ${eur(roi.losses)}.
 
 Together about ${eur(roi.total)} a year.
 
 → Next: payback.` },
-  { t: 83.2, title: 'Business case: payback', notes: `${eur(roi.setup)} to set up and ${eur(roi.running)} a year to run.
+  { t: 88.2, title: 'Business case: payback', notes: `${eur(roi.setup)} to set up and ${eur(roi.running)} a year to run.
 
 Net savings of ${eur(roi.monthly)} a month pay it back after ${roi.payback.toFixed(1)} months, and the first year returns ${Math.round(roi.roi * 100)}% on the ${eur(roi.cost)} spent.
 
 And it doesn't stop at OT: any department that loans or shares equipment can use the same system (goal 9 in the brief).
 
 → Next: wrap-up.` },
-  { t: 89.6, title: 'Smarter equipment tracking for better patient care', notes: `Wrap-up in three lines:
+  { t: 94.6, title: 'Smarter equipment tracking for better patient care', notes: `Wrap-up in three lines:
 • Logging happens at the handover, by voice, in seconds.
 • The waitlist can't be skipped, and overdue items get chased early.
 • It pays for itself in under a year and scales beyond OT.
 
 Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!` },
-  { t: 94.3, title: 'oechsner.dev', notes: `Read more on the blog. Open up for questions.
+  { t: 99.3, title: 'oechsner.dev', notes: `Read more on the blog. Open up for questions.
 
 Likely questions:
 • Patient data? MRN only, no names; the AI step can run locally (Ollama).
@@ -426,6 +438,7 @@ Likely questions:
 • Rollout? Import the existing Excel tracker; the sheet stays available as an export.` },
 ];
 
+const DATAFLOW_LOGOS = ['openrouter', 'gemini', 'openai', 'claude', 'deepseek', 'ollama'].map(n => `${P}logos/${n}.svg`);
 const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
 
 export const story = {
@@ -437,24 +450,28 @@ export const story = {
   // how it works: the HC21 scan scene and the capture → synchronize → visualization scene (how.js); flow runs on
   // through the synchronized access slide, which reuses its database (access)
   how: { hc21: { t0: 5.3, t1: 11.45 }, flow: { t0: 11.5, t1: 22.0 }, access },
+  // data flow after 07 (deck only): the groups, arrows and mini phones (dataflow.js); the screens are the recording and
+  // the autofilled form (autofill.png: scroll_00.png with tall_log.png at offset 2501 pasted into the content rows, the
+  // frame 02 ends on), and the logos are in screens/logos/
+  dataflow: { t0: 71.2, t1: 76.3, screens: [P + 'listening.png', P + 'autofill.png'], logos: P + 'logos/' },
   // business case after 07 (deck only): staff time and money saved cards, then the payback chart (money.js);
   // pot: the pot of gold and rainbow on the "Here comes the money" title before it
-  money: { t0: 73.8, t1: 84.1, pot: { t0: 71.55, t1: 73.6, img: P + 'pot_of_gold.webp' }, roi, eur },
+  money: { t0: 78.8, t1: 89.1, pot: { t0: 76.55, t1: 78.6, img: P + 'pot_of_gold.webp' }, roi, eur },
   // slide 0 (deck only): "Follow along" QR card, slides out over [0, t1] as the intro starts (follow.js)
   follow: { url: 'https://tuh.oechsner.dev/', t1: 0.5 },
   // scene 9: oechsner.dev end card
-  blog: { t0: 90.05 },
-  duration: warp(96.8),
+  blog: { t0: 95.05 },
+  duration: warp(101.8),
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
     ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png',
-    ...access.phones.map(p => p.screen), P + 'pot_of_gold.webp'])],
+    ...access.phones.map(p => p.screen), P + 'autofill.png', ...DATAFLOW_LOGOS, P + 'pot_of_gold.webp'])],
   screenLayers, highlights, taps, texts, stops,
   // phone keyframes live in output time and are evaluated against real time, so the phone keeps
   // drifting through a hold instead of freezing with the rest of the frame
   phoneKeys: phoneKeys.map(K => ({ ...K, t: warp(K.t) })),
   darkness: t => Math.max(1 - clamp((t - 4.95) / 0.3), clamp((t - 22.05) / 0.4) * (1 - clamp((t - 24.45) / 0.3)),
-    clamp((t - 71.2) / 0.4) * (1 - clamp((t - 73.6) / 0.3)), clamp((t - 84.5) / 0.4)),
+    clamp((t - 76.2) / 0.4) * (1 - clamp((t - 78.6) / 0.3)), clamp((t - 89.5) / 0.4)),
   // wipe passes at scene changes into/out of the dark intro/outro
-  wipeAt: t => { for (const c of [5.0, 22.1, 24.5, 71.25, 73.65, 84.55]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },
+  wipeAt: t => { for (const c of [5.0, 22.1, 24.5, 76.25, 78.65, 89.55]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },
 };

@@ -2,7 +2,7 @@
 
 `video-src/` is the pitch presentation: a Three.js page where a 3D phone flies between scenes of the Android
 demo app, each with animated captions that highlight one feature. It runs as a clickable deck in the browser
-and holds at the 24 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
+and holds at the 25 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
 background and mascot keep moving while a slide holds. The concept is in `PRESENTATION_CONCEPT.md`.
 
 The "Follow along" QR card on slide 0 (`follow.js`) is deck-only too: it shows while the deck waits to start and
@@ -13,6 +13,13 @@ The three "how it works" slides and the "Tech Demo" title are deck-only: they we
 straight from the intro to 01. Their phone, screen and captions live in `story.js` like every other scene; the
 equipment cards, scan, pipeline, database, tracker sheet, dashboard and access links are DOM layers drawn by `how.js`, and the
 four extra phones of "Synchronized access" are clones of the 3D phone in `engine.js`.
+
+The "Data flow" slide after 07 is deck-only too: the phone dives out of the frame and `dataflow.js` draws the input data
+flow as DOM layers (phone → TUH server, local or AWS → LLMs through OpenRouter or local inference → autofill → phone, with
+"human in the loop" closing it). The two mini phones show `screens/listening.png` and `screens/autofill.png`, which is
+`scroll_00.png` with `tall_log.png` at offset 2501 pasted into the content rows (the frame 02 ends on). The OpenRouter, Gemini, OpenAI,
+Claude, DeepSeek and Ollama logos in `screens/logos/` are from the MIT-licensed `@lobehub/icons-static-svg` set (the
+marks themselves belong to their owners).
 
 The "Here comes the money" title (dark teal, like "Tech Demo") and the three "business case" slides after it are deck-only too. The phone dives out of the frame for all four, and `money.js` draws
 the title's pot of gold (the team's picture `screens/pot_of_gold.webp`, placed so its rainbow leaves the frame top right),
@@ -39,6 +46,7 @@ same storyboard. The renderer itself is no longer in the repo — the deck is wh
 | 0:31 | 05 Smart waitlist: queued, returned, next patient notified |
 | 0:41 | 06 Every item. Every Location. (roster search and filters) |
 | 0:47 | 07 Privacy by design: Ollama mascot pops up and waves |
+| deck only | Data flow: speech recording → transcription, patient ID encryption, custom prompt → LLMs (OpenRouter or Ollama / OpenLLM) → autofill → review & submit, human in the loop |
 | deck only | "Here comes the money" section title (dark teal, like "Tech Demo"): a pot of gold, its rainbow leaving the frame top right |
 | deck only | Business case: staff time, 329 h a year today → 30 h with the app (circle areas to scale) |
 | deck only | Same slide, next click: money saved, €2,400 fewer lost items + €8,550 staff time = €10,950 a year |

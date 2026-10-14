@@ -288,6 +288,58 @@
   #follow .aim i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 30px; }
   #follow .aim i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 30px; }
 
+  /* data flow (dataflow.js): phone → TUH server → LLMs → autofill → phone, human in the loop */
+  #dataflow .group { position: absolute; border-radius: 30px; border: 1.5px solid; opacity: 0;
+                     --g: var(--primary); background: rgba(109,245,225,.16); border-color: rgba(0,104,95,.18); }
+  #dataflow .group.warm { --g: #B45309; background: rgba(253,230,138,.24); border-color: rgba(180,83,9,.18); }
+  #dataflow .group.ai { --g: var(--ai); background: rgba(96,99,238,.09); border-color: rgba(70,72,212,.2); }
+  #dataflow .gh { display: flex; align-items: center; gap: 10px; padding: 24px 24px 0; font: 700 20px/1 Inter; letter-spacing: .12em;
+                  text-transform: uppercase; color: var(--g); white-space: nowrap; }
+  #dataflow .gh .ic { width: 26px; height: 26px; flex: none; }
+  #dataflow .gs { margin-left: auto; font: 600 16px/1 Inter; letter-spacing: .06em; padding: 7px 12px; border-radius: 999px; background: #fff; }
+  #dataflow .node { position: absolute; display: flex; align-items: center; gap: 16px; padding: 18px 20px; background: #fff; border: 1.5px solid #E2E7FF;
+                    border-radius: 22px; box-shadow: 0 10px 30px rgba(19,27,46,.07); opacity: 0; }
+  #dataflow .node .ic { flex: none; width: 52px; height: 52px; border-radius: 14px; padding: 12px; background: #D5FBF5; color: var(--primary); }
+  #dataflow .node .h { font: 800 25px/1.15 Jakarta; color: var(--on-surface); }
+  #dataflow .node p { font: 400 19px/1.35 Inter; color: var(--on-var); margin-top: 6px; }
+  #dataflow .node.tight { padding: 16px; gap: 14px; }
+  #dataflow .node.tight .h { font-size: 21px; white-space: nowrap; }
+  #dataflow .node.router { flex-direction: column; justify-content: center; gap: 8px; text-align: center; }
+  #dataflow .node.router p { margin-top: 0; }
+  #dataflow .node.router .logo { width: 64px; height: 64px; margin-bottom: 6px; }
+  #dataflow .node.local { gap: 22px; }
+  #dataflow .ollama { flex: none; width: 150px; height: 150px; border-radius: 22px; display: grid; place-items: center; background: #fff;
+                      border: 1.5px solid #E2E7FF; box-shadow: 0 8px 22px rgba(19,27,46,.1); }
+  #dataflow .ollama img { width: 96px; height: 96px; }
+  /* patient ID encryption + custom prompt: one card, two rows, a + between them */
+  #dataflow .node.merge { flex-direction: column; align-items: stretch; justify-content: space-around; gap: 0; padding: 14px 20px; }
+  #dataflow .merge .row { display: flex; align-items: center; gap: 16px; opacity: 0; }
+  #dataflow .merge .plus { align-self: center; width: 44px; height: 44px; border-radius: 50%; background: #004F48; opacity: 0;
+                           box-shadow: 0 6px 14px rgba(0,79,72,.28); }
+  #dataflow .merge .plus svg { display: block; width: 100%; height: 100%; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; }
+  #dataflow .node .tag { display: inline-block; margin-top: 10px; padding: 7px 14px; border-radius: 999px; background: var(--ai-bg); color: var(--ai-text);
+                         font: 700 18px/1 Inter; }
+  #dataflow .model { position: absolute; display: flex; align-items: center; gap: 12px; padding: 0 18px; background: #fff; border: 1.5px solid #E2E7FF;
+                     border-radius: 999px; font: 600 20px/1 Inter; color: var(--on-surface); box-shadow: 0 6px 18px rgba(19,27,46,.06); opacity: 0; }
+  #dataflow .model img { width: 26px; height: 26px; flex: none; }
+  #dataflow .or { position: absolute; display: flex; align-items: center; gap: 14px; padding: 0 40px; font: 700 18px/1 Inter; letter-spacing: .12em;
+                  text-transform: uppercase; color: var(--ai); opacity: 0; }
+  #dataflow .or::before, #dataflow .or::after { content: ""; flex: 1; height: 2px; background: rgba(70,72,212,.2); }
+  #dataflow .mini { position: absolute; padding: 6px; border-radius: 28px; background: #0b0f12; opacity: 0;
+                    box-shadow: 0 22px 44px rgba(19,27,46,.22), inset 0 0 0 2px #9aa6a8; }
+  #dataflow .mini img { display: block; width: 100%; height: 100%; border-radius: 22px; object-fit: cover; }
+  #dataflow .lines { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible; }
+  #dataflow .arrow path { fill: none; stroke: var(--primary); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  #dataflow .arrow .head { opacity: 0; }
+  #dataflow .fan { fill: none; stroke: rgba(70,72,212,.45); stroke-width: 3.5; stroke-linecap: round; }
+  #dataflow .loop { fill: none; stroke: #8A94AD; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 14 12; }
+  #dataflow .reveal { fill: none; stroke: #fff; stroke-width: 20; }
+  #dataflow .packets i { position: absolute; left: 0; top: 0; width: 16px; height: 16px; border-radius: 4px; background: #B9FFF4; opacity: 0;
+                         border: 2px solid #fff; box-shadow: 0 0 12px 3px rgba(109,245,225,.85); }
+  #dataflow .hitl { position: absolute; display: flex; align-items: center; gap: 12px; padding: 12px 24px 12px 12px; border-radius: 999px; white-space: nowrap;
+                    background: #fff; border: 1.5px solid #E2E7FF; box-shadow: 0 12px 30px rgba(19,27,46,.1); font: 800 24px/1 Jakarta; color: var(--on-surface); opacity: 0; }
+  #dataflow .hitl .ic { width: 40px; height: 40px; border-radius: 50%; padding: 8px; background: var(--primary); color: #fff; }
+
   /* oechsner.dev end card (scene 9) — mirrors the site's design tokens */
   #blog { position: absolute; inset: 0; display: none; overflow: hidden; }
   #blog .shade { position: absolute; inset: 0; background: linear-gradient(180deg, #0e0f12 0%, #0e0f12 55%, #0a0b0d 100%); }
