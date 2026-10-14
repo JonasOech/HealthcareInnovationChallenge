@@ -143,7 +143,16 @@ How to edit:
 - Sub: Our app is fully compatible with ollama - Privacy by design
 - Chips: 🔒 GDPR-minded from day one
 
-*Transition: a teal wipe, and the background turns dark again.*
+*Transition: a teal wipe, and the background turns dark again; the phone spins back over to the right.*
+
+---
+
+## Here comes the money (deck only) · dark teal background, text left
+**Screen:** Log Equip tab, idle ("Hold to Speak Booking").
+
+- Headline: Here comes / the ==money==
+
+*Transition: a teal wipe, the background stays dark; the phone spins round once.*
 
 ---
 

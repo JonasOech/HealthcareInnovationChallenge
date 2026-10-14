@@ -2,14 +2,14 @@
 
 `video-src/` is the pitch presentation: a Three.js page where a 3D phone flies between scenes of the Android
 demo app, each with animated captions that highlight one feature. It runs as a clickable deck in the browser
-and holds at the 20 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
+and holds at the 21 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
 background and mascot keep moving while a slide holds. The concept is in `PRESENTATION_CONCEPT.md`.
 
 The "Follow along" QR card on slide 0 (`follow.js`) is deck-only too: it shows while the deck waits to start and
 slides out as the intro begins. The QR matrix is hard-coded there (made with segno, error correction H so the hospital
 logo in the middle doesn't break it); regenerate it with the one-liner in `follow.js` if the URL in `story.follow` changes.
 
-The three "how it works" slides and the "Tech Demo" title are deck-only: they were added after the MP4 was rendered, so the video goes
+The three "how it works" slides and the "Tech Demo" and "Here comes the money" titles are deck-only: they were added after the MP4 was rendered, so the video goes
 straight from the intro to 01. Their phone, screen and captions live in `story.js` like every other scene; the
 equipment cards, scan, pipeline, database, tracker sheet, dashboard and access links are DOM layers drawn by `how.js`, and the
 four extra phones of "Synchronized access" are clones of the 3D phone in `engine.js`.
@@ -33,6 +33,7 @@ same storyboard. The renderer itself is no longer in the repo — the deck is wh
 | 0:31 | 05 Smart waitlist: queued, returned, next patient notified |
 | 0:41 | 06 Every item. Every Location. (roster search and filters) |
 | 0:47 | 07 Privacy by design: Ollama mascot pops up and waves |
+| deck only | "Here comes the money" section title (dark teal, like "Tech Demo") |
 | 0:52 | Outro and credits |
 | 0:58 | Blog plug in the oechsner.dev style: "Read about this on oechsner.dev" |
 

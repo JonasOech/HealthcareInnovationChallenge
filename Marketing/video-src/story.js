@@ -24,8 +24,8 @@ const PADS = [
   [52.65, 1.60], [54.75, 1.60], [57.4, 1.55],                   // 5 waitlist 9.50 -> 14.25
   [63.8, 1.60], [65.9, 1.65],                                  // 6 roster  6.50 -> 9.75
   [68.8, 2.25],                                                 // 7 privacy 4.50 -> 6.75
-  [76.3, 2.875],                                                // 8 outro   5.75 -> 8.625
-  [81.5, 3.375],                                                // 9 blog    6.75 -> 10.125
+  [78.7, 2.875],                                                // 8 outro   5.75 -> 8.625
+  [83.9, 3.375],                                                // 9 blog    6.75 -> 10.125
 ];
 const warp = a => a + PADS.reduce((s, [p, d]) => s + (a > p ? d : 0), 0);   // authored -> output
 function unwarp(T) {                                                        // output -> authored
@@ -80,7 +80,7 @@ const clips = [
   // 07 privacy
   { t0: 66.75, fade: 0.25, layers: () => [{ src: P + 'log_idle.png' }] },
   // outro
-  { t0: 71.1, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
+  { t0: 73.5, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
 ];
 
 function screenLayers(t, T) {
@@ -147,9 +147,11 @@ const phoneKeys = [
   k(66.2, RIGHT, { p: [1.2, 0.02, 3.5] }),
   k(67.1, spin(LEFT, 360)),
   k(70.5, spin(LEFT, 360), { p: [-1.2, 0.0, 3.45] }),
-  { t: 71.9, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },
-  { t: 76.5, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
-  { t: 78.0, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
+  { t: 71.9, p: [1.25, 0, 2.6], r: [-6, -22, 4] },                // here comes the money: spins back over to the right, like the tech demo
+  { t: 73.05, p: [1.15, 0.05, 2.8], r: [-4, -14, 2] },
+  { t: 74.3, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },
+  { t: 78.9, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
+  { t: 80.4, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
 ];
 
 // ---------- copy ----------
@@ -185,6 +187,8 @@ const texts = [
   { t0: 20.2, t1: 22.0, side: 'center', cls: 'top', html: `<div class="kicker">How it works</div>` + lines('Synchronized <mark>access</mark>') },
 
   { t0: 22.4, t1: 24.45, side: 'left', dark: true, cls: 'demo', markDelay: 0.85, html: lines('Tech <mark>Demo</mark>') },
+
+  { t0: 71.55, t1: 73.6, side: 'left', dark: true, cls: 'demo', markDelay: 0.85, html: lines('Here comes', 'the <mark>money</mark>') },
 
   // the rest of this scene (equipment, scan, steps) is the #hc21 layer in how.js
   { t0: 5.3, t1: 11.45, side: 'left', cls: 'top', html:
@@ -226,7 +230,7 @@ const texts = [
     `<div class="sub">Our app is fully compatible with ollama - Privacy by design</div>` +
     `<div class="chips">${chip('lock', 'GDPR-minded from day one')}</div>` },
 
-  { t0: 71.8, t1: 76.9, side: 'left', dark: true, markDelay: 1.1, html:
+  { t0: 74.2, t1: 79.3, side: 'left', dark: true, markDelay: 1.1, html:
     `<div class="brand"><img src="hospital_logo.png"><div><div style="font:800 34px/1.1 Jakarta;color:#fff">Quick Equipment Log</div><div style="font:500 22px/1.4 Inter;color:var(--mint)">Speak it. Log it. Find it.</div></div></div>` +
     `<div style="height:44px"></div>` + lines('Smarter equipment', 'tracking for better', '<mark>patient care.</mark>') +
     `<div class="foot">Healthcare Innovation Challenge 2026 · Tallaght University Hospital<br>Grace, Marvin &amp; Jonas</div>` +
@@ -280,8 +284,9 @@ const stops = [
   { t: 63.85, title: '06 · Roster: filter', notes: 'The roster shows every item and where it is. Filter by category…' },
   { t: 65.95, title: '06 · Roster: search', notes: '…or search by ID, type or location, and filter by status: available, on loan, repair, missing, late.' },
   { t: 70.1, title: '07 · Private by design', notes: 'Patient data stays minimal: MRN only, no names. The parsing step can be swapped for a locally hosted model (e.g. Ollama), so no data has to leave the hospital.' },
-  { t: 76.3, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
-  { t: 81.0, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
+  { t: 73.0, title: 'Here comes the money', notes: 'Section break: from here on it is the business case.' },
+  { t: 78.7, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
+  { t: 83.4, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
 ];
 
 const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
@@ -298,8 +303,8 @@ export const story = {
   // slide 0 (deck only): "Follow along" QR card, slides out over [0, t1] as the intro starts (follow.js)
   follow: { url: 'https://tuh.oechsner.dev/', t1: 0.5 },
   // scene 9: oechsner.dev end card
-  blog: { t0: 76.75 },
-  duration: warp(83.5),
+  blog: { t0: 79.15 },
+  duration: warp(85.9),
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
     ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png',
@@ -310,5 +315,5 @@ export const story = {
   phoneKeys: phoneKeys.map(K => ({ ...K, t: warp(K.t) })),
   darkness: t => Math.max(1 - clamp((t - 4.95) / 0.3), clamp((t - 22.05) / 0.4) * (1 - clamp((t - 24.45) / 0.3)), clamp((t - 71.2) / 0.4)),
   // wipe passes at scene changes into/out of the dark intro/outro
-  wipeAt: t => { for (const c of [5.0, 22.1, 24.5, 71.25]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },
+  wipeAt: t => { for (const c of [5.0, 22.1, 24.5, 71.25, 73.65]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },
 };
