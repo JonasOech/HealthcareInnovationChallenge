@@ -45,7 +45,7 @@ html.presenter #deck-panel { display: flex; flex-direction: column; gap: 18px; p
 #deck-panel .row { display: flex; justify-content: space-between; align-items: center; color: #6DF5E1; font-weight: 600; letter-spacing: .04em; }
 #p-timer { font: 700 28px/1 Inter, system-ui, sans-serif; color: #fff; cursor: pointer; font-variant-numeric: tabular-nums; }
 #p-title { font: 800 28px/1.15 Jakarta, Inter, system-ui, sans-serif; letter-spacing: -0.02em; color: #fff; }
-#p-notes { font-size: 21px; line-height: 1.5; color: #D5DBEA; }
+#p-notes { font-size: 19px; line-height: 1.5; color: #D5DBEA; white-space: pre-line; }
 #deck-panel .next { margin-top: auto; padding: 14px 16px; border-radius: 12px; background: rgba(255,255,255,.06); }
 #deck-panel .next span { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #8A93AB; }
 #p-next { margin-top: 4px; font-weight: 600; color: #fff; }
