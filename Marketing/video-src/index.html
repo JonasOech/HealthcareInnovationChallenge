@@ -139,7 +139,10 @@
   #flow .hub .ring { position: absolute; inset: 0; border-radius: 34px; border: 3px solid var(--mint-dim); }
   #flow .beam { position: absolute; left: 860px; top: 600px; width: 240px; height: 196px; transform-origin: 50% 100%; opacity: 0;
                 clip-path: polygon(0 0, 100% 0, 66% 100%, 34% 100%); background: linear-gradient(180deg, rgba(109,245,225,0) 0%, rgba(109,245,225,.65) 100%); }
-  #flow .sheet { position: absolute; left: 770px; top: 168px; width: 420px; background: #fff; border-radius: 18px; overflow: hidden; opacity: 0;
+  #flow .db { position: absolute; left: 850px; top: 236px; width: 260px; opacity: 0; transform-origin: 50% 100%; text-align: center; }
+  #flow .db svg { width: 260px; height: 314px; display: block; filter: drop-shadow(0 26px 40px rgba(0,104,95,.3)); }
+  #flow .db .cap { position: absolute; left: -60px; right: -60px; top: 324px; font: 800 24px/1.2 Jakarta; color: var(--primary); white-space: nowrap; }
+  #flow .sheet { position: absolute; left: 770px; top: 236px; width: 420px; background: #fff; border-radius: 18px; overflow: hidden; opacity: 0;
                  border: 1.5px solid #D6DCF5; box-shadow: 0 30px 70px rgba(19,27,46,.18); }
   #flow .sheet .bar { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #EEF7F5; font: 700 19px/1 Jakarta; color: var(--on-surface); }
   #flow .sheet .xl { width: 26px; height: 26px; border-radius: 6px; background: #1D7A45; color: #fff; display: grid; place-items: center; font: 800 15px/1 Inter; }
@@ -151,6 +154,9 @@
   #flow .sheet .row.loan span:last-child { background: #FEF3C7; color: #92400E; }
   #flow .sheet .row.ok span:last-child { background: #DCFCE7; color: #166534; }
   #flow .sheet .row.rep { background: #FEE2E2; color: #991B1B; }
+  #flow .xl-note { position: absolute; left: 836px; top: 186px; display: flex; align-items: center; gap: 12px; padding: 12px 22px 12px 12px; border-radius: 999px;
+                   background: #1D7A45; color: #fff; font: 800 22px/1 Jakarta; white-space: nowrap; box-shadow: 0 16px 36px rgba(29,122,69,.4); opacity: 0; }
+  #flow .xl-note .xl { width: 32px; height: 32px; border-radius: 8px; background: #fff; color: #1D7A45; display: grid; place-items: center; font: 800 18px/1 Inter; }
   #flow .dash { position: absolute; left: 1300px; top: 160px; width: 560px; height: 760px; background: #fff; border-radius: 26px; overflow: hidden; opacity: 0;
                 border: 1.5px solid #D6DCF5; box-shadow: 0 30px 80px rgba(19,27,46,.2); display: flex; flex-direction: column; transform-origin: 0 60%; }
   #flow .dash .top { background: linear-gradient(100deg, var(--primary), var(--primary-c)); color: #fff; font: 800 23px/1.2 Jakarta; padding: 20px 24px; }
@@ -220,7 +226,7 @@
     <div class="shade"></div><div class="glow cool"></div><div class="glow warm"></div><div class="dots"></div>
     <div class="content">
       <div class="eyebrow">SELF ADVERTISEMENT</div>
-      <div class="t"><span class="ln"><span>I posted about this</span></span><span class="ln"><span>on <a href="https://oechsner.dev" target="_blank" rel="noopener"><em>oechsner.dev</em></a></span></span></div>
+      <div class="t"><span class="ln"><span>I wrote about this</span></span><span class="ln"><span>on <a href="https://oechsner.dev" target="_blank" rel="noopener"><em>oechsner.dev</em></a></span></span></div>
       <div class="rule"></div>
       <div class="by">I published a blog post about the solution covering the technical stuff</div>
       <a class="cta" href="https://oechsner.dev/blog/healthcare-innovation-challenge" target="_blank" rel="noopener">to the Blogpost &nbsp;→</a>

@@ -1,6 +1,7 @@
 // The two "how it works" scenes between the intro and 01 Voice logging, as DOM layers over the 3D phone:
 // #hc21 — equipment with HC21 labels is scanned and the number lands in the phone's booking form,
-// #flow — capture (the phone) → synchronize (the tracker sheet) → visualization (the dashboard).
+// #flow — capture (the phone) → synchronize (the database) → visualization (the dashboard); on the next click
+// the tracker sheet pops up out of the database: Excel support is still provided.
 // Times come from story.how; everything below is an offset from a scene's t0.
 import { story } from './story.js';
 
@@ -32,6 +33,13 @@ const ICON = {
   edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><path d="M14 3h3M14 7h1M3 14h3M7 18v3M3 21h1"/><path d="M19.5 10.5l2 2L14 20h-2v-2z"/></svg>',
   tag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>',
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  db: `<svg viewBox="0 0 240 290"><defs><linearGradient id="db-side" x1="0" x2="1"><stop offset="0" stop-color="#008378"/><stop offset=".55" stop-color="#00685F"/>
+    <stop offset="1" stop-color="#004F48"/></linearGradient></defs>
+    <path d="M10 46v198a110 34 0 0 0 220 0V46" fill="url(#db-side)"/>
+    <g class="band" fill="none" stroke="#6DF5E1" stroke-width="3" opacity=".55"><path d="M10 112a110 34 0 0 0 220 0"/><path d="M10 178a110 34 0 0 0 220 0"/></g>
+    <ellipse cx="120" cy="46" rx="110" ry="34" fill="#4FDBC8"/><ellipse cx="120" cy="46" rx="80" ry="22" fill="#6DF5E1" opacity=".6"/>
+    <g class="leds" fill="#B9FFF4"><circle cx="200" cy="96" r="6"/><circle cx="200" cy="162" r="6"/><circle cx="200" cy="228" r="6"/></g>
+    </svg>`,
   sync: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg>',
 };
 
@@ -99,11 +107,13 @@ const FLOW = `
   <div class="pill p3"><span class="num">3</span>Visualization</div>
   <div class="beam"></div>
   <div class="hub"><span class="ring"></span><span class="ring"></span>${ICON.sync}</div>
+  <div class="db">${ICON.db}<div class="cap">Centralised database</div></div>
   <div class="sheet">
     <div class="bar"><span class="xl">X</span>Acute Equipment Tracker</div>
     <div class="row head"><span>HC21 no.</span><span>Type</span><span>Ward</span><span>Status</span></div>
     ${ROWS.map(([id, type, ward, st, c]) => `<div class="row ${c}"><span>${id}</span><span>${type}</span><span>${ward}</span><span>${st}</span></div>`).join('')}
   </div>
+  <div class="xl-note"><span class="xl">X</span>Excel support still provided</div>
   <div class="dash">
     <div class="top">Medical Equipment Management Dashboard</div>
     <div class="tiles">
@@ -135,7 +145,7 @@ export function buildHow() {
     link: q(h, '.link path'), head: q(h, '.link .head'), packet: q(h, '.packet'), steps: qa(h, '.step'), chev: q(h, '.chev'), ecg: q(h, '.ecg') };
   const pipes = [q(f, '#pipe1'), q(f, '#pipe2')];
   F = { el: f, pills: qa(f, '.pill'), pipes, lens: pipes.map(p => p.getTotalLength()), packets: qa(f, '.packets i'), beam: q(f, '.beam'), hub: q(f, '.hub'),
-    rings: qa(f, '.hub .ring'), sheet: q(f, '.sheet'), rows: qa(f, '.sheet .row:not(.head)'), dash: q(f, '.dash'), tiles: qa(f, '.tile'),
+    rings: qa(f, '.hub .ring'), db: q(f, '.db'), leds: qa(f, '.db .leds circle'), sheet: q(f, '.sheet'), note: q(f, '.xl-note'), rows: qa(f, '.sheet .row:not(.head)'), dash: q(f, '.dash'), tiles: qa(f, '.tile'),
     nums: qa(f, '.tile b'), slices: qa(f, '.pie circle'), legend: qa(f, '.pie li'), area: q(f, '.line .area'), line: q(f, '.line .stroke'),
     dots: qa(f, '.line circle'), cols: qa(f, '.bars i'), panels: qa(f, '.panel') };
   F.lineLen = F.line.getTotalLength();
@@ -196,14 +206,23 @@ export function drawHow(t, A) {
     const b = easeOut(prog(s, 1.5, 0.5));
     F.beam.style.opacity = b * (0.75 + 0.25 * Math.sin(A * 3));
     F.beam.style.transform = `scaleY(${b})`;
-    const sh = easeOut(prog(s, 1.5, 0.6));
-    F.sheet.style.opacity = sh;
-    F.sheet.style.transform = `perspective(1600px) rotateY(-12deg) rotateX(6deg) translateY(${40 * (1 - sh)}px)`;
+    // the beam fills the database; its lights blink while records come in
+    const db = prog(s, 1.5, 0.6);
+    F.db.style.opacity = clamp(db * 2);
+    F.db.style.transform = `translateY(${40 * (1 - easeOut(db))}px) scale(${0.7 + 0.3 * easeOutBack(db)})`;
+    F.leds.forEach((l, i) => (l.style.opacity = 0.35 + 0.65 * (Math.sin(A * 5 + i * 2.1) > 0.2 ? 1 : 0) * prog(s, 1.9, 0.3)));
+    // next click: the tracker sheet pops up out of the database, then the Excel note
+    const sh = prog(s, 4.6, 0.6);
+    F.sheet.style.opacity = clamp(sh * 2);
+    F.sheet.style.transform = `perspective(1600px) rotateY(-12deg) rotateX(6deg) translateY(${120 * (1 - easeOut(sh))}px) scale(${0.5 + 0.5 * easeOutBack(sh)})`;
     F.rows.forEach((r, i) => {
-      const k = prog(s, 1.8 + i * 0.09, 0.3);
+      const k = prog(s, 4.85 + i * 0.07, 0.3);
       r.style.opacity = k; r.style.transform = `translateX(${-16 * (1 - easeOut(k))}px)`;
       r.style.boxShadow = k > 0 && k < 1 ? 'inset 0 0 0 2px #4FDBC8' : '';
     });
+    const nt = prog(s, 5.25, 0.5);
+    F.note.style.opacity = clamp(nt * 2);
+    F.note.style.transform = `rotate(-4deg) scale(${0.6 + 0.4 * easeOutBack(nt)})`;
     // packets ride the pipes once they are drawn; each pipe gets its own share
     F.packets.forEach((el, i) => {
       const pipe = i % 2, u = (A * 0.32 + Math.floor(i / 2) / 5) % 1;
