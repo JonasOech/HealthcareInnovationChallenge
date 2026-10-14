@@ -1,7 +1,8 @@
 // The data flow slide after 07 Privacy (deck only), as a DOM layer over the stage while the phone is out of frame:
 // mobile device (speech recording) → TUH server, local or AWS (transcription → patient ID encryption, custom prompt)
 // → LLMs (any model through OpenRouter, or local inference with Ollama / OpenLLM) → autofill → mobile device
-// (modification & submission), with the clinician closing the loop: human in the loop.
+// (modification & submission), with the clinician closing the loop: human in the loop. The brand logos are from the
+// MIT-licensed @lobehub/icons-static-svg set (screens/logos/).
 // Positions are stage pixels (1920x1080), so the arrows and the boxes share one coordinate system.
 // Times come from story.dataflow; everything below is an offset from its t0.
 import { story } from './story.js';
@@ -24,7 +25,6 @@ const ICON = {
   wave: svg('<path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 7v10M21 12h0"/>'),
   lock: svg('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
   prompt: svg('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13l2 2-2 2M13 17h3"/>'),
-  router: svg('<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="5" r="2.5"/><circle cx="18" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.5 11.2l7-5.2M8.5 12h7M8.5 12.8l7 5.2"/>'),
   edit: svg('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>'),
   human: svg('<circle cx="12" cy="10.2" r="2.7"/><path d="M7.4 17.6a4.8 4.8 0 0 1 9.2 0"/><path d="M3.6 15.4A9 9 0 1 1 17.2 19.8"/><path d="M13.4 19.4l3.8.4-.3 3.8"/>'),
 };
@@ -33,43 +33,43 @@ const ICON = {
 const Y0 = 292, GH = 600;                             // the groups' top and height
 const G = [                                           // x, width, title, tint
   { x: 75, w: 270, h: 'Mobile device', ic: 'phone', c: 'teal' },
-  { x: 425, w: 470, h: 'TUH server', sub: 'Local / AWS', ic: 'server', c: 'warm' },
-  { x: 975, w: 520, h: 'LLMs', ic: 'spark', c: 'ai' },
-  { x: 1575, w: 270, h: 'Mobile device', ic: 'phone', c: 'teal' },
+  { x: 415, w: 470, h: 'TUH server', sub: 'Local / AWS', ic: 'server', c: 'warm' },
+  { x: 955, w: 500, h: 'LLMs', ic: 'spark', c: 'ai' },
+  { x: 1525, w: 320, h: 'Mobile device', ic: 'phone', c: 'teal' },
 ];
 const box = (x, y, w, h) => ({ x, y, w, h, cx: x + w / 2, cy: y + h / 2, r: x + w, b: y + h });
 const PH = { w: 160, h: 356 };                        // mini phones, the emulator's 1080x2400 aspect plus the frame
 const N = {
   speech: box(99, 362, 222, 120),
   phoneIn: box(130, 496, PH.w, PH.h),
-  trans: box(449, 362, 422, 120),
-  crypt: box(449, 542, 422, 120),
-  prompt: box(449, 732, 422, 120),
-  router: box(999, 382, 210, 180),
-  local: box(999, 642, 472, 210),
-  phoneOut: box(1630, 362, PH.w, PH.h),
-  submit: box(1599, 742, 222, 110),
+  trans: box(439, 362, 422, 120),
+  merge: box(439, 542, 422, 310),             // patient ID encryption + custom prompt, sent on together
+  router: box(979, 382, 200, 180),
+  local: box(979, 642, 452, 210),
+  submit: box(1549, 362, 272, 120),
+  phoneOut: box(1605, 496, PH.w, PH.h),
 };
-const MODELS = [['Gemini', '#4648D4'], ['GPT', '#10A37F'], ['Claude', '#D97757'], ['DeepSeek', '#4D6BFE']];
-const CHIP = { x: 1291, w: 180, h: 46, y: i => 362 + i * 58 };
+const LOGO = n => `${story.dataflow.logos}${n}.svg`;
+const MODELS = [['Gemini', 'gemini'], ['GPT', 'openai'], ['Claude', 'claude'], ['DeepSeek', 'deepseek']];
+const CHIP = { x: 1261, w: 170, h: 46, y: i => 362 + i * 58 };
 
 // arrows between the groups, each with a share of the records riding it
 const hArrow = (x0, y, x1) => ({ d: `M${x0} ${y}H${x1}`, head: `M${x1 - 12} ${y - 12}l12 12-12 12` });
 const vArrow = (x, y0, y1) => ({ d: `M${x} ${y0}V${y1}`, head: `M${x - 12} ${y1 - 12}l12 12 12-12` });
 const ARROWS = [
   hArrow(N.speech.r + 8, N.speech.cy, N.trans.x - 10),
-  vArrow(N.trans.cx, N.trans.b + 8, N.crypt.y - 10),
-  hArrow(N.crypt.r + 8, N.crypt.cy, G[2].x - 10),
-  hArrow(N.prompt.r + 8, N.prompt.cy, G[2].x - 10),
-  hArrow(G[2].x + G[2].w + 8, N.phoneOut.cy, N.phoneOut.x - 12),
+  vArrow(N.trans.cx, N.trans.b + 8, N.merge.y - 10),
+  hArrow(N.merge.r + 8, N.merge.cy, G[2].x - 10),
+  hArrow(G[2].x + G[2].w + 8, N.submit.cy, N.submit.x - 10),
 ];
 const FAN = MODELS.map((_, i) => `M${N.router.r + 6} ${N.router.cy}C${N.router.r + 46} ${N.router.cy}, ${CHIP.x - 46} ${CHIP.y(i) + CHIP.h / 2}, ${CHIP.x - 6} ${CHIP.y(i) + CHIP.h / 2}`);
 // human in the loop: from the submitting phone back round to the recording one
 const LOOP_Y = 984;
-const LOOP = `M${N.submit.cx} ${Y0 + GH + 6}V${LOOP_Y - 30}Q${N.submit.cx} ${LOOP_Y} ${N.submit.cx - 30} ${LOOP_Y}H${N.phoneIn.cx + 30}Q${N.phoneIn.cx} ${LOOP_Y} ${N.phoneIn.cx} ${LOOP_Y - 30}V${Y0 + GH + 6}`;
+const LOOP = `M${N.phoneOut.cx} ${Y0 + GH + 6}V${LOOP_Y - 30}Q${N.phoneOut.cx} ${LOOP_Y} ${N.phoneOut.cx - 30} ${LOOP_Y}H${N.phoneIn.cx + 30}Q${N.phoneIn.cx} ${LOOP_Y} ${N.phoneIn.cx} ${LOOP_Y - 30}V${Y0 + GH + 6}`;
 
 const at = b => `style="left:${b.x}px;top:${b.y}px;width:${b.w}px;height:${b.h}px"`;
 const node = (b, ic, h, p, cls = '') => `<div class="node ${cls}" ${at(b)}><span class="ic">${ICON[ic]}</span><div><div class="h">${h}</div>${p ? `<p>${p}</p>` : ''}</div></div>`;
+const row = (ic, h, p) => `<div class="row"><span class="ic">${ICON[ic]}</span><div><div class="h">${h}</div><p>${p}</p></div></div>`;
 const mini = (b, src) => `<div class="mini" ${at(b)}><img src="${src}" alt=""></div>`;
 
 const HTML = `
@@ -85,16 +85,16 @@ const HTML = `
   ${node(N.speech, 'mic', 'Speech<br>recording', '', 'tight')}
   ${mini(N.phoneIn, story.dataflow.screens[0])}
   ${node(N.trans, 'wave', 'Transcription', 'Speech becomes text')}
-  ${node(N.crypt, 'lock', 'Patient ID encryption', 'Before anything leaves the server')}
-  ${node(N.prompt, 'prompt', 'Custom prompt', 'Roster, patients &amp; form schema')}
-  <div class="node router" ${at(N.router)}><span class="ic">${ICON.router}</span><div class="h">OpenRouter</div><p>Any cloud model</p></div>
-  ${MODELS.map(([n, c], i) => `<div class="model" ${at({ x: CHIP.x, y: CHIP.y(i), w: CHIP.w, h: CHIP.h })}><i style="background:${c}"></i>${n}</div>`).join('')}
+  <div class="node merge" ${at(N.merge)}>${row('lock', 'Patient ID encryption', 'Before anything leaves the server')}
+    <div class="plus">+</div>${row('prompt', 'Custom prompt', 'Roster, patients &amp; form schema')}</div>
+  <div class="node router" ${at(N.router)}><img class="logo" src="${LOGO('openrouter')}" alt=""><div class="h">OpenRouter</div><p>Any cloud model</p></div>
+  ${MODELS.map(([n, f], i) => `<div class="model" ${at({ x: CHIP.x, y: CHIP.y(i), w: CHIP.w, h: CHIP.h })}><img src="${LOGO(f)}" alt="">${n}</div>`).join('')}
   <div class="or" style="left:${G[2].x}px;top:${N.local.y - 50}px;width:${G[2].w}px"><span>or</span></div>
-  <div class="node local" ${at(N.local)}><img src="${story.dataflow.mascot}" alt=""><div><div class="h">Local inference</div>
+  <div class="node local" ${at(N.local)}><span class="ollama"><img src="${LOGO('ollama')}" alt=""></span><div><div class="h">Local inference</div>
     <div class="tag">Ollama / OpenLLM</div><p>Patient data never leaves the hospital</p></div></div>
-  <div class="autofill" style="left:${G[2].x + G[2].w}px;top:${N.phoneOut.cy - 54}px;width:${N.phoneOut.x - G[2].x - G[2].w}px">autofill</div>
-  ${mini(N.phoneOut, story.dataflow.screens[1])}
+  <div class="autofill" style="left:${G[2].x + G[2].w}px;top:${N.submit.cy - 44}px;width:${N.submit.x - G[2].x - G[2].w}px">autofill</div>
   ${node(N.submit, 'edit', 'Modification<br>&amp; submission', '', 'tight')}
+  ${mini(N.phoneOut, story.dataflow.screens[1])}
   <div class="hitl" style="left:960px;top:${LOOP_Y}px"><span class="ic">${ICON.human}</span>Human in the loop</div>`;
 
 // ---------- build ----------
@@ -105,7 +105,7 @@ export function buildDataflow() {
   document.getElementById('mascot').before(el);
   const q = s => el.querySelector(s), qa = s => [...el.querySelectorAll(s)];
   D = { el, groups: qa('.group'), nodes: qa('.node'), minis: qa('.mini'), models: qa('.model'), or: q('.or'), autofill: q('.autofill'),
-    hitl: q('.hitl'), arrows: qa('.arrow path:not(.head)'), heads: qa('.arrow .head'), fans: qa('.fan'), loop: q('.loop'), reveal: q('.reveal'), packets: qa('.packets i') };
+    hitl: q('.hitl'), rows: qa('.merge .row'), plus: q('.plus'), arrows: qa('.arrow path:not(.head)'), heads: qa('.arrow .head'), fans: qa('.fan'), loop: q('.loop'), reveal: q('.reveal'), packets: qa('.packets i') };
   D.lens = D.arrows.map(p => p.getTotalLength());
   D.arrows.forEach((p, i) => (p.style.strokeDasharray = D.lens[i]));
   D.fanLens = D.fans.map(p => p.getTotalLength());
@@ -128,16 +128,18 @@ export function drawDataflow(t, A) {
   // left to right: each group rises, then its contents, then the arrow out of it draws
   const groupAt = [0.3, 1.0, 1.8, 2.8];
   D.groups.forEach((g, i) => rise(g, easeOut(prog(s, groupAt[i], 0.55)), 40));
-  // nodes in HTML order: speech, transcription, encryption, prompt, router, local, submission
-  const nodeAt = [0.55, 1.2, 1.4, 1.55, 2.0, 2.45, 3.2];
+  // nodes in HTML order: speech, transcription, encryption + prompt, router, local, submission
+  const nodeAt = [0.55, 1.2, 1.4, 2.0, 2.45, 3.0];
   D.nodes.forEach((n, i) => rise(n, easeOut(prog(s, nodeAt[i], 0.5)), 20));
-  [0.7, 3.0].forEach((a, i) => { const k = prog(s, a, 0.6); D.minis[i].style.opacity = easeOut(k);
+  D.rows.forEach((r, i) => rise(r, easeOut(prog(s, 1.5 + i * 0.2, 0.45)), 12));
+  pop(D.plus, prog(s, 1.62, 0.45));
+  [0.7, 3.15].forEach((a, i) => { const k = prog(s, a, 0.6); D.minis[i].style.opacity = easeOut(k);
     D.minis[i].style.transform = `translateY(${50 * (1 - easeOutBack(k))}px) rotate(${(i ? 3 : -3) * (1 - easeOut(k))}deg)`; });
   D.models.forEach((m, i) => pop(m, prog(s, 2.25 + i * 0.08, 0.45)));
   D.fans.forEach((f, i) => (f.style.strokeDashoffset = D.fanLens[i] * (1 - easeInOut(prog(s, 2.2 + i * 0.08, 0.4)))));
   rise(D.or, easeOut(prog(s, 2.35, 0.4)), 10);
 
-  const arrowAt = [0.9, 1.4, 1.75, 1.85, 2.75];
+  const arrowAt = [0.9, 1.4, 1.85, 2.75];
   const drawn = D.arrows.map((p, i) => {
     const k = easeInOut(prog(s, arrowAt[i], 0.4));
     p.style.strokeDashoffset = D.lens[i] * (1 - k);

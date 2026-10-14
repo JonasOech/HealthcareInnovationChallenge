@@ -438,6 +438,7 @@ Likely questions:
 • Rollout? Import the existing Excel tracker; the sheet stays available as an export.` },
 ];
 
+const DATAFLOW_LOGOS = ['openrouter', 'gemini', 'openai', 'claude', 'deepseek', 'ollama'].map(n => `${P}logos/${n}.svg`);
 const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
 
 export const story = {
@@ -451,8 +452,8 @@ export const story = {
   how: { hc21: { t0: 5.3, t1: 11.45 }, flow: { t0: 11.5, t1: 22.0 }, access },
   // data flow after 07 (deck only): the groups, arrows and mini phones (dataflow.js); the screens are the recording and
   // the autofilled form (autofill.png: scroll_00.png with tall_log.png at offset 2501 pasted into the content rows, the
-  // frame 02 ends on), and the local-inference card shows the Ollama mascot's first frame
-  dataflow: { t0: 71.2, t1: 76.3, screens: [P + 'listening.png', P + 'autofill.png'], mascot: MASCOT[0] },
+  // frame 02 ends on), and the logos are in screens/logos/
+  dataflow: { t0: 71.2, t1: 76.3, screens: [P + 'listening.png', P + 'autofill.png'], logos: P + 'logos/' },
   // business case after 07 (deck only): staff time and money saved cards, then the payback chart (money.js);
   // pot: the pot of gold and rainbow on the "Here comes the money" title before it
   money: { t0: 78.8, t1: 89.1, pot: { t0: 76.55, t1: 78.6, img: P + 'pot_of_gold.webp' }, roi, eur },
@@ -464,7 +465,7 @@ export const story = {
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
     ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png',
-    ...access.phones.map(p => p.screen), P + 'autofill.png', P + 'pot_of_gold.webp'])],
+    ...access.phones.map(p => p.screen), P + 'autofill.png', ...DATAFLOW_LOGOS, P + 'pot_of_gold.webp'])],
   screenLayers, highlights, taps, texts, stops,
   // phone keyframes live in output time and are evaluated against real time, so the phone keeps
   // drifting through a hold instead of freezing with the rest of the frame

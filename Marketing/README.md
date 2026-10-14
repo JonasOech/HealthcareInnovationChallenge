@@ -17,7 +17,9 @@ four extra phones of "Synchronized access" are clones of the 3D phone in `engine
 The "Data flow" slide after 07 is deck-only too: the phone dives out of the frame and `dataflow.js` draws the input data
 flow as DOM layers (phone → TUH server, local or AWS → LLMs through OpenRouter or local inference → autofill → phone, with
 "human in the loop" closing it). The two mini phones show `screens/listening.png` and `screens/autofill.png`, which is
-`scroll_00.png` with `tall_log.png` at offset 2501 pasted into the content rows (the frame 02 ends on).
+`scroll_00.png` with `tall_log.png` at offset 2501 pasted into the content rows (the frame 02 ends on). The OpenRouter, Gemini, OpenAI,
+Claude, DeepSeek and Ollama logos in `screens/logos/` are from the MIT-licensed `@lobehub/icons-static-svg` set (the
+marks themselves belong to their owners).
 
 The "Here comes the money" title (dark teal, like "Tech Demo") and the three "business case" slides after it are deck-only too. The phone dives out of the frame for all four, and `money.js` draws
 the title's pot of gold (the team's picture `screens/pot_of_gold.webp`, placed so its rainbow leaves the frame top right),
