@@ -3,6 +3,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { story } from './story.js';
 import { buildHow, drawHow } from './how.js';
 import { buildMoney, drawMoney } from './money.js';
+import { buildDataflow, drawDataflow } from './dataflow.js';
 import { buildFollow, drawFollow } from './follow.js';
 
 // ---------- helpers ----------
@@ -350,6 +351,7 @@ window.renderFrame = (T, deck) => {
   drawMascot(t, L);
   drawHow(t, A);
   drawSats(t, A);
+  drawDataflow(t, A);
   drawMoney(t);
   drawBlog(t, deck ? A : t);
   drawFollow(t, A, !!deck);
@@ -365,6 +367,7 @@ window.setupDone = (async () => {
   await Promise.all(story.allImages().map(loadImage));
   buildTexts();
   buildHow();
+  buildDataflow();
   buildMoney();
   buildSats();
   buildFollow();
