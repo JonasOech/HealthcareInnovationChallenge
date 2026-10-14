@@ -2,7 +2,7 @@
 
 `video-src/` is the pitch presentation: a Three.js page where a 3D phone flies between scenes of the Android
 demo app, each with animated captions that highlight one feature. It runs as a clickable deck in the browser
-and holds at the 23 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
+and holds at the 24 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
 background and mascot keep moving while a slide holds. The concept is in `PRESENTATION_CONCEPT.md`.
 
 The "Follow along" QR card on slide 0 (`follow.js`) is deck-only too: it shows while the deck waits to start and
@@ -14,7 +14,7 @@ straight from the intro to 01. Their phone, screen and captions live in `story.j
 equipment cards, scan, pipeline, database, tracker sheet, dashboard and access links are DOM layers drawn by `how.js`, and the
 four extra phones of "Synchronized access" are clones of the 3D phone in `engine.js`.
 
-The three "business case" slides after 07 are deck-only too. The phone dives out of the frame for them, and `money.js` draws
+The "Here comes the money" title (dark teal, like "Tech Demo") and the three "business case" slides after it are deck-only too. The phone dives out of the frame for the business case, and `money.js` draws
 the cards and the payback chart as a DOM layer. The numbers come from the team's "Savings & ROI" spreadsheet: `story.js`
 (`roi`) holds the sheet's inputs and works out the outputs the same way the sheet does (329 h → 30 h a year, €10,950 saved a
 year, payback in 8.3 months, +40% ROI). To change a figure, change the input there.
@@ -38,6 +38,7 @@ same storyboard. The renderer itself is no longer in the repo — the deck is wh
 | 0:31 | 05 Smart waitlist: queued, returned, next patient notified |
 | 0:41 | 06 Every item. Every Location. (roster search and filters) |
 | 0:47 | 07 Privacy by design: Ollama mascot pops up and waves |
+| deck only | "Here comes the money" section title (dark teal, like "Tech Demo") |
 | deck only | Business case: staff time, 329 h a year today → 30 h with the app (circle areas to scale) |
 | deck only | Same slide, next click: money saved, €2,400 fewer lost items + €8,550 staff time = €10,950 a year |
 | deck only | Payback: setup, running cost and ROI tiles, and cumulative cost vs. savings crossing at 8.3 months |

@@ -25,8 +25,8 @@ const PADS = [
   [63.8, 1.60], [65.9, 1.65],                                  // 6 roster  6.50 -> 9.75
   [68.8, 2.25],                                                 // 7 privacy 4.50 -> 6.75
   // the business case (deck only, after 07) gets no holds: the deck holds at its stops
-  [86.8, 2.875],                                                // 8 outro   5.75 -> 8.625
-  [92.0, 3.375],                                                // 9 blog    6.75 -> 10.125
+  [89.6, 2.875],                                                // 8 outro   5.75 -> 8.625
+  [94.8, 3.375],                                                // 9 blog    6.75 -> 10.125
 ];
 const warp = a => a + PADS.reduce((s, [p, d]) => s + (a > p ? d : 0), 0);   // authored -> output
 function unwarp(T) {                                                        // output -> authored
@@ -81,7 +81,7 @@ const clips = [
   // 07 privacy
   { t0: 66.75, fade: 0.25, layers: () => [{ src: P + 'log_idle.png' }] },
   // outro
-  { t0: 81.6, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
+  { t0: 84.4, fade: 0.3, layers: () => [{ src: P + 'after.png' }] },
 ];
 
 function screenLayers(t, T) {
@@ -168,11 +168,13 @@ const phoneKeys = [
   k(66.2, RIGHT, { p: [1.2, 0.02, 3.5] }),
   k(67.1, spin(LEFT, 360)),
   k(70.5, spin(LEFT, 360), { p: [-1.2, 0.0, 3.45] }),
-  { t: 71.5, ...OFF },                                            // business case: the phone dives out of the frame
-  { t: 81.3, ...OFF },
-  { t: 82.4, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },             // and comes back up for the outro
-  { t: 87.0, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
-  { t: 88.5, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
+  { t: 71.9, p: [1.25, 0, 2.6], r: [-6, -22, 4] },                // here comes the money: spins back over to the right, like the tech demo
+  { t: 73.05, p: [1.15, 0.05, 2.8], r: [-4, -14, 2] },
+  { t: 74.3, ...OFF },                                            // business case: the phone dives out of the frame
+  { t: 84.1, ...OFF },
+  { t: 85.2, p: [1.25, -0.05, 2.7], r: [-5, 340, 3] },             // and comes back up for the outro
+  { t: 89.8, p: [1.25, -0.02, 2.95], r: [-3, 340 + 14, 1] },
+  { t: 91.3, p: [1.6, -0.3, 1.0], r: [-3, 400, 1] },
 ];
 
 // ---------- copy ----------
@@ -208,6 +210,8 @@ const texts = [
   { t0: 20.2, t1: 22.0, side: 'center', cls: 'top', html: `<div class="kicker">How it works</div>` + lines('Synchronized <mark>access</mark>') },
 
   { t0: 22.4, t1: 24.45, side: 'left', dark: true, cls: 'demo', markDelay: 0.85, html: lines('Tech <mark>Demo</mark>') },
+
+  { t0: 71.55, t1: 73.6, side: 'left', dark: true, cls: 'demo', markDelay: 0.85, html: lines('Here comes', 'the <mark>money</mark>') },
 
   // the rest of this scene (equipment, scan, steps) is the #hc21 layer in how.js
   { t0: 5.3, t1: 11.45, side: 'left', cls: 'top', html:
@@ -250,11 +254,11 @@ const texts = [
     `<div class="chips">${chip('lock', 'GDPR-minded from day one')}</div>` },
 
   // business case: the cards and the payback chart are the #money layer in money.js
-  { t0: 71.35, t1: 77.2, side: 'center', cls: 'top', html: `<div class="kicker">The business case</div>` + lines('Time back. <mark>Money saved.</mark>') },
-  { t0: 77.25, t1: 81.3, side: 'center', cls: 'top', html:
+  { t0: 74.15, t1: 80.0, side: 'center', cls: 'top', html: `<div class="kicker">The business case</div>` + lines('Time back. <mark>Money saved.</mark>') },
+  { t0: 80.05, t1: 84.1, side: 'center', cls: 'top', html:
     `<div class="kicker">Return on investment</div>` + lines(`Pays for itself in <mark>${roi.payback.toFixed(1)} months.</mark>`) },
 
-  { t0: 82.3, t1: 87.4, side: 'left', dark: true, markDelay: 1.1, html:
+  { t0: 85.1, t1: 90.2, side: 'left', dark: true, markDelay: 1.1, html:
     `<div class="brand"><img src="hospital_logo.png"><div><div style="font:800 34px/1.1 Jakarta;color:#fff">Quick Equipment Log</div><div style="font:500 22px/1.4 Inter;color:var(--mint)">Speak it. Log it. Find it.</div></div></div>` +
     `<div style="height:44px"></div>` + lines('Smarter equipment', 'tracking for better', '<mark>patient care.</mark>') +
     `<div class="foot">Healthcare Innovation Challenge 2026 · Tallaght University Hospital<br>Grace, Marvin &amp; Jonas</div>` +
@@ -308,11 +312,12 @@ const stops = [
   { t: 63.85, title: '06 · Roster: filter', notes: 'The roster shows every item and where it is. Filter by category…' },
   { t: 65.95, title: '06 · Roster: search', notes: '…or search by ID, type or location, and filter by status: available, on loan, repair, missing, late.' },
   { t: 70.1, title: '07 · Private by design', notes: 'Patient data stays minimal: MRN only, no names. The parsing step can be swapped for a locally hosted model (e.g. Ollama), so no data has to leave the hospital.' },
-  { t: 74.3, title: 'Business case: staff time', notes: `Today OT spends ${roi.today} hours a year on stock checks, Excel updates, the waitlist and searching for equipment. With the app that drops to about ${roi.withApp} hours: ${roi.saved} hours saved, about ${Math.round(roi.days)} working days.` },
-  { t: 76.6, title: 'Business case: money saved', notes: `${roi.assistant} of the saved hours are healthcare-assistant hours at €25, the other ${roi.saved - roi.assistant} would be overtime at €30: ${eur(roi.staff)}. Cutting the ${eur(roi.loss)} of equipment lost a year by 30% saves ${eur(roi.losses)}. Together about ${eur(roi.total)} a year.` },
-  { t: 80.4, title: 'Business case: payback', notes: `${eur(roi.setup)} to set up and ${eur(roi.running)} a year to run. Net savings of ${eur(roi.monthly)} a month pay it back after ${roi.payback.toFixed(1)} months, and the first year returns ${Math.round(roi.roi * 100)}% on the ${eur(roi.cost)} spent.` },
-  { t: 86.8, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
-  { t: 91.5, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
+  { t: 73.0, title: 'Here comes the money', notes: 'Section break: from here on it is the business case.' },
+  { t: 77.1, title: 'Business case: staff time', notes: `Today OT spends ${roi.today} hours a year on stock checks, Excel updates, the waitlist and searching for equipment. With the app that drops to about ${roi.withApp} hours: ${roi.saved} hours saved, about ${Math.round(roi.days)} working days.` },
+  { t: 79.4, title: 'Business case: money saved', notes: `${roi.assistant} of the saved hours are healthcare-assistant hours at €25, the other ${roi.saved - roi.assistant} would be overtime at €30: ${eur(roi.staff)}. Cutting the ${eur(roi.loss)} of equipment lost a year by 30% saves ${eur(roi.losses)}. Together about ${eur(roi.total)} a year.` },
+  { t: 83.2, title: 'Business case: payback', notes: `${eur(roi.setup)} to set up and ${eur(roi.running)} a year to run. Net savings of ${eur(roi.monthly)} a month pay it back after ${roi.payback.toFixed(1)} months, and the first year returns ${Math.round(roi.roi * 100)}% on the ${eur(roi.cost)} spent.` },
+  { t: 89.6, title: 'Smarter equipment tracking for better patient care', notes: 'Wrap-up. Healthcare Innovation Challenge 2026, Tallaght University Hospital. Grace, Marvin & Jonas. Thank you!' },
+  { t: 94.3, title: 'oechsner.dev', notes: 'Read more on the blog. Questions?' },
 ];
 
 const MASCOT = Array.from({ length: 123 }, (_, i) => `${P}ollama/${String(i).padStart(3, '0')}.jpg`);
@@ -327,12 +332,12 @@ export const story = {
   // through the synchronized access slide, which reuses its database (access)
   how: { hc21: { t0: 5.3, t1: 11.45 }, flow: { t0: 11.5, t1: 22.0 }, access },
   // business case after 07 (deck only): staff time and money saved cards, then the payback chart (money.js)
-  money: { t0: 71.0, t1: 81.3, roi, eur },
+  money: { t0: 73.8, t1: 84.1, roi, eur },
   // slide 0 (deck only): "Follow along" QR card, slides out over [0, t1] as the intro starts (follow.js)
   follow: { url: 'https://tuh.oechsner.dev/', t1: 0.5 },
   // scene 9: oechsner.dev end card
-  blog: { t0: 87.25 },
-  duration: warp(94.0),
+  blog: { t0: 90.05 },
+  duration: warp(96.8),
   contentRows: [C0, 2062],
   allImages: () => [...new Set([...clips.flatMap(c => c.layers(c.t0 + 0.5).filter(l => l.src || l.tall).map(l => l.src || l.tall)), ...SPIN,
     ...MASCOT, P + 'toast_logged.png', P + 'toast_wait.png', P + 'toast_return.png', P + 'tall_log.png', P + 'tall_bk.png', P + 'tall_roster.png',
@@ -341,7 +346,8 @@ export const story = {
   // phone keyframes live in output time and are evaluated against real time, so the phone keeps
   // drifting through a hold instead of freezing with the rest of the frame
   phoneKeys: phoneKeys.map(K => ({ ...K, t: warp(K.t) })),
-  darkness: t => Math.max(1 - clamp((t - 4.95) / 0.3), clamp((t - 22.05) / 0.4) * (1 - clamp((t - 24.45) / 0.3)), clamp((t - 81.7) / 0.4)),
+  darkness: t => Math.max(1 - clamp((t - 4.95) / 0.3), clamp((t - 22.05) / 0.4) * (1 - clamp((t - 24.45) / 0.3)),
+    clamp((t - 71.2) / 0.4) * (1 - clamp((t - 73.6) / 0.3)), clamp((t - 84.5) / 0.4)),
   // wipe passes at scene changes into/out of the dark intro/outro
-  wipeAt: t => { for (const c of [5.0, 22.1, 24.5, 81.75]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },
+  wipeAt: t => { for (const c of [5.0, 22.1, 24.5, 71.25, 73.65, 84.55]) { const k = (t - c) / 0.9 + 0.5; if (k > 0 && k < 1) return -1.5 + 3 * ease(k); } return null; },
 };
