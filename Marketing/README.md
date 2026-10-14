@@ -5,6 +5,10 @@ demo app, each with animated captions that highlight one feature. It runs as a c
 and holds at the 23 stops in `story.js` (`stops`) — each click plays on to the next stop, and the phone,
 background and mascot keep moving while a slide holds. The concept is in `PRESENTATION_CONCEPT.md`.
 
+The "Follow along" QR card on slide 0 (`follow.js`) is deck-only too: it shows while the deck waits to start and
+slides out as the intro begins. The QR matrix is hard-coded there (made with segno, error correction H so the hospital
+logo in the middle doesn't break it); regenerate it with the one-liner in `follow.js` if the URL in `story.follow` changes.
+
 The three "how it works" slides and the "Tech Demo" title are deck-only: they were added after the MP4 was rendered, so the video goes
 straight from the intro to 01. Their phone, screen and captions live in `story.js` like every other scene; the
 equipment cards, scan, pipeline, database, tracker sheet, dashboard and access links are DOM layers drawn by `how.js`, and the
@@ -20,6 +24,7 @@ same storyboard. The renderer itself is no longer in the repo — the deck is wh
 
 | Stop | Feature |
 |---|---|
+| deck only | Follow along: QR code to `https://tuh.oechsner.dev/` so the audience opens the deck on their phones (slide 0) |
 | 0:00 | Intro: "Equipment Tracking just got trivial" |
 | deck only | How it works: equipment with HC21 labels is scanned, the number lands in the booking form |
 | deck only | How it works: capture → synchronize (database) → visualization (dashboard) |
