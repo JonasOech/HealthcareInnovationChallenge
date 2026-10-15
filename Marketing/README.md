@@ -40,7 +40,7 @@ same storyboard. The renderer itself is no longer in the repo — the deck is wh
 | deck only | Synchronized access: the phone and four more ring the central database, all linked to it |
 | deck only | "Tech Demo" section title (dark teal, like the intro) |
 | 0:05 | 01 Voice logging: hold to speak, live transcript |
-| 0:12 | 02 Gemini AI: self-corrections resolved, side remarks ignored, form filled in |
+| 0:12 | 02 LLM integration: self-corrections resolved, side remarks ignored, form filled in |
 | 0:21 | 03 One tap. Loaned. (confirm + toast) |
 | 0:26 | 04 Patient didn't bring it back? We know. (overdue loans) |
 | 0:31 | 05 Smart waitlist: queued, returned, next patient notified |
