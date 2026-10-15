@@ -36,13 +36,31 @@
   .band h1 { font: 800 164px/1 Jakarta; letter-spacing: -0.035em; color: #fff; padding-bottom: 10px; }
 
   /* middle: "Just say it." left, the phone right */
-  .say { position: absolute; left: 96px; width: 760px; top: 470px; height: 1460px; display: flex; flex-direction: column; justify-content: center;
-         padding-bottom: 152px; }   /* lifts the block 76px so the A4 seam (y = 1188) runs between the title and the line below */
+  /* left column: "Just say it." above the horizontal A4 seam (y = 1188), the "Follow along" QR card below it */
+  .say { position: absolute; left: 96px; width: 760px; top: 680px; }
   .say .t { font: 800 154px/1.02 Jakarta; letter-spacing: -0.035em; color: #fff; position: relative; isolation: isolate; white-space: nowrap; }
-  .say .sub { margin-top: 64px; font: 400 48px/1.35 Inter; color: rgba(255,255,255,.85); }
+  .say .sub { margin-top: 64px; font: 400 45px/1.35 Inter; color: rgba(255,255,255,.85); }
   mark { position: relative; background: none; color: inherit; white-space: nowrap; }
   mark::before { content: ""; position: absolute; left: -10px; right: -10px; bottom: 6%; height: 42%; border-radius: 14px;
                  background: rgba(109,245,225,.38); z-index: -1; }
+
+  /* "Follow along": the QR card from the deck's first slide (../video-src/follow.js), injected by build-poster.mjs */
+  .follow { position: absolute; left: 96px; top: 1220px; }
+  .follow .t { font: 800 100px/1 Jakarta; letter-spacing: -0.035em; color: #fff; margin-bottom: 58px; }
+  .follow .code { position: relative; width: 420px; }
+  .follow .aim { position: absolute; inset: -24px; }
+  .follow .aim i { position: absolute; width: 52px; height: 52px; border: 5px solid var(--mint); }
+  .follow .aim i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 20px; }
+  .follow .aim i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 20px; }
+  .follow .aim i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 20px; }
+  .follow .aim i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 20px; }
+  .follow .qcard { position: relative; padding: 36px 36px 24px; border-radius: 31px; background: #fff;
+                   box-shadow: 0 30px 75px rgba(0,30,27,.45), 0 0 0 8px rgba(109,245,225,.16); }
+  .follow .qr svg { display: block; width: 348px; height: 348px; }
+  .follow .url { display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 24px; font: 800 25px/1 Jakarta;
+                 letter-spacing: -0.01em; color: var(--on-surface); }
+  .follow .url .ic { width: 26px; height: 26px; color: var(--primary); }
+  .follow .url .ic svg { width: 100%; height: 100%; display: block; }
 
   .stage { position: absolute; left: 840px; width: 840px; top: 470px; height: 1460px; }
   .card { position: absolute; left: 110px; top: 150px; width: 620px; height: 1160px; border-radius: 56px; transform: rotate(-7deg);
@@ -126,6 +144,12 @@
     <div class="sub">And we will do everything for you</div>
   </div>
 
+  <div class="follow">
+    <div class="t">Follow along</div>
+    <div class="code"><div class="aim"><i></i><i></i><i></i><i></i></div>
+      <div class="qcard"><div class="qr"></div><div class="url"><span class="ic"></span><span class="host"></span></div></div></div>
+  </div>
+
   <div class="stage">
     <div class="card"></div>
     <div class="phone">
@@ -180,6 +204,14 @@
 <script>
   // ?tiles: four A4 pages (top-left, top-right, bottom-left, bottom-right) to glue into the A2 poster; ?a2: one A2 page
   const q = new URLSearchParams(location.search), wrap = document.getElementById('wrap');
+  // the deck's QR card (window.FOLLOW is set by build-poster.mjs); its gradient id is made unique per copy below
+  const F = window.FOLLOW || { svg: '<svg viewBox="0 0 1 1"></svg>', icon: '', host: 'run build-poster.mjs' };
+  const fillFollow = (root, i) => {
+    root.querySelector('.qr').innerHTML = F.svg.replaceAll('qr-ink', `qr-ink-${i}`);
+    root.querySelector('.url .ic').innerHTML = F.icon;
+    root.querySelector('.url .host').textContent = F.host;
+  };
+  fillFollow(wrap, 0);
   if (q.has('a2')) document.body.classList.add('a2');
   if (q.has('tiles')) {
     document.body.classList.add('tiles');
@@ -187,6 +219,7 @@
       const tile = document.createElement('div'); tile.className = 'tile';
       const w = wrap.cloneNode(true); w.removeAttribute('id');
       w.style.left = `${-210 * x}mm`; w.style.top = `${-297 * y}mm`;
+      fillFollow(w, 1 + x + 2 * y);
       tile.appendChild(w); document.body.appendChild(tile);
     }
     wrap.remove();

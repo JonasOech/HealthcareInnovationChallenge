@@ -12,8 +12,18 @@ const require = createRequire(import.meta.url);
 let playwright;
 try { playwright = require('playwright'); } catch { playwright = require('/opt/node-tools/node_modules/playwright'); }
 
+// the "Follow along" QR card is the deck's own (follow.js), so the poster and the slides always show the same code
+const { qrSvg, ICON } = await import('../video-src/follow.js');
+const { story } = await import('../video-src/story.js');
+const follow = {
+  svg: qrSvg().replace('href="hospital_logo.png"', 'href="../video-src/hospital_logo.png"'),
+  icon: ICON.scan,
+  host: story.follow.url.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+};
+
 const browser = await playwright.chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const page = await browser.newPage();
+await page.addInitScript(f => { window.FOLLOW = f; }, follow);
 const url = pathToFileURL(path.join(dir, 'poster.html')).href;
 const open = async q => { await page.goto(url + q); await page.evaluate(() => document.fonts.ready); };
 

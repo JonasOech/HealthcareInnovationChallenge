@@ -49,7 +49,8 @@ const QR = [
 ];
 
 // the styled code as SVG, one unit per module: dots for data, rounded finder eyes, the hospital logo in the middle
-function qrSvg() {
+// (also used by the poster, ../poster/build-poster.mjs)
+export function qrSvg() {
   const n = QR.length, hole = [12, 20];   // 9x9 modules cleared for the logo (7.4% of the code; H recovers 30%)
   const finder = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
   const inHole = (r, c) => r >= hole[0] && r <= hole[1] && c >= hole[0] && c <= hole[1];
@@ -67,7 +68,7 @@ function qrSvg() {
     <image href="hospital_logo.png" x="${c0 + 0.7}" y="${c0 + 0.7}" width="${w - 1.4}" height="${w - 1.4}"/></svg>`;
 }
 
-const ICON = {
+export const ICON = {
   scan: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3M7 12h10"/></svg>',
   phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/></svg>',
   back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>',
