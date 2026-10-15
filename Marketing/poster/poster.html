@@ -36,30 +36,30 @@
   .band h1 { font: 800 164px/1 Jakarta; letter-spacing: -0.035em; color: #fff; padding-bottom: 10px; }
 
   /* middle: "Just say it." left, the phone right */
-  /* left column: "Just say it." above the horizontal A4 seam (y = 1188), the "Follow along" QR card below it */
-  .say { position: absolute; left: 96px; width: 760px; top: 680px; }
+  /* left column: "Just say it." just above the horizontal A4 seam (y = 1188), the QR card just below it */
+  .say { position: absolute; left: 96px; width: 760px; top: 872px; }
   .say .t { font: 800 154px/1.02 Jakarta; letter-spacing: -0.035em; color: #fff; position: relative; isolation: isolate; white-space: nowrap; }
   .say .sub { margin-top: 64px; font: 400 45px/1.35 Inter; color: rgba(255,255,255,.85); }
   mark { position: relative; background: none; color: inherit; white-space: nowrap; }
   mark::before { content: ""; position: absolute; left: -10px; right: -10px; bottom: 6%; height: 42%; border-radius: 14px;
                  background: rgba(109,245,225,.38); z-index: -1; }
 
-  /* "Follow along": the QR card from the deck's first slide (../video-src/follow.js), injected by build-poster.mjs */
-  .follow { position: absolute; left: 96px; top: 1220px; }
-  .follow .t { font: 800 100px/1 Jakarta; letter-spacing: -0.035em; color: #fff; margin-bottom: 58px; }
-  .follow .code { position: relative; width: 420px; }
-  .follow .aim { position: absolute; inset: -24px; }
-  .follow .aim i { position: absolute; width: 52px; height: 52px; border: 5px solid var(--mint); }
-  .follow .aim i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 20px; }
-  .follow .aim i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 20px; }
-  .follow .aim i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 20px; }
-  .follow .aim i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 20px; }
-  .follow .qcard { position: relative; padding: 36px 36px 24px; border-radius: 31px; background: #fff;
+  /* the "Follow along" QR card from the deck's first slide (../video-src/follow.js), injected by build-poster.mjs,
+     centred under "Just say it." (x 96-824) */
+  .follow { position: absolute; left: 96px; width: 728px; top: 1236px; display: flex; justify-content: center; }
+  .follow .code { position: relative; width: 460px; }
+  .follow .aim { position: absolute; inset: -27px; }
+  .follow .aim i { position: absolute; width: 57px; height: 57px; border: 5px solid var(--mint); }
+  .follow .aim i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 22px; }
+  .follow .aim i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 22px; }
+  .follow .aim i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 22px; }
+  .follow .aim i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 22px; }
+  .follow .qcard { position: relative; padding: 40px 40px 27px; border-radius: 34px; background: #fff;
                    box-shadow: 0 30px 75px rgba(0,30,27,.45), 0 0 0 8px rgba(109,245,225,.16); }
-  .follow .qr svg { display: block; width: 348px; height: 348px; }
-  .follow .url { display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 24px; font: 800 25px/1 Jakarta;
+  .follow .qr svg { display: block; width: 380px; height: 380px; }
+  .follow .url { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 27px; font: 800 27px/1 Jakarta;
                  letter-spacing: -0.01em; color: var(--on-surface); }
-  .follow .url .ic { width: 26px; height: 26px; color: var(--primary); }
+  .follow .url .ic { width: 28px; height: 28px; color: var(--primary); }
   .follow .url .ic svg { width: 100%; height: 100%; display: block; }
 
   .stage { position: absolute; left: 840px; width: 840px; top: 470px; height: 1460px; }
@@ -145,7 +145,6 @@
   </div>
 
   <div class="follow">
-    <div class="t">Follow along</div>
     <div class="code"><div class="aim"><i></i><i></i><i></i><i></i></div>
       <div class="qcard"><div class="qr"></div><div class="url"><span class="ic"></span><span class="host"></span></div></div></div>
   </div>
