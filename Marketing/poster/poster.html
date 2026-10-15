@@ -129,7 +129,13 @@
   .poster-wrap { width: 420mm; height: 594mm; overflow: hidden; }
   .tile { width: 210mm; height: 297mm; overflow: hidden; position: relative; break-after: page; contain: strict; }
   .tile:last-child { break-after: auto; }
-  .tile .poster-wrap { position: absolute; }
+  /* each A4 tile keeps a white margin for printers that can't print to the edge: its quarter of the poster is scaled
+     to 200 mm wide (x 0.952381) and centred, 5 mm left/right and 7.07 mm top/bottom; trim marks sit in the margin */
+  .tile .clip { position: absolute; left: 5mm; top: 7.0714mm; width: 200mm; height: 282.857mm; overflow: hidden; }
+  .tile .poster-wrap { position: absolute; zoom: 0.952381; }
+  .tile .mark-h, .tile .mark-v { position: absolute; background: #9aa3a8; }
+  .tile .mark-h { width: 4mm; height: 0.2mm; } .tile .mark-v { width: 0.2mm; height: 4mm; }
+  html:has(body.tiles), body.tiles { background: #fff; }
   body.tiles { width: 210mm; }
   @media screen { body { padding: 20px; } .tile { margin-bottom: 20px; outline: 1px dashed #6DF5E1; } }
 </style>
@@ -217,10 +223,21 @@
     document.body.classList.add('tiles');
     for (const [x, y] of [[0, 0], [1, 0], [0, 1], [1, 1]]) {
       const tile = document.createElement('div'); tile.className = 'tile';
+      const clip = document.createElement('div'); clip.className = 'clip';
       const w = wrap.cloneNode(true); w.removeAttribute('id');
-      w.style.left = `${-210 * x}mm`; w.style.top = `${-297 * y}mm`;
+      w.style.left = `${-210 * x}mm`; w.style.top = `${-297 * y}mm`;   // in the zoomed wrap's own units
       fillFollow(w, 1 + x + 2 * y);
-      tile.appendChild(w); document.body.appendChild(tile);
+      clip.appendChild(w); tile.appendChild(clip);
+      // trim marks: short lines in the margin, in line with each edge of the printed area
+      const [L, T, R, B] = [5, 7.0714, 205, 289.9286];
+      for (const [cx, cy] of [[L, T], [R, T], [L, B], [R, B]]) {
+        const h = document.createElement('i'); h.className = 'mark-h';
+        h.style.left = `${cx === L ? 0.5 : R + 0.5}mm`; h.style.top = `${cy - 0.1}mm`;
+        const v = document.createElement('i'); v.className = 'mark-v';
+        v.style.left = `${cx - 0.1}mm`; v.style.top = `${cy === T ? T - 4.5 : B + 0.5}mm`;
+        tile.append(h, v);
+      }
+      document.body.appendChild(tile);
     }
     wrap.remove();
   }

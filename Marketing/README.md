@@ -145,4 +145,5 @@ files the page loads and moves `node_modules` files to `vendor/`.
 `poster/poster.html` is the A2 poster (portrait, in the dark title-slide style of the deck; the phone is drawn in HTML/CSS,
 not a screenshot; the "Follow along" QR card is the deck's own, from `follow.js`). `node poster/build-poster.mjs` (after `npm ci` in `video-src/`, which provides the fonts) renders
 `Poster_A2.pdf` (one A2 page, for a print shop), `Poster_A2_4xA4.pdf` (four A4 pages in the order top-left, top-right,
-bottom-left, bottom-right, to glue together; print at 100 % / actual size, borderless if possible) and `poster_preview.png`.
+bottom-left, bottom-right, to glue together; each has a 5 mm white margin with trim marks, so the poster is scaled to
+95.2 % and comes out 400 x 566 mm; print at 100 % / actual size and trim the margin off the joining edges) and `poster_preview.png`.
