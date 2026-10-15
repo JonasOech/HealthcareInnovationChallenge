@@ -79,10 +79,10 @@ How to edit:
 
 ---
 
-## Scene 2 · Gemini AI (0:12.5 – 0:21) · text on the left
+## Scene 2 · LLM integration (0:12.5 – 0:21) · text on the left
 **Screen:** the page scrolls to the **AI parsed** card ("High confidence", the self-correction and the ignored remark), which gets a highlight. It then scrolls on to the auto-filled form (#4829 1035, PT-90421, Bed 4B-12, 3 weeks), which also gets a highlight.
 
-- Kicker: 02 · GEMINI AI
+- Kicker: 02 · LLM INTEGRATION
 - Headline: AI ==untangles== *(indigo)* / the mess.
 - Sub: Messy speech becomes a clean, structured record.
 - Chips: ✦ Self-corrections resolved · ✓ Side remarks ignored · ✓ Form filled in for you

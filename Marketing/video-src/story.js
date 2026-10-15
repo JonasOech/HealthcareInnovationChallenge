@@ -225,7 +225,7 @@ const texts = [
     `<div class="chips">${chip('mic', 'Hands-free, one-press dictation')}${chip('clock', 'Long, rambling requests welcome')}</div>` },
 
   { t0: 32.45, t1: 40.65, side: 'left', chipStart: 1.6, chipGap: 1.2, html:
-    kicker('02', 'Gemini AI') + lines('AI <mark class="ai">untangles</mark>', 'the mess.') +
+    kicker('02', 'LLM integration') + lines('AI <mark class="ai">untangles</mark>', 'the mess.') +
     `<div class="sub">Messy speech becomes a clean, structured record.</div>` +
     `<div class="chips">${chip('spark', 'Self-corrections resolved', 'ai')}${chip('check', 'Side remarks ignored', 'ai')}${chip('check', 'Form filled in for you', 'ai')}</div>` },
 
