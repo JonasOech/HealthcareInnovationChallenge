@@ -36,8 +36,9 @@
   .band h1 { font: 800 164px/1 Jakarta; letter-spacing: -0.035em; color: #fff; padding-bottom: 10px; }
 
   /* middle: "Just say it." left, the phone right */
-  /* left column: "Just say it." just above the horizontal A4 seam (y = 1188), the QR card just below it */
-  .say { position: absolute; left: 96px; width: 760px; top: 872px; }
+  /* left column: "Just say it." and the QR card, centred as a group on the phone (y = 1200); the horizontal A4 seam
+     (y = 1188) runs through the card's white top padding, above the code */
+  .say { position: absolute; left: 96px; width: 760px; top: 720px; }
   .say .t { font: 800 154px/1.02 Jakarta; letter-spacing: -0.035em; color: #fff; position: relative; isolation: isolate; white-space: nowrap; }
   .say .sub { margin-top: 64px; font: 400 45px/1.35 Inter; color: rgba(255,255,255,.85); }
   mark { position: relative; background: none; color: inherit; white-space: nowrap; }
@@ -46,7 +47,7 @@
 
   /* the "Follow along" QR card from the deck's first slide (../video-src/follow.js), injected by build-poster.mjs,
      centred under "Just say it." (x 96-824) */
-  .follow { position: absolute; left: 96px; width: 728px; top: 1236px; display: flex; justify-content: center; }
+  .follow { position: absolute; left: 96px; width: 728px; top: 1169px; display: flex; justify-content: center; }
   .follow .code { position: relative; width: 460px; }
   .follow .aim { position: absolute; inset: -27px; }
   .follow .aim i { position: absolute; width: 57px; height: 57px; border: 5px solid var(--mint); }
